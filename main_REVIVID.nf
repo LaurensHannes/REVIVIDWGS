@@ -74,41 +74,62 @@ process pear {
         path home from params.home
 
         output:
-        tuple val(x), file('*.indexed.bam') into mapped_ch
+        tuple val(id), file('*.indexed.bam') into mapped_ch
 
         """
-        bwa mem -r 0.5 -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${x}.assembled.unsorted.bam
-        bwa mem -r 0.5 -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${x}.forward.unsorted.bam
-        bwa mem -r 0.5 -t ${task.cpus} $genome $reverse | samtools view -@ ${task.cpus} -bS > ${x}.reverse.unsorted.bam
-        samtools merge -@ ${task.cpus} ${x}.indexed.unsorted.bam  ${x}.assembled.unsorted.bam ${x}.forward.unsorted.bam ${x}.reverse.unsorted.bam
-        samtools sort -@ ${task.cpus} -o ${x}.indexed.bam ${x}.indexed.unsorted.bam
+        bwa mem -r 0.5 -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${lane}.assembled.unsorted.bam
+        bwa mem -r 0.5 -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${lane}.forward.unsorted.bam
+        bwa mem -r 0.5 -t ${task.cpus} $genome $reverse | samtools view -@ ${task.cpus} -bS > ${lane}.reverse.unsorted.bam
+        samtools merge -@ ${task.cpus} ${lane}.indexed.unsorted.bam  ${lane}.assembled.unsorted.bam ${lane}.forward.unsorted.bam ${lane}.reverse.unsorted.bam
+        samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam ${lane}.indexed.unsorted.bam
         """
 }
 
+mapped_ch.into{mapped_ch1;mapped_ch2}
+
+mapped_ch2.groupTuple().set{mappedgrouped_ch}
+
+process mergebams {
+
+	tag "$id"
+        
+
+	input:
+	tuple val(id),file(bams) from mappedgrouped_ch
+		
+	output:
+	tuple val(id),file("${id}.bam") into mergedbam_ch
+
+	"""
+	samtools merge -@ 8 ${id}.bam $bams
+	"""
+
+}
+
+//process duplicates { }
+mergedbam_ch.into{mergedbam1_ch;mergedbam2_ch}
+mergedbam2_ch.view()
+
 process genotype {
 
+        tag "$id"
 		cpus 4
-        memory '16 GB'
-        tag "$bams.baseName"
-        maxForks 4
-		time '6h'
-		
-		
-        publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/genotyped'
 
         input:
-        tuple val(x), file(bams) from mapped_ch
+        tuple val(id), path(bams) from mergedbam1_ch
         path genome from params.genome
         path dict from params.genomedict
-        path index from params.indexes
+//        path index from params.indexes
         path faidx from params.genomefai
-
+	path mask from params.maskrepeats
 
         output:
-        tuple val(x), file('*.g.vcf') into gvcfs_ch
+        tuple val(id), file("${id}.vcf") into vcf_uncallibrated_ch
 
         """
-        /usr/roadrunner/programs/gatk-4.1.8.1/gatk HaplotypeCaller --verbosity WARNING  -R $genome -I ${bams} -O ${bams}.g.vcf --sequence-dictionary ${dict} -ERC GVCF
+	gatk AddOrReplaceReadGroups -I $bams -O ${id}.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id --MAX_RECORDS_IN_RAM 200000000
+	samtools index -@ 8 ${id}.RG.bam
+        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict}
         """
 
 }
