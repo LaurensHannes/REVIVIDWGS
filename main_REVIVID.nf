@@ -103,10 +103,11 @@ process mergebams {
 	tuple val(id),file(bams) from mappedgrouped_ch
 		
 	output:
-	tuple val(id),file("${id}.bam") into mergedbam_ch
+	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") into mergedbam_ch
 
 	"""
 	samtools merge -@ ${task.cpus} ${id}.bam $bams
+	samtools index ${id}.bam
 	"""
 
 }
