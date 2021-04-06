@@ -121,7 +121,7 @@ process genotype {
         path dict from params.genomedict
 //        path index from params.indexes
         path faidx from params.genomefai
-	path mask from params.maskrepeats
+		path mask from params.mask
 
         output:
         tuple val(id), file("${id}.vcf") into vcf_uncallibrated_ch
