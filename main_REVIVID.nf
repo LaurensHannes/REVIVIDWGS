@@ -119,8 +119,8 @@ mergedbam2_ch.view()
 process duplicates { 
 
         tag "$id"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
-        maxForks 1
+
+
 
 	input:
 	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
@@ -144,8 +144,7 @@ merged_dups_ch.into{mergedbam1_ch;mergedbam2_ch}
 process baserecalibrator {
 
 	tag "$id"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
-        maxForks 1
+
 
         input:
         tuple val(id), file(merged), file(bai) from mergedbam1_ch
@@ -166,7 +165,7 @@ process baserecalibrator {
 process applyBQSR {
 
         tag "$id"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+       
 
         input:
         tuple val(id), file(bam), file(bai) from mergedbam2_ch
@@ -190,8 +189,7 @@ process applyBQSR {
 process genotype {
 
         tag "$id"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
-	maxForks 1
+  
 
         input:
         tuple val(id), file(bams),file(bai) from BQSR_applied_ch
@@ -205,7 +203,7 @@ process genotype {
         tuple val(id), file("${id}.vcf") into vcf_uncallibrated_ch
 
         """
-        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict}
+        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict} --native-pair-hmm-threads ${task.cpus}
         """
 
 }
@@ -213,8 +211,7 @@ process genotype {
 process variantrecalibration {
 
 	tag "$id"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
-        maxForks 1
+
 	container "docker://broadinstitute/gatk"
 
 	input:
@@ -242,7 +239,7 @@ process variantrecalibration {
 process compressandindex {
 
 	tag "$id"
-	 storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+
 
 input:
 	tuple val(id), file(vcf) from individual_vcf_ch 
@@ -264,9 +261,7 @@ individual_vcf_for_merge_ch2.view()
 process mergevcf {
 
 	tag "$family"
-	storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
-    maxForks 1
-//    container "docker://broadinstitute/gatk"
+
 
 
 	input:
@@ -276,7 +271,6 @@ process mergevcf {
 	tuple val(family), path("${family}.vcf.gz"), path("${family}.vcf.gz.tbi") into merged_vcf_ch
 	
 """
-[ ! -d "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}" ] && mkdir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
 	bcftools merge -o ${family}.vcf.gz -O z --threads 4 $vcf 
 	tabix ${family}.vcf.gz
 """
@@ -313,10 +307,9 @@ merged_vcf_ch.into{vcftodenovo;vcftorecessive}
 process SelectVariantsdenovo {
 
         tag "$family"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+
         analysis_ch = channel.value("denovo")
-        maxForks 1
-	container "docker://broadinstitute/gatk"
+
 	
         input:
         tuple val(family), file(vcfgz), file(vcfgztbi) from vcftodenovo
@@ -340,10 +333,9 @@ process SelectVariantsAR {
 
 
         tag "$family"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+
         analysis_ch = channel.value("AR")
-        maxForks 1
-	container "docker://broadinstitute/gatk"
+
 		
         input:
         tuple val(family), file(vcfgz), file(vcfgztbi) from vcftorecessive
@@ -391,9 +383,7 @@ denovovcf_ch.join(recessivevcf_ch).set{joined_ch}
 
 process annotate {
         tag "$family"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
-        cpus 10
-        maxForks 1
+
 // change input names for gz and gztbi
         input:
         tuple val(family), val(denovo), file(denovogatkfvcfgz),file(denovovcfgatkfgztbi),val(AR), file(ARgatkfvcfgz),file(ARvcfgatkfgztbi) from joined_ch
@@ -409,7 +399,7 @@ process annotate {
 process subset {
 
         tag "$family"
-        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+
 
         input:
         tuple val(family), val(AR), file(ARannotatedVCF), file(ARannotatedTXT) from annotated_AR_ch
