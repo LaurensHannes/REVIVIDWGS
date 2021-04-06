@@ -5,10 +5,11 @@ workDir = '/staging/leuven/stg_00086/Laurens/FNRCP/work'
 params.genome ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta'
 params.genomefai ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta.fai'
 params.genomedict ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.dict'
-params.indexes = '/home/laurens/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta.*'
+params.indexes = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta.*'
 params.ped ='/staging/leuven/stg_00086/Laurens/REVIVID/F1.ped'
 params.mask ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/mask.bed'
 params.home ='/staging/leuven/stg_00086/Laurens/FNRCP'
+params.maskrepeats ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/repeats.bed'
 params.fastqgz = '/staging/leuven/stg_00086/Laurens/FNRCP/raw_data/FASTQGZ/*/*/*.fastq.gz'
 fastqgz_ch = channel.fromPath(params.fastqgz)
 
@@ -121,7 +122,7 @@ process genotype {
         path dict from params.genomedict
 //        path index from params.indexes
         path faidx from params.genomefai
-		path mask from params.mask
+		path mask from params.maskrepeats
 
         output:
         tuple val(id), file("${id}.vcf") into vcf_uncallibrated_ch
