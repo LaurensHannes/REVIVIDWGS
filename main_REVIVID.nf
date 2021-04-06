@@ -40,7 +40,8 @@ temp_ch2.view()
 process pear {
 
         tag "$lane"
-        time '2h'
+        time '30m'
+		memory '2 GB'
         errorStrategy 'retry'
         maxRetries 3
 
@@ -60,7 +61,7 @@ process pear {
 
 		time '2h'
         maxForks 3
-        tag "$x"
+        tag "$id"
 
         indexes_ch = Channel.fromPath(params.indexes)
 
