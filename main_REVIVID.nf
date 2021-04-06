@@ -40,7 +40,7 @@ temp_ch2.view()
 process pear {
 
         tag "$lane"
-        cpus 2
+        time '2h'
         errorStrategy 'retry'
         maxRetries 3
 
@@ -58,6 +58,7 @@ process pear {
 }
  process alignment {
 
+		time '2h'
         maxForks 3
         tag "$x"
 
@@ -85,10 +86,13 @@ process pear {
 
 process genotype {
 
+		cpus 4
         memory '16 GB'
         tag "$bams.baseName"
         maxForks 4
-
+		time '6h'
+		
+		
         publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/genotyped'
 
         input:
