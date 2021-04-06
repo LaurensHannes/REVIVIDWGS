@@ -44,7 +44,7 @@ process pear {
         errorStrategy 'retry'
         maxRetries 3
 
-        publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/paired'
+ //       publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/paired'
 
         input:
         tuple val(id), val(lane),file(R1), file(R2) from temp_ch1.flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}
@@ -64,7 +64,7 @@ process pear {
 
         indexes_ch = Channel.fromPath(params.indexes)
 
-        publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/mapped'
+//        publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/mapped'
 
         input:
         tuple val(id),val(lane), file(assembled), file(forward), file(reverse) from paired_ch
