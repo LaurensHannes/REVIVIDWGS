@@ -94,7 +94,7 @@ mapped_ch2.groupTuple().set{mappedgrouped_ch}
 process mergebams {
 
 	tag "$id"
-        
+    cpus 108
 
 	input:
 	tuple val(id),file(bams) from mappedgrouped_ch
@@ -103,7 +103,7 @@ process mergebams {
 	tuple val(id),file("${id}.bam") into mergedbam_ch
 
 	"""
-	samtools merge -@ 8 ${id}.bam $bams
+	samtools merge -@ ${task.cpus} ${id}.bam $bams
 	"""
 
 }
@@ -115,7 +115,7 @@ mergedbam2_ch.view()
 process genotype {
 
         tag "$id"
-		cpus 4
+		cpus 18
 	
 
         input:
@@ -132,7 +132,7 @@ process genotype {
         """
 	gatk AddOrReplaceReadGroups -I $bams -O ${id}.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id --MAX_RECORDS_IN_RAM 200000000
 	samtools index -@ 8 ${id}.RG.bam
-        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict}
+        gatk HaplotypeCaller --native-pair-hmm-threads ${task.cpus} --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict}
         """
 
 }
