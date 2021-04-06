@@ -95,7 +95,7 @@ process mergebams {
 
 	tag "$id"
     cpus 108
-
+	memory '8 GB'
 	input:
 	tuple val(id),file(bams) from mappedgrouped_ch
 		
