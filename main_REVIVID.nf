@@ -53,7 +53,7 @@ process pear {
         tuple val(id), val(lane), file('*.assembled.fastq'),file('*.forward.fastq'), file('*.reverse.fastq') into paired_ch
 
         """
-        pear -j ${task.cpus} -v 0 -f $R1 -r $R2 -o $lane
+        pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
         """
 }
  process alignment {
