@@ -11,6 +11,10 @@ params.mask ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v
 params.home ='/staging/leuven/stg_00086/Laurens/FNRCP'
 params.maskrepeats ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/repeats.bed'
 params.fastqgz = '/staging/leuven/stg_00086/Laurens/FNRCP/raw_data/FASTQGZ/*/*/*.fastq.gz'
+params.snps ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/1000G_phase1.snps.high_confidence.hg38.vcf.gz'
+params.snpsindex  ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi'
+params.indels = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'
+params.indelsindex = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi'
 fastqgz_ch = channel.fromPath(params.fastqgz)
 
 //script
@@ -111,27 +115,306 @@ process mergebams {
 mergedbam_ch.into{mergedbam1_ch;mergedbam2_ch}
 mergedbam2_ch.view()
 
+process duplicates { 
+
+        tag "$id"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+        maxForks 1
+
+	input:
+	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
+
+	output:
+	tuple val(id),file("${id}.dups.RG.bam"),file("${id}.dups.RG.bam.bai") into merged_dups_ch
+	tuple val(id),file("${id}.metrics.txt") into dup_metrics_ch
+
+	"""
+	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
+	gatk AddOrReplaceReadGroups -I ${id}.dups.bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id --MAX_RECORDS_IN_RAM 20000000
+	samtools index ${id}.dups.RG.bam
+	rm ${id}.dups.bam 
+	
+	"""
+}
+
+merged_dups_ch.into{mergedbam1_ch;mergedbam2_ch}
+
+
+process baserecalibrator {
+
+	tag "$id"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+        maxForks 1
+
+        input:
+        tuple val(id), file(merged), file(bai) from mergedbam1_ch
+        path genome from params.genome
+       path faidx from params.genomefai
+        path dict from params.genomedict
+	 path snps from params.snps
+        path snpsindex from params.snpsindex
+
+        output:
+        path "${id}.recal_data.table" into recal_data_ch
+
+        """
+        gatk BaseRecalibrator -I $merged -R $genome -O ${id}.recal_data.table --known-sites $snps --verbosity WARNING
+        """
+}
+
+process applyBQSR {
+
+        tag "$id"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+
+        input:
+        tuple val(id), file(bam), file(bai) from mergedbam2_ch
+        path genome from params.genome
+        path table from recal_data_ch
+	path faidx from params.genomefai
+        path dict from params.genomedict
+
+
+        output:
+        tuple val(id),file("${id}.recallibrated.bam"),file("${id}.recallibrated.bam.bai") into BQSR_applied_ch
+
+        """
+        gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.recallibrated.bam
+	samtools index ${id}.recallibrated.bam
+        """
+
+}
+
+
 process genotype {
 
         tag "$id"
-		cpus 18
-	
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+	maxForks 1
 
         input:
-        tuple val(id), path(bams) from mergedbam1_ch
+        tuple val(id), file(bams),file(bai) from BQSR_applied_ch
         path genome from params.genome
         path dict from params.genomedict
 //        path index from params.indexes
         path faidx from params.genomefai
-		path mask from params.maskrepeats
+	path mask from params.maskrepeats
 
         output:
         tuple val(id), file("${id}.vcf") into vcf_uncallibrated_ch
 
         """
-	gatk AddOrReplaceReadGroups -I $bams -O ${id}.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id --MAX_RECORDS_IN_RAM 200000000
-	samtools index -@ 8 ${id}.RG.bam
-        gatk HaplotypeCaller --native-pair-hmm-threads ${task.cpus} --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict}
+        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict}
+        """
+
+}
+
+process variantrecalibration {
+
+	tag "$id"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+        maxForks 1
+	container "docker://broadinstitute/gatk"
+
+	input:
+	tuple val(id), path(vcf) from vcf_uncallibrated_ch
+	path genome from params.genome
+        path dict from params.genomedict
+//      path index from params.indexes
+        path faidx from params.genomefai
+	path snps from params.snps
+	path snpsindex from params.snpsindex
+	path indels from params.indels
+	path indelsindex from params.indelsindex
+	path mask from params.maskrepeats
+
+
+	output:
+	tuple val(id), file("${id}.filtered.vcf")  into individual_vcf_ch
+
+	"""
+	gatk CNNScoreVariants -V $vcf -R $genome -O ${id}.pretranched.vcf
+	gatk FilterVariantTranches -V ${id}.pretranched.vcf --resource $snps --resource $indels -O ${id}.filtered.vcf --info-key CNN_1D --snp-tranche 99.95 --indel-tranche 99.4 
+	"""
+}
+
+process compressandindex {
+
+	tag "$id"
+	 storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${id}"
+
+input:
+	tuple val(id), file(vcf) from individual_vcf_ch 
+
+output:
+        tuple val(id), file("${id}.filtered.vcf.gz"), file("${id}.filtered.vcf.gz.tbi") into individual_vcfgz_ch
+
+"""
+        bcftools view -o ${id}.filtered.vcf.gz -O z ${id}.filtered.vcf
+        tabix ${id}.filtered.vcf.gz
+"""
+}
+
+idfamily_ch2.join(individual_vcfgz_ch).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple().set{individual_vcf_for_merge_ch}
+individual_vcf_for_merge_ch.into{individual_vcf_for_merge_ch1;individual_vcf_for_merge_ch2}
+individual_vcf_for_merge_ch2.view()
+
+
+process mergevcf {
+
+	tag "$family"
+	storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+    maxForks 1
+//    container "docker://broadinstitute/gatk"
+
+
+	input:
+	tuple val(family), path(vcf), path(index) from individual_vcf_for_merge_ch1
+
+	output:
+	tuple val(family), path("${family}.vcf.gz"), path("${family}.vcf.gz.tbi") into merged_vcf_ch
+	
+"""
+[ ! -d "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}" ] && mkdir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+	bcftools merge -o ${family}.vcf.gz -O z --threads 4 $vcf 
+	tabix ${family}.vcf.gz
+"""
+
+}
+
+//process gatkfilter {
+//
+//      tag "$family"
+//
+//        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+//	container "docker://broadinstitute/gatk"
+//		
+//      input:
+//    tuple val(family), file(vcfgz), file(vcfgztbi) from merged_vcf_ch
+
+//
+//      path genome from params.genome
+//    path index from params.genomefai
+//        path dict from params.genomedict
+//
+//      output:
+//        tuple val(family), file("${family}.gatk.filtered.vcf.gz"), file("${family}.gatk.filtered.vcf.gz.tbi") into combinedfilteredvcf_ch
+//
+//
+//      """
+//  gatk VariantFiltration -R $genome -V $vcfgz -O ${family}.gatk.filtered.vcf.gz --filter-name "qualfilter" --filter-expression "QUAL < 50" --genotype-filter-name "gqfilter" --genotype-filter-expression "GQ < 30"
+//    """
+//
+//}
+
+//combinedfilteredvcf_ch.into{vcftodenovo;vcftorecessive}
+merged_vcf_ch.into{vcftodenovo;vcftorecessive}
+process SelectVariantsdenovo {
+
+        tag "$family"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+        analysis_ch = channel.value("denovo")
+        maxForks 1
+	container "docker://broadinstitute/gatk"
+	
+        input:
+        tuple val(family), file(vcfgz), file(vcfgztbi) from vcftodenovo
+        path genome from params.genome
+        path index from params.genomefai
+        path dict from params.genomedict
+        path ped from params.ped
+        path mask from params.mask
+        val y from analysis_ch
+
+        output:
+        tuple val(family), val(y), file("${family}.denovo.vcf.gz"), file("${family}.denovo.vcf.gz.tbi") into denovovcf_ch
+
+        """
+        gatk SelectVariants -V $vcfgz -ped $ped -R $genome -XL $mask --exclude-filtered false --mendelian-violation true --mendelian-violation-qual-threshold 30 --remove-unused-alternates false -O ${family}.denovo.vcf.gz
+        """
+//exclude-filtered changed to false --remove-unused-alternates to false  --restrict-alleles-to BIALLELIC (removed)
+}
+
+process SelectVariantsAR {
+
+
+        tag "$family"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+        analysis_ch = channel.value("AR")
+        maxForks 1
+	container "docker://broadinstitute/gatk"
+		
+        input:
+        tuple val(family), file(vcfgz), file(vcfgztbi) from vcftorecessive
+        path genome from params.genome
+        path index from params.genomefai
+        path dict from params.genomedict
+        path ped from params.ped
+        path mask from params.mask
+        val z from analysis_ch
+
+        output:
+        tuple val(family), val(z), file("${family}.recessive.vcf.gz"), file("${family}.recessive.vcf.gz.tbi") into recessivevcf_ch
+
+        """
+        gatk SelectVariants -V $vcfgz -ped $ped -R $genome -XL $mask --mendelian-violation true --exclude-filtered true --invert-mendelian-violation true --mendelian-violation-qual-threshold 30  --remove-unused-alternates true  --restrict-alleles-to BIALLELIC -O ${family}.recessive.vcf.gz
+        """
+}
+
+//process gatkannotate {
+//
+//        tag "$family"
+//		container "docker://broadinstitute/gatk"
+//		
+  //      storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+//
+//
+  //      input:
+    //    tuple val(family), val(y), file(denovovcfgz), file(denovovcfgztbi) from denovovcf_ch
+//        path genome from params.genome
+//        path index from params.genomefai
+//        path dict from params.genomedict
+//        path ped from params.ped
+//
+//        output:
+//        tuple val(family), val(y), file("${family}.denovo.gatk.vcf.gz"), file ("${family}.denovo.gatk.vcf.gz.tbi") into denovogatkvcf_ch
+//
+//        """
+//        gatk VariantAnnotator -A TandemRepeat -A PossibleDeNovo -R $genome -V $denovovcfgz -O ${family}.denovo.temp.gatk.vcf.gz -ped $ped
+//        gatk SelectVariants -V  ${family}.denovo.temp.gatk.vcf.gz -O  ${family}.denovo.gatk.vcf.gz -select 'vc.hasAttribute("hiConfDeNovo")'
+//        """
+//
+//}
+
+denovovcf_ch.join(recessivevcf_ch).set{joined_ch}
+
+process annotate {
+        tag "$family"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+        cpus 10
+        maxForks 1
+// change input names for gz and gztbi
+        input:
+        tuple val(family), val(denovo), file(denovogatkfvcfgz),file(denovovcfgatkfgztbi),val(AR), file(ARgatkfvcfgz),file(ARvcfgatkfgztbi) from joined_ch
+        output:
+        tuple val(family), val(denovo), file("${family}.denovo.hg38_multianno.vcf"),file("${family}.denovo.hg38_multianno.txt") into annotated_denovo_ch
+        tuple val(family), val(AR), file("${family}.AR.hg38_multianno.vcf") ,file("${family}.AR.hg38_multianno.txt") into annotated_AR_ch
+        """
+        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread 10 -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread 10 -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        """
+}
+
+process subset {
+
+        tag "$family"
+        storeDir "/mnt/hdd2/data/lau/phd/FNRCP/tempstorage/${family}"
+
+        input:
+        tuple val(family), val(AR), file(ARannotatedVCF), file(ARannotatedTXT) from annotated_AR_ch
+
+        """
+        cat $ARannotatedTXT | awk '\$12 < 0.00002 || NR==1' >  ${family}.${AR}.subset.txt
         """
 
 }
