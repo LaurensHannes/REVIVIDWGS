@@ -60,9 +60,11 @@ process pear {
 }
  process alignment {
 
-		time '2h'
+		time '30m'
         maxForks 3
-        tag "$id"
+		memory '8 GB'
+        cpus 36
+		tag "$id"
 
         indexes_ch = Channel.fromPath(params.indexes)
 
@@ -115,6 +117,7 @@ process genotype {
 
         tag "$id"
 		cpus 4
+	
 
         input:
         tuple val(id), path(bams) from mergedbam1_ch
