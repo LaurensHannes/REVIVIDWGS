@@ -61,7 +61,6 @@ process pear {
  process alignment {
 
 		time '30m'
-        maxForks 3
 		memory '8 GB'
         cpus 36
 		tag "$id"
