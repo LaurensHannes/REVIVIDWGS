@@ -94,8 +94,7 @@ mapped_ch2.groupTuple().set{mappedgrouped_ch}
 process mergebams {
 
 	tag "$id"
-    cpus 54
-	memory '1 GB'
+    cpus 36
 	input:
 	tuple val(id),file(bams) from mappedgrouped_ch
 		
