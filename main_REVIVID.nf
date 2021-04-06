@@ -53,7 +53,7 @@ process pear {
         tuple val(id), val(lane), file('*.assembled.fastq'),file('*.forward.fastq'), file('*.reverse.fastq') into paired_ch
 
         """
-        pear -v 0 -f $R1 -r $R2 -o $lane
+        pear -j ${task.cpus} -v 0 -f $R1 -r $R2 -o $lane
         """
 }
  process alignment {
@@ -76,11 +76,11 @@ process pear {
         tuple val(x), file('*.indexed.bam') into mapped_ch
 
         """
-        bwa mem -r 0.5 -t 4 $genome $assembled | samtools view -@ 4 -bS > ${x}.assembled.unsorted.bam
-        bwa mem -r 0.5 -t 4 $genome $forward | samtools view -@ 4 -bS > ${x}.forward.unsorted.bam
-        bwa mem -r 0.5 -t 4 $genome $reverse | samtools view -@ 4 -bS > ${x}.reverse.unsorted.bam
-        samtools merge -@ 4 ${x}.indexed.unsorted.bam  ${x}.assembled.unsorted.bam ${x}.forward.unsorted.bam ${x}.reverse.unsorted.bam
-        samtools sort -@ 4 -o ${x}.indexed.bam ${x}.indexed.unsorted.bam
+        bwa mem -r 0.5 -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${x}.assembled.unsorted.bam
+        bwa mem -r 0.5 -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${x}.forward.unsorted.bam
+        bwa mem -r 0.5 -t ${task.cpus} $genome $reverse | samtools view -@ ${task.cpus} -bS > ${x}.reverse.unsorted.bam
+        samtools merge -@ ${task.cpus} ${x}.indexed.unsorted.bam  ${x}.assembled.unsorted.bam ${x}.forward.unsorted.bam ${x}.reverse.unsorted.bam
+        samtools sort -@ ${task.cpus} -o ${x}.indexed.bam ${x}.indexed.unsorted.bam
         """
 }
 
