@@ -78,13 +78,21 @@ process pear {
 
         input:
         tuple val(id), val(lane),file(R1), file(R2) from temp_ch1
+		path home from params.home
 		
         output:
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq") into paired_ch
 
         """
-        pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
-        """
+		if [[ -f $home/tempstorage/${id}/${lane}*.fastq]] || [[ -f $home/tempstorage/${id}/${lane}.indexed.bam]] || [[ -f $home/tempstorage/${id}/${id}.bam]]
+		then 
+		echo "done" > ${lane}.assembled.fastq
+		echo "done" > ${lane}.unassembled.forward.fastq
+		echo "done" > ${lane}.unassembled.reverse.fastq
+		else
+		pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
+        fi
+		"""
 }
  process alignment {
 
@@ -106,6 +114,10 @@ process pear {
         tuple val(id), file("${lane}.indexed.bam") into mapped_ch
 
         """
+		if [[ -f $home/tempstorage/${id}/${lane}.indexed.bam]] || [[ -f $home/tempstorage/${id}/${id}.bam]]
+		then
+		echo "done" > ${lane}.indexed.bam
+		else
         bwa mem -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${lane}.assembled.bam
         bwa mem -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${lane}.forward.bam
         bwa mem -t ${task.cpus} $genome $reverse | samtools view -@ ${task.cpus} -bS > ${lane}.reverse.bam
@@ -113,6 +125,7 @@ process pear {
         samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam ${lane}.indexed.unsorted.bam
 		rm  ${lane}.assembled.bam  ${lane}.forward.bam ${lane}.reverse.bam  ${lane}.indexed.unsorted.bam
 		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}*.fastq
+		fi
         """
 }
 
@@ -146,7 +159,7 @@ process duplicates {
 
         tag "$id"
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-
+		memory '32 GB'
 
 	input:
 	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
