@@ -63,7 +63,7 @@ process importfastq {
         """
 }
 
-fastqgz_ch.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().set{gzipped_ch}
+fastqgz_ch.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 gzipped_ch.into{temp_ch1;temp_ch2}
 temp_ch2.view()
 
@@ -77,8 +77,8 @@ process pear {
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
         input:
-        tuple val(id), val(lane),file(R1), file(R2) from temp_ch1.flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}
-
+        tuple val(id), val(lane),file(R1), file(R2) from temp_ch1
+		
         output:
         tuple val(id), val(lane), file('*.assembled.fastq'),file('*.forward.fastq'), file('*.reverse.fastq') into paired_ch
 
