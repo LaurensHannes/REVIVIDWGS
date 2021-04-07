@@ -132,8 +132,7 @@ process duplicates {
 	"""
 	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
 	gatk AddOrReplaceReadGroups -I ${id}.dups.bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id --MAX_RECORDS_IN_RAM 20000000
-	samtools index ${id}.dups.RG.bam
-	rm ${id}.dups.bam 
+	samtools index ${id}.dups.RG.bam 
 	
 	"""
 }
