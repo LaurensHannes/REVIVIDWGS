@@ -37,10 +37,33 @@ Channel.fromList(ids).map { it -> [it, familymap[it]] }into{ idfamily_ch1; idfam
 
 
 
+
+
+process importfastq {
+        tag "$id"
+      container "docker://google/cloud-sdk:latest"
+        maxForks 1
+        errorStrategy 'retry'
+         maxErrors 10
+
+        input:
+        tuple val(id),val(family) from idfamily_ch1
+        path home from params.home
+
+        output:
+         path "$home/FASTQ/$family/$id/*.fastq.gz" into fastqgz_ch
+
+        """
+        [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
+        [ ! -d "$home/FASTQ/$family" ] && mkdir "$home/FASTQ/$family"
+        [ ! -d "$home/FASTQ/$family/$id" ] && mkdir "$home/FASTQ/$family/$id"
+        gsutil cp -prn gs://gcpi-rkjbr/GC085/$id/uploads/$id.*.fastq.gz $home/FASTQ/$family/$id/
+        """
+}
+
 fastqgz_ch.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().set{gzipped_ch}
 gzipped_ch.into{temp_ch1;temp_ch2}
 temp_ch2.view()
-
 
 process pear {
 
@@ -49,8 +72,7 @@ process pear {
 		memory '2 GB'
         errorStrategy 'retry'
         maxRetries 3
-
- //       publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/paired'
+		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
         input:
         tuple val(id), val(lane),file(R1), file(R2) from temp_ch1.flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}
@@ -69,9 +91,9 @@ process pear {
         cpus 36
 		tag "$id"
 
+		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
         indexes_ch = Channel.fromPath(params.indexes)
 
-//        publishDir '/staging/Leuven/stg_00086/Laurens/FNRCP/mapped'
 
         input:
         tuple val(id),val(lane), file(assembled), file(forward), file(reverse) from paired_ch
@@ -88,6 +110,8 @@ process pear {
         bwa mem -r 0.5 -t ${task.cpus} $genome $reverse | samtools view -@ ${task.cpus} -bS > ${lane}.reverse.unsorted.bam
         samtools merge -@ ${task.cpus} ${lane}.indexed.unsorted.bam  ${lane}.assembled.unsorted.bam ${lane}.forward.unsorted.bam ${lane}.reverse.unsorted.bam
         samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam ${lane}.indexed.unsorted.bam
+		rm  ${lane}.assembled.bam  ${lane}.forward.bam ${lane}.reverse.bam  ${lane}.indexed.unsorted.bam
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}*.fastq
         """
 }
 
@@ -101,7 +125,8 @@ process mergebams {
     cpus 36
 	input:
 	tuple val(id),file(bams) from mappedgrouped_ch
-		
+	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+	
 	output:
 	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") into mergedbam_ch
 
@@ -119,7 +144,7 @@ mergedbam2_ch.view()
 process duplicates { 
 
         tag "$id"
-
+		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
 
 	input:
@@ -133,7 +158,7 @@ process duplicates {
 	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
 	gatk AddOrReplaceReadGroups -I ${id}.dups.bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id --MAX_RECORDS_IN_RAM 20000000
 	samtools index ${id}.dups.RG.bam 
-	
+	rm ${id}.dups.bam 
 	"""
 }
 
