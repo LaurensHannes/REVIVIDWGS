@@ -42,7 +42,7 @@ Channel.fromList(ids).map { it -> [it, familymap[it]] }into{ idfamily_ch1; idfam
 process importfastq {
         tag "$id"
       container "docker://laurenshannes/gsutil"
-        maxForks 1
+   
         errorStrategy 'retry'
          maxErrors 10
 
@@ -57,7 +57,7 @@ process importfastq {
         [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
         [ ! -d "$home/FASTQ/$family" ] && mkdir "$home/FASTQ/$family"
         [ ! -d "$home/FASTQ/$family/$id" ] && mkdir "$home/FASTQ/$family/$id"
-        gsutil cp -prn gs://gcpi-rkjbr/GC085/$id/uploads/$id.*.fastq.gz $home/FASTQ/$family/$id/
+        gsutil cp -prnm gs://gcpi-rkjbr/GC085/$id/uploads/$id.*.fastq.gz $home/FASTQ/$family/$id/
         """
 }
 
