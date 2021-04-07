@@ -15,7 +15,7 @@ params.snps ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v
 params.snpsindex  ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi'
 params.indels = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz'
 params.indelsindex = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi'
-fastqgz_ch = channel.fromPath(params.fastqgz)
+//fastqgz_ch = channel.fromPath(params.fastqgz)
 
 //script
 
