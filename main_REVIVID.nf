@@ -31,7 +31,7 @@ while( line = myReader.readLine() ) {
 }
 myReader.close()
 
-Channel.fromList(ids).map { it -> [it, familymap[it] }into{ idfamily_ch1; idfamily_ch2; idfamily_ch3; idfamily_ch4; idfamily_ch5 }
+Channel.fromList(ids).map { it -> [it, familymap[it]] }into{ idfamily_ch1; idfamily_ch2; idfamily_ch3; idfamily_ch4; idfamily_ch5 }
 
 //processes
 
