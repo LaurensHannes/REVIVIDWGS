@@ -80,7 +80,7 @@ process pear {
         tuple val(id), val(lane),file(R1), file(R2) from temp_ch1
 		
         output:
-        tuple val(id), val(lane), file('*.assembled.fastq'),file('*.forward.fastq'), file('*.reverse.fastq') into paired_ch
+        tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq") into paired_ch
 
         """
         pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
