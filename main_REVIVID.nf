@@ -41,7 +41,7 @@ Channel.fromList(ids).map { it -> [it, familymap[it]] }into{ idfamily_ch1; idfam
 
 process importfastq {
         tag "$id"
-      container "docker://google/cloud-sdk:latest"
+      container "docker://laurenshannes/gsutil"
         maxForks 1
         errorStrategy 'retry'
          maxErrors 10
