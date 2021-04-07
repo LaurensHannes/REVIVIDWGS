@@ -88,9 +88,8 @@ process pear {
 }
  process alignment {
 
-		time '30m'
-		memory '8 GB'
-        cpus 36
+		time '45m'
+		memory '16 GB'
 		tag "$id"
 
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
@@ -104,7 +103,7 @@ process pear {
         path home from params.home
 
         output:
-        tuple val(id), file('*.indexed.bam') into mapped_ch
+        tuple val(id), file("${lane}.indexed.bam") into mapped_ch
 
         """
         bwa mem -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${lane}.assembled.bam
