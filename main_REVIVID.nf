@@ -189,8 +189,9 @@ process duplicates {
         tag "$id"
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 		memory '128 GB'
-
-	input:
+		cpus 36
+		
+	input:'
 	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
 
 	output:
