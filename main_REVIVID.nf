@@ -178,8 +178,8 @@ process generateCRAM {
 		tuple val(id),file("${id}.cram"),file("${id}.cram.crai") into mergedcram_ch
 		
 		"""
-		samtools view -C -o ${id}.cram -T $genome $bam 
-		samtools index -c ${id}.cram
+		samtools view -@ ${task.cpus} -C -o ${id}.cram -T $genome $bam 
+		samtools index -@ ${task.cpus} -c ${id}.cram
 		"""
 		
 }
