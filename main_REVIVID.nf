@@ -146,7 +146,7 @@ process readgroups {
 
 
 	"""
-	gatk AddOrReplaceReadGroups -I $bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
+	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
 	"""
 
 }
@@ -156,7 +156,7 @@ mapped_RG_ch.groupTuple().set{mappedgrouped_ch}
 process mergebams {
 
 	tag "$id"
-    cpus 36
+    cpus 6
 	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 	
 	input:
@@ -174,7 +174,7 @@ process mergebams {
 	    echo "done" > ${id}.bam.bai
 		else
 	samtools merge -@ ${task.cpus} ${id}.bam $bams
-	samtools index ${id}.bam
+	samtools index -@ ${task.cpus} ${id}.bam
 	fi
 	"""
 
