@@ -151,9 +151,29 @@ process mergebams {
 
 }
 
-//process duplicates { }
+
 mergedbam_ch.into{mergedbam1_ch;mergedbam2_ch}
-mergedbam2_ch.view()
+
+
+process generateCRAM {
+
+	tag "$id"
+		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+		
+		input:
+		tuple val(id),file(bam),file(bai) from mergedbam2_ch
+		path genome from params.genome
+        path faidx from params.genomefai
+				
+		output:
+		tuple val(id),file("${id}.cram"),file("${id}.cram.crai") into mergedcram_ch
+		
+		"""
+		samtools view -C -o ${id}.cram -T $genome $bam 
+		samtools index -c ${id}.cram
+		"""
+		
+}
 
 process duplicates { 
 
@@ -165,18 +185,35 @@ process duplicates {
 	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
 
 	output:
-	tuple val(id),file("${id}.dups.RG.bam"),file("${id}.dups.RG.bam.bai") into merged_dups_ch
+	tuple val(id),file("${id}.dups.bam") into merged_dups_ch
 	tuple val(id),file("${id}.metrics.txt") into dup_metrics_ch
 
 	"""
 	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
-	gatk AddOrReplaceReadGroups -I ${id}.dups.bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id 
-	samtools index ${id}.dups.RG.bam 
-	rm ${id}.dups.bam 
 	"""
 }
 
-merged_dups_ch.into{mergedbam1_ch;mergedbam2_ch}
+process readgroups {
+
+	tag "$id"
+	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+
+	input:
+	tuple val(id),file(bam) from merged_dups_ch
+	
+	output:
+	tuple val(id),file("${id}.dups.RG.bam"),file("${id}.dups.RG.bam.bai") into merged_dupsRG_ch	
+		
+
+
+	"""
+	gatk AddOrReplaceReadGroups -I $bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id 
+	samtools index ${id}.dups.RG.bam 
+	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.dups.bam 
+	"""
+
+}
+merged_dupsRG_ch.into{mergedbam1_ch;mergedbam2_ch}
 
 
 process baserecalibrator {
@@ -218,7 +255,7 @@ process applyBQSR {
 
         """
         gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.recallibrated.bam
-	samtools index ${id}.recallibrated.bam
+		samtools index ${id}.recallibrated.bam
         """
 
 }
