@@ -65,7 +65,7 @@ process importfastq {
 
 fastqgz_ch.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 gzipped_ch.into{temp_ch1;temp_ch2}
-temp_ch2.view()
+//temp_ch2.view()
 
 process pear {
 
@@ -141,7 +141,7 @@ process readgroups {
 	tuple val(id), val(lane), file(bam) from mapped_ch
 	
 	output:
-	tuple val(id),file("${id}.dups.RG.bam") into mapped_RG_ch	
+	tuple val(id),file("${lane}.RG.bam") into mapped_RG_ch	
 		
 
 
