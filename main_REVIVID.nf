@@ -148,7 +148,7 @@ process mergebams {
 	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") into mergedbam_ch
 
 	"""
-	if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ]
+	if [ -f $home/tempstorage/${id}/${id}.bam ]
 		then
 		echo "done" > ${id}.bam
 	    echo "done" > ${id}.bam.bai
