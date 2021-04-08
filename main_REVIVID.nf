@@ -84,7 +84,7 @@ process pear {
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq") into paired_ch
 
         """
-		if [ -f $home/tempstorage/${id}/${lane}*.fastq] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam] || [ -f $home/tempstorage/${id}/${id}.bam]
+		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ]
 		then 
 		echo "done" > ${lane}.assembled.fastq
 		echo "done" > ${lane}.unassembled.forward.fastq
@@ -114,7 +114,7 @@ process pear {
         tuple val(id), file("${lane}.indexed.bam") into mapped_ch
 
         """
-		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam] || [ -f $home/tempstorage/${id}/${id}.bam]
+		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ]
 		then
 		echo "done" > ${lane}.indexed.bam
 		else
@@ -145,8 +145,14 @@ process mergebams {
 	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") into mergedbam_ch
 
 	"""
+	if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ]
+		then
+		echo "done" > ${id}.bam
+	    echo "done" > ${id}.bam.bai
+		else
 	samtools merge -@ ${task.cpus} ${id}.bam $bams
 	samtools index ${id}.bam
+	fi
 	"""
 
 }
