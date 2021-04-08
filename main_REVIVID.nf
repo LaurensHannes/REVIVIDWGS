@@ -111,7 +111,7 @@ process pear {
         path home from params.home
 
         output:
-        tuple val(id), file("${lane}.indexed.bam") into mapped_ch
+        tuple val(id), val(lane), file("${lane}.indexed.bam") into mapped_ch
 
         """
 		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ]
@@ -129,9 +129,28 @@ process pear {
         """
 }
 
-mapped_ch.into{mapped_ch1;mapped_ch2}
 
-mapped_ch2.groupTuple().set{mappedgrouped_ch}
+
+process readgroups {
+
+	tag "$id"
+	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+
+	input:
+	tuple val(id), val(lane), file(bam) from mapped_ch
+	
+	output:
+	tuple val(id),file("${id}.dups.RG.bam") into mapped_RG_ch	
+		
+
+
+	"""
+	gatk AddOrReplaceReadGroups -I $bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
+	"""
+
+}
+
+mapped_RG_ch.groupTuple().set{mappedgrouped_ch}
 
 process mergebams {
 
@@ -200,30 +219,12 @@ process duplicates {
 
 	"""
 	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
+	samtools index ${id}.dups.bam
 	"""
 }
 
-process readgroups {
 
-	tag "$id"
-	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-
-	input:
-	tuple val(id),file(bam) from merged_dups_ch
-	
-	output:
-	tuple val(id),file("${id}.dups.RG.bam"),file("${id}.dups.RG.bam.bai") into merged_dupsRG_ch	
-		
-
-
-	"""
-	gatk AddOrReplaceReadGroups -I $bam -O ${id}.dups.RG.bam -LB REVIVID -PL ILLUMINA -PU $id -SM $id 
-	samtools index ${id}.dups.RG.bam 
-	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.dups.bam 
-	"""
-
-}
-merged_dupsRG_ch.into{mergedbam1_ch;mergedbam2_ch}
+merged_dups_ch.into{mergedbam1_ch;mergedbam2_ch}
 
 
 process baserecalibrator {
