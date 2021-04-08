@@ -137,9 +137,12 @@ process mergebams {
 
 	tag "$id"
     cpus 36
+	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+	
 	input:
 	tuple val(id),file(bams) from mappedgrouped_ch
-	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+	path home from params.home
+
 	
 	output:
 	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") into mergedbam_ch
