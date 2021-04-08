@@ -191,7 +191,7 @@ process duplicates {
 		memory '128 GB'
 		cpus 36
 		
-	input:'
+	input:
 	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
 
 	output:
