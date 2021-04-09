@@ -211,7 +211,8 @@ process duplicates {
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 		memory '128 GB'
 		cpus 36
-		maxForks 1
+		disk '180 GB'
+		
 	input:
 	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
 
