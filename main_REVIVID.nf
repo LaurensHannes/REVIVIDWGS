@@ -210,7 +210,6 @@ process duplicates {
         tag "$id"
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 		memory '128 GB'
-		cpus 36
 		disk '200 GB'
 		scratch '/staging/leuven/stg_00086/Laurens/FNRCP/scratch'
 		
@@ -223,7 +222,7 @@ process duplicates {
 
 	"""
 	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
-	samtools index ${id}.dups.bam
+	samtools index -@ ${task.cpus} ${id}.dups.bam
 	"""
 }
 
