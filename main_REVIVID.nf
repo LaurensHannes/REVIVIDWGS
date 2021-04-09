@@ -141,17 +141,38 @@ process readgroups {
 	tuple val(id), val(lane), file(bam) from mapped_ch
 	
 	output:
-	tuple val(id),file("${lane}.RG.bam") into mapped_RG_ch	
+	tuple val(id),file("${lane}.RG.bam"),file("${lane}.RG.bam.bai") into mapped_RG_ch	
 		
 
 
 	"""
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
+	samtools index -@ ${task.cpus} ${id}.RG.bam
 	"""
 
 }
 
-mapped_RG_ch.groupTuple().set{mappedgrouped_ch}
+process duplicates { 
+
+        tag "$lane"
+		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+		memory '16 GB'
+		cpus 6
+
+		
+	input:
+	 tuple val(id),val(lane)file(bam),file(bai) from mapped_RG_ch
+
+	output:
+	tuple val(id),file("${lane}.dups.bam") into dups_ch
+	tuple val(id),file("${lane}.metrics.txt") into dup_metrics_ch
+
+	"""
+	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
+	"""
+}
+
+dups_ch.groupTuple().set{mappedgrouped_ch}
 
 process mergebams {
 
@@ -161,7 +182,7 @@ process mergebams {
 	time '2h'
 	
 	input:
-	tuple val(id),file(bams) from mappedgrouped_ch
+	tuple val(id),file(bams) from dups_ch
 	path home from params.home
 
 	
@@ -205,29 +226,29 @@ process generateCRAM {
 		
 }
 
-process duplicates { 
+//process duplicates { 
+//
+//        tag "$id"
+//		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+//		memory '128 GB'
+//		disk '200 GB'
+//		scratch '/staging/leuven/stg_00086/Laurens/FNRCP/scratch'
+//		
+	//input:
+	// tuple val(id),file(bam),file(bai) from mergedbam1_ch
+//
+//	output:
+//	tuple val(id),file("${id}.dups.bam") into merged_dups_ch
+//	tuple val(id),file("${id}.metrics.txt") into dup_metrics_ch
+//
+//	"""
+//	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
+//	samtools index -@ ${task.cpus} ${id}.dups.bam
+//	"""
+//}
 
-        tag "$id"
-		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-		memory '128 GB'
-		disk '200 GB'
-		scratch '/staging/leuven/stg_00086/Laurens/FNRCP/scratch'
-		
-	input:
-	 tuple val(id),file(bam),file(bai) from mergedbam1_ch
 
-	output:
-	tuple val(id),file("${id}.dups.bam") into merged_dups_ch
-	tuple val(id),file("${id}.metrics.txt") into dup_metrics_ch
-
-	"""
-	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
-	samtools index -@ ${task.cpus} ${id}.dups.bam
-	"""
-}
-
-
-merged_dups_ch.into{mergedbam1_ch;mergedbam2_ch}
+//merged_dups_ch.into{mergedbam1_ch;mergedbam2_ch}
 
 
 process baserecalibrator {
