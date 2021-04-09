@@ -161,7 +161,7 @@ process duplicates {
 
 		
 	input:
-	 tuple val(id),val(lane)file(bam),file(bai) from mapped_RG_ch
+	 tuple val(id),val(lane),file(bam),file(bai) from mapped_RG_ch
 
 	output:
 	tuple val(id),file("${lane}.dups.bam") into dups_ch
