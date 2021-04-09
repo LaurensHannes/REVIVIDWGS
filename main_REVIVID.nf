@@ -167,6 +167,7 @@ process duplicates {
 	tuple val(id),file("${lane}.dups.bam") into dups_ch
 	tuple val(id),file("${lane}.metrics.txt") into dup_metrics_ch
 
+	
 	"""
 	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
 	"""
@@ -182,7 +183,7 @@ process mergebams {
 	time '2h'
 	
 	input:
-	tuple val(id),file(bams) from dups_ch
+	tuple val(id),file(bams) from mappedgrouped_ch
 	path home from params.home
 
 	
