@@ -147,7 +147,7 @@ process readgroups {
 
 	"""
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
-	samtools index -@ ${task.cpus} ${id}.RG.bam
+	samtools index -@ ${task.cpus} ${lane}.RG.bam
 	"""
 
 }
