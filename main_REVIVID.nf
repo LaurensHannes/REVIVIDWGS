@@ -213,7 +213,7 @@ process generateCRAM {
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 		
 		input:
-		tuple val(id),file(bam),file(bai) from mergedbam2_ch
+		tuple val(id),file(bam),file(bai) from mergedbam1_ch
 		path genome from params.genome
         path faidx from params.genomefai
 				
