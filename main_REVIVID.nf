@@ -141,7 +141,7 @@ process readgroups {
 	tuple val(id), val(lane), file(bam) from mapped_ch
 	
 	output:
-	tuple val(id),file("${lane}.RG.bam"),file("${lane}.RG.bam.bai") into mapped_RG_ch	
+	tuple val(id),val(lane), file("${lane}.RG.bam"),file("${lane}.RG.bam.bai") into mapped_RG_ch	
 		
 
 
