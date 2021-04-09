@@ -204,7 +204,7 @@ process mergebams {
 }
 
 
-mergedbam_ch.into{mergedbam1_ch;mergedbam2_ch}
+mergedbam_ch.into{mergedbam1_ch;mergedbam2_ch;mergedbam3_ch}
 
 
 process generateCRAM {
@@ -258,7 +258,7 @@ process baserecalibrator {
 
 
         input:
-        tuple val(id), file(merged), file(bai) from mergedbam1_ch
+        tuple val(id), file(merged), file(bai) from mergedbam2_ch
         path genome from params.genome
        path faidx from params.genomefai
         path dict from params.genomedict
@@ -279,7 +279,7 @@ process applyBQSR {
        
 
         input:
-        tuple val(id), file(bam), file(bai) from mergedbam2_ch
+        tuple val(id), file(bam), file(bai) from mergedbam3_ch
         path genome from params.genome
         path table from recal_data_ch
 	path faidx from params.genomefai
