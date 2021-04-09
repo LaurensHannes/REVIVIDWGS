@@ -158,6 +158,7 @@ process mergebams {
 	tag "$id"
     cpus 6
 	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+	time '90m'
 	
 	input:
 	tuple val(id),file(bams) from mappedgrouped_ch
