@@ -255,7 +255,9 @@ process generateCRAM {
 process baserecalibrator {
 
 	tag "$id"
-
+	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+	cpus 2	
+	time '10h'
 
         input:
         tuple val(id), file(merged), file(bai) from mergedbam2_ch
@@ -300,7 +302,7 @@ process applyBQSR {
 process genotype {
 
         tag "$id"
-  
+		time '3h'
 
         input:
         tuple val(id), file(bams),file(bai) from BQSR_applied_ch
