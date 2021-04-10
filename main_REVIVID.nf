@@ -259,6 +259,7 @@ process baserecalibrator {
 	cpus 2	
 	time '10h'
 	container "docker://broadinstitute/gatk"
+	memory '64 GB'
 
         input:
         tuple val(id), file(merged), file(bai) from mergedbam2_ch
