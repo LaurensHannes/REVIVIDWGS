@@ -320,7 +320,7 @@ process genotype {
 		container "docker://broadinstitute/gatk"
 
         input:
-        tuple val(id), file(bams),file(bai) from BQSR_applied_ch
+        tuple val(id), file(bam),file(bai) from BQSR_applied_ch
         path genome from params.genome
         path dict from params.genomedict
 //        path index from params.indexes
@@ -331,7 +331,7 @@ process genotype {
         tuple val(id), file("${id}.vcf") into vcf_uncallibrated_ch
 
         """
-        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I ${id}.RG.bam -O ${id}.vcf --sequence-dictionary ${dict} --native-pair-hmm-threads ${task.cpus}
+        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I $bam -O ${id}.vcf --sequence-dictionary ${dict} --native-pair-hmm-threads ${task.cpus}
         """
 
 }
