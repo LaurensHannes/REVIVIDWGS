@@ -398,7 +398,7 @@ process mergevcf {
 	tuple val(family), path("${family}.vcf.gz"), path("${family}.vcf.gz.tbi") into merged_vcf_ch
 	
 """
-	bcftools merge -o ${family}.vcf.gz -O z --threads 4 $vcf 
+	bcftools merge -o ${family}.vcf.gz -O z --threads ${task.cpus} $vcf 
 	tabix ${family}.vcf.gz
 """
 
@@ -518,8 +518,8 @@ process annotate {
         tuple val(family), val(denovo), file("${family}.denovo.hg38_multianno.vcf"),file("${family}.denovo.hg38_multianno.txt") into annotated_denovo_ch
         tuple val(family), val(AR), file("${family}.AR.hg38_multianno.vcf") ,file("${family}.AR.hg38_multianno.txt") into annotated_AR_ch
         """
-        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread 10 -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
-        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread 10 -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
         """
 }
 
