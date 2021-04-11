@@ -180,7 +180,9 @@ process mergebams {
 	tag "$id"
     cpus 6
 	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-	time '2h'
+			 time { 2.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
 	
 	input:
 	tuple val(id),file(bams) from mappedgrouped_ch
@@ -257,7 +259,9 @@ process baserecalibrator {
 	tag "$id"
 	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 	cpus 2	
-	time '10h'
+			 time { 5.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
 	container "docker://broadinstitute/gatk"
 	memory '64 GB'
 
@@ -281,7 +285,10 @@ process applyBQSR {
 
         tag "$id"
        	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-
+		 time { 3.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
+		cpus 4
 
 
         input:
@@ -297,7 +304,7 @@ process applyBQSR {
 
         """
         gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.recallibrated.bam
-		samtools index ${id}.recallibrated.bam
+		samtools index -@ ${task.cpus} ${id}.recallibrated.bam
         """
 
 }
@@ -306,7 +313,9 @@ process applyBQSR {
 process genotype {
 
         tag "$id"
-		time '3h'
+		 time { 3.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
 		container "docker://broadinstitute/gatk"
 
         input:
