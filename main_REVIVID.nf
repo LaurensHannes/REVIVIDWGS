@@ -285,7 +285,7 @@ process applyBQSR {
 
         tag "$id"
        	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-		 time { 3.hour * task.attempt }
+		 time { 5.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		cpus 4
