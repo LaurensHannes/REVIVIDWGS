@@ -258,12 +258,12 @@ process baserecalibrator {
 
 	tag "$id"
 	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-	cpus 2	
-			 time { 5.hour * task.attempt }
-		 errorStrategy 'retry' 
-		maxRetries 3
+	cpus 4	
+	time { 5.hour * task.attempt }
+	errorStrategy 'retry' 
+	maxRetries 3
 	container "docker://broadinstitute/gatk"
-	memory '64 GB'
+	memory { 32.GB * task.attempt }
 
         input:
         tuple val(id), file(merged), file(bai) from mergedbam2_ch
