@@ -274,7 +274,7 @@ process baserecalibrator {
         path snpsindex from params.snpsindex
 
         output:
-        path "${id}.recal_data.table" into recal_data_ch
+        tuple val(id), file(merged), file(bai), file("${id}.recal_data.table") into recal_data_ch
 
         """
         gatk BaseRecalibrator -I $merged -R $genome -O ${id}.recal_data.table --known-sites $snps --verbosity WARNING
@@ -292,9 +292,10 @@ process applyBQSR {
 
 
         input:
-        tuple val(id), file(bam), file(bai) from mergedbam3_ch
+        //tuple val(id), file(bam), file(bai) from mergedbam3_ch
+		tuple val(id), file(bam), file(bai), file(table) from recal_data_ch
         path genome from params.genome
-        path table from recal_data_ch
+     //   path table from recal_data_ch
 	path faidx from params.genomefai
         path dict from params.genomedict
 
