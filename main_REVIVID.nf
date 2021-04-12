@@ -6,7 +6,7 @@ params.genome ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38
 params.genomefai ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta.fai'
 params.genomedict ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.dict'
 params.indexes = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta.*'
-params.ped ='/staging/leuven/stg_00086/Laurens/REVIVID/F1.ped'
+params.ped ='/staging/leuven/stg_00086/Laurens/REVIVID/FNRCP.ped'
 params.mask ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/mask.bed'
 params.home ='/staging/leuven/stg_00086/Laurens/FNRCP'
 params.maskrepeats ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/repeats.bed'
@@ -57,7 +57,10 @@ process importfastq {
 
         """
         [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
+		[ ! -d "$home/tempstorage" ] && mkdir "$home/tempstorage"
         [ ! -d "$home/FASTQ/$family" ] && mkdir "$home/FASTQ/$family"
+		[ ! -d "$home/tempstorage/$id" ] && mkdir "$home/tempstorage/$id"
+		[ ! -d "$home/tempstorage/$family" ] && mkdir "$home/tempstorage/$family"
         [ ! -d "$home/FASTQ/$family/$id" ] && mkdir "$home/FASTQ/$family/$id"
         gsutil cp -prn gs://gcpi-rkjbr/GC085/$id/uploads/$id.*.fastq.gz $home/FASTQ/$family/$id/
         """
@@ -84,7 +87,7 @@ process pear {
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq") into paired_ch
 
         """
-		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ]
+		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
 		then 
 		echo "done" > ${lane}.assembled.fastq
 		echo "done" > ${lane}.unassembled.forward.fastq
@@ -114,7 +117,7 @@ process pear {
         tuple val(id), val(lane), file("${lane}.indexed.bam") into mapped_ch
 
         """
-		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ]
+		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
 		then
 		echo "done" > ${lane}.indexed.bam
 		else
@@ -148,6 +151,7 @@ process readgroups {
 	"""
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
 	samtools index -@ ${task.cpus} ${lane}.RG.bam
+	echo "done" > $bam
 	"""
 
 }
@@ -170,6 +174,8 @@ process duplicates {
 	
 	"""
 	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
+	echo "done" > $bam
+	echo "done" > $bai
 	"""
 }
 
@@ -193,7 +199,7 @@ process mergebams {
 	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") into mergedbam_ch
 
 	"""
-	if [ -f $home/tempstorage/${id}/${id}.bam ]
+	if [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
 		then
 		echo "done" > ${id}.bam
 	    echo "done" > ${id}.bam.bai
@@ -206,7 +212,7 @@ process mergebams {
 }
 
 
-mergedbam_ch.into{mergedbam1_ch;mergedbam2_ch;mergedbam3_ch}
+mergedbam_ch.into{mergedbam1_ch;mergedbam2_ch}
 
 
 process generateCRAM {
@@ -221,6 +227,7 @@ process generateCRAM {
 				
 		output:
 		tuple val(id),file("${id}.cram"),file("${id}.cram.crai") into mergedcram_ch
+		tuple val(id),file(bam),file(bai) into mergedbam3_ch
 		
 		"""
 		samtools view -@ ${task.cpus} -C -o ${id}.cram -T $genome $bam 
@@ -306,18 +313,27 @@ process applyBQSR {
         """
         gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.recallibrated.bam
 		samtools index -@ ${task.cpus} ${id}.recallibrated.bam
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam.bai
+		
         """
 
 }
 
 
+
+		
+
+
 process genotype {
 
         tag "$id"
-		 time { 3.hour * task.attempt }
+		 time { 10.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
+	memory { 8.GB * task.attempt }
+	       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+
 
         input:
         tuple val(id), file(bam),file(bai) from BQSR_applied_ch
@@ -339,6 +355,7 @@ process genotype {
 process variantrecalibration {
 
 	tag "$id"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
 	container "docker://broadinstitute/gatk"
 
@@ -367,6 +384,7 @@ process variantrecalibration {
 process compressandindex {
 
 	tag "$id"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
 
 input:
@@ -389,6 +407,7 @@ individual_vcf_for_merge_ch2.view()
 process mergevcf {
 
 	tag "$family"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
 
 
@@ -435,6 +454,7 @@ merged_vcf_ch.into{vcftodenovo;vcftorecessive}
 process SelectVariantsdenovo {
 
         tag "$family"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
         analysis_ch = channel.value("denovo")
 
@@ -461,6 +481,7 @@ process SelectVariantsAR {
 
 
         tag "$family"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
         analysis_ch = channel.value("AR")
 
@@ -511,6 +532,7 @@ denovovcf_ch.join(recessivevcf_ch).set{joined_ch}
 
 process annotate {
         tag "$family"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
 // change input names for gz and gztbi
         input:
@@ -527,6 +549,7 @@ process annotate {
 process subset {
 
         tag "$family"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
 
         input:
