@@ -73,8 +73,9 @@ gzipped_ch.into{temp_ch1;temp_ch2}
 process pear {
 
         tag "$lane"
-        time '30m'
+        time '1h'
 		memory '2 GB'
+		cpus 9
         errorStrategy 'retry'
         maxRetries 3
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
