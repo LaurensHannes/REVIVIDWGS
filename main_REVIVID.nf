@@ -44,10 +44,10 @@ process importfastq {
       container "docker://laurenshannes/gsutil"
    
 		cpus 4
-		memory '16GB'
         errorStrategy 'retry'
-         maxErrors 10
-
+         maxErrors 3
+		disk { 50.GB * task.attempt }
+		memory { 16.GB * task.attempt }
         input:
         tuple val(id),val(family) from idfamily_ch1
         path home from params.home
