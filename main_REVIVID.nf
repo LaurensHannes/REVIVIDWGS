@@ -538,7 +538,8 @@ denovovcf_ch.join(recessivevcf_ch).set{joined_ch}
 process annotate {
         tag "$family"
        	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-
+		cpus 36
+		
 // change input names for gz and gztbi
         input:
         tuple val(family), val(denovo), file(denovogatkfvcfgz),file(denovovcfgatkfgztbi),val(AR), file(ARgatkfvcfgz),file(ARvcfgatkfgztbi) from joined_ch
@@ -546,8 +547,8 @@ process annotate {
         tuple val(family), val(denovo), file("${family}.denovo.hg38_multianno.vcf"),file("${family}.denovo.hg38_multianno.txt") into annotated_denovo_ch
         tuple val(family), val(AR), file("${family}.AR.hg38_multianno.vcf") ,file("${family}.AR.hg38_multianno.txt") into annotated_AR_ch
         """
-        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
-        perl /mnt/hdd/data/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /mnt/hdd/data/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
         """
 }
 
