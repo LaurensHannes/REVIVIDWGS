@@ -100,9 +100,13 @@ process pear {
 }
  process alignment {
 
-		time '45m'
-		memory '16 GB'
+		
+		memory { 8.GB * task.attempt }
 		tag "$lane"
+			 time { 1.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
+
 
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
         indexes_ch = Channel.fromPath(params.indexes)
