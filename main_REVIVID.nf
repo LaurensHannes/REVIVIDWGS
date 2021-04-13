@@ -90,9 +90,9 @@ process pear {
         """
 		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
 		then 
-		echo "done" > ${lane}.assembled.fastq
-		echo "done" > ${lane}.unassembled.forward.fastq
-		echo "done" > ${lane}.unassembled.reverse.fastq
+		rm ${lane}.assembled.fastq
+		rm ${lane}.unassembled.forward.fastq
+		rm ${lane}.unassembled.reverse.fastq
 		else
 		pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
         fi
@@ -124,7 +124,7 @@ process pear {
         """
 		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
 		then
-		echo "done" > ${lane}.indexed.bam
+		rm ${lane}.indexed.bam
 		else
         bwa mem -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${lane}.assembled.bam
         bwa mem -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${lane}.forward.bam
@@ -156,7 +156,7 @@ process readgroups {
 	"""
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
 	samtools index -@ ${task.cpus} ${lane}.RG.bam
-	echo "done" > $bam
+	rm $bam
 	"""
 
 }
@@ -165,8 +165,10 @@ process duplicates {
 
         tag "$lane"
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-		memory '16 GB'
-		cpus 6
+        errorStrategy 'retry'
+         maxErrors 3
+		memory { 2.GB * task.attempt }
+		cpus 2
 
 		
 	input:
@@ -179,8 +181,8 @@ process duplicates {
 	
 	"""
 	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
-	echo "done" > $bam
-	echo "done" > $bai
+	rm $bam
+	rm $bai
 	"""
 }
 
@@ -201,7 +203,7 @@ process mergebams {
 
 	
 	output:
-	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") into mergedbam_ch
+	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") optional true into mergedbam_ch
 
 	"""
 	if [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
@@ -231,7 +233,7 @@ process generateCRAM {
         path faidx from params.genomefai
 				
 		output:
-		tuple val(id),file("${id}.cram"),file("${id}.cram.crai") into mergedcram_ch
+		tuple val(id),file("${id}.cram"),file("${id}.cram.crai") optional true into mergedcram_ch
 		tuple val(id),file(bam),file(bai) into mergedbam3_ch
 		
 		"""
@@ -241,26 +243,6 @@ process generateCRAM {
 		
 }
 
-//process duplicates { 
-//
-//        tag "$id"
-//		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-//		memory '128 GB'
-//		disk '200 GB'
-//		scratch '/staging/leuven/stg_00086/Laurens/FNRCP/scratch'
-//		
-	//input:
-	// tuple val(id),file(bam),file(bai) from mergedbam1_ch
-//
-//	output:
-//	tuple val(id),file("${id}.dups.bam") into merged_dups_ch
-//	tuple val(id),file("${id}.metrics.txt") into dup_metrics_ch
-//
-//	"""
-//	gatk MarkDuplicates -I $bam -O ${id}.dups.bam -M ${id}.metrics.txt
-//	samtools index -@ ${task.cpus} ${id}.dups.bam
-//	"""
-//}
 
 
 //merged_dups_ch.into{mergedbam1_ch;mergedbam2_ch}
@@ -547,8 +529,8 @@ process annotate {
         tuple val(family), val(denovo), file("${family}.denovo.hg38_multianno.vcf"),file("${family}.denovo.hg38_multianno.txt") into annotated_denovo_ch
         tuple val(family), val(AR), file("${family}.AR.hg38_multianno.vcf") ,file("${family}.AR.hg38_multianno.txt") into annotated_AR_ch
         """
-        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
-        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -thread ${task.cpus} -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -intronhgvs --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20210123,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -intronhgvs --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20210123,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
         """
 }
 
