@@ -56,7 +56,6 @@ process importfastq {
          path "$home/FASTQ/$family/$id/*.fastq.gz" into fastqgz_ch
 
         """
-
         [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
 		[ ! -d "$home/tempstorage" ] && mkdir "$home/tempstorage"
         [ ! -d "$home/FASTQ/$family" ] && mkdir "$home/FASTQ/$family"
@@ -82,7 +81,7 @@ process pear {
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
         input:
-        tuple val(id), val(lane),file(R1), file(R2)  from temp_ch1
+        tuple val(id), val(lane),file(R1), file(R2) from temp_ch1
 		path home from params.home
 		
         output:
