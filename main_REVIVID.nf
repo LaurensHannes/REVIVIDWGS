@@ -56,6 +56,7 @@ process importfastq {
          path "$home/FASTQ/$family/$id/*.fastq.gz" into fastqgz_ch
 
         """
+
         [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
 		[ ! -d "$home/tempstorage" ] && mkdir "$home/tempstorage"
         [ ! -d "$home/FASTQ/$family" ] && mkdir "$home/FASTQ/$family"
@@ -81,14 +82,14 @@ process pear {
 		storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
         input:
-        tuple val(id), val(lane),file(R1), file(R2) from temp_ch1
+        tuple val(id), val(lane),file(R1), file(R2) optional true from temp_ch1
 		path home from params.home
 		
         output:
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq") into paired_ch
 
         """
-		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
+		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then 
 		rm ${lane}.assembled.fastq
 		rm ${lane}.unassembled.forward.fastq
@@ -119,7 +120,7 @@ process pear {
         path home from params.home
 
         output:
-        tuple val(id), val(lane), file("${lane}.indexed.bam") into mapped_ch
+        tuple val(id), val(lane), file("${lane}.indexed.bam") optional true into mapped_ch
 
         """
 		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]
@@ -149,7 +150,7 @@ process readgroups {
 	tuple val(id), val(lane), file(bam) from mapped_ch
 	
 	output:
-	tuple val(id),val(lane), file("${lane}.RG.bam"),file("${lane}.RG.bam.bai") into mapped_RG_ch	
+	tuple val(id),val(lane), file("${lane}.RG.bam"),file("${lane}.RG.bam.bai") optional true into mapped_RG_ch	
 		
 
 
@@ -175,8 +176,8 @@ process duplicates {
 	 tuple val(id),val(lane),file(bam),file(bai) from mapped_RG_ch
 
 	output:
-	tuple val(id),file("${lane}.dups.bam") into dups_ch
-	tuple val(id),file("${lane}.metrics.txt") into dup_metrics_ch
+	tuple val(id),file("${lane}.dups.bam") optional true into dups_ch
+	tuple val(id),file("${lane}.metrics.txt") optional true into dup_metrics_ch
 
 	
 	"""
@@ -394,7 +395,7 @@ individual_vcf_for_merge_ch2.view()
 process mergevcf {
 
 	tag "$family"
-       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
 
 
 
@@ -441,7 +442,7 @@ merged_vcf_ch.into{vcftodenovo;vcftorecessive}
 process SelectVariantsdenovo {
 
         tag "$family"
-       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
 
         analysis_ch = channel.value("denovo")
 
@@ -468,7 +469,7 @@ process SelectVariantsAR {
 
 
         tag "$family"
-       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
 
         analysis_ch = channel.value("AR")
 
@@ -519,7 +520,7 @@ denovovcf_ch.join(recessivevcf_ch).set{joined_ch}
 
 process annotate {
         tag "$family"
-       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
 		cpus 36
 		
 // change input names for gz and gztbi
@@ -537,7 +538,7 @@ process annotate {
 process subset {
 
         tag "$family"
-       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
+       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
 
 
         input:
