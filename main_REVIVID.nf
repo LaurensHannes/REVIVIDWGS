@@ -381,7 +381,7 @@ output:
         tuple val(id), file("${id}.filtered.vcf.gz"), file("${id}.filtered.vcf.gz.tbi") into individual_vcfgz_ch
 
 """
-        bcftools view -o ${id}.filtered.vcf.gz -O z ${id}.filtered.vcf
+        bcftools view --threads ${task.cpus} -o ${id}.filtered.vcf.gz -O z ${id}.filtered.vcf
         tabix ${id}.filtered.vcf.gz
 """
 }
