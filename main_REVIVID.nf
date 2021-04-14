@@ -89,7 +89,7 @@ process pear {
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq") into paired_ch
 
         """
-		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
+		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id.filtered.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then 
 		rm ${lane}.assembled.fastq
 		rm ${lane}.unassembled.forward.fastq
@@ -99,6 +99,7 @@ process pear {
         fi
 		"""
 }
+
  process alignment {
 
 		
