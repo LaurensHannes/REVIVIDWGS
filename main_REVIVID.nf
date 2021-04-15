@@ -92,9 +92,9 @@ process pear {
         """
 		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then 
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.assembled.fastq
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.unassembled.forward.fastq
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.unassembled.reverse.fastq
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.assembled.fastq
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.unassembled.forward.fastq
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.unassembled.reverse.fastq
 		else
 		pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
         fi
@@ -127,15 +127,15 @@ process pear {
         """
 		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.indexed.bam
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.indexed.bam
 		else
         bwa mem -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${lane}.assembled.bam
         bwa mem -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${lane}.forward.bam
         bwa mem -t ${task.cpus} $genome $reverse | samtools view -@ ${task.cpus} -bS > ${lane}.reverse.bam
         samtools merge -@ ${task.cpus} ${lane}.indexed.unsorted.bam  ${lane}.assembled.bam ${lane}.forward.bam ${lane}.reverse.bam
         samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam ${lane}.indexed.unsorted.bam
-		rm  ${lane}.assembled.bam  ${lane}.forward.bam ${lane}.reverse.bam  ${lane}.indexed.unsorted.bam
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}*.fastq
+		echo "done" >   ${lane}.assembled.bam  ${lane}.forward.bam ${lane}.reverse.bam  ${lane}.indexed.unsorted.bam
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}*.fastq
 		fi
         """
 }
@@ -159,13 +159,13 @@ process readgroups {
 	"""
 		if [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam.bai
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam.bai
 	
 		else
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
 	samtools index -@ ${task.cpus} ${lane}.RG.bam
-	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.indexed.bam
+	echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.indexed.bam
 	fi
 	"""
 
@@ -192,11 +192,11 @@ process duplicates {
 	"""
 			if [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.dups.bam
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.dups.bam
 				else
 	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
-	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
-	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam.bai
+	echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
+	echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam.bai
 	fi
 
 	"""
@@ -316,7 +316,7 @@ process applyBQSR {
         """
         gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.recallibrated.bam
 		samtools index -@ ${task.cpus} ${id}.recallibrated.bam
-		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam.bai
+		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam.bai
 		
         """
 
