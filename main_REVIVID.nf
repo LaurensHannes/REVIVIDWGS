@@ -159,7 +159,7 @@ process readgroups {
 	"""
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
 	samtools index -@ ${task.cpus} ${lane}.RG.bam
-	rm $bam
+	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.indexed.bam
 	"""
 
 }
@@ -184,8 +184,9 @@ process duplicates {
 	
 	"""
 	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
-	rm $bam
-	rm $bai
+	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
+	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam.bai
+
 	"""
 }
 
