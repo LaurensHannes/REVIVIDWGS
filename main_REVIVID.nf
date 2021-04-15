@@ -347,7 +347,11 @@ process variantrecalibration {
 
 	tag "$id"
        	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-
+	time { 30.minutes * task.attempt }
+	cpus { 6 * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
+	
 	container "docker://broadinstitute/gatk"
 
 	input:
