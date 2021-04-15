@@ -416,8 +416,9 @@ individual_vcf_for_merge_ch2.view()
 process mergevcf {
 
 	tag "$family"
-       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
-
+    storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
+	cpus 4
+	time '30m'
 
 
 	input:
