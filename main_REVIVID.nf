@@ -92,9 +92,9 @@ process pear {
         """
 		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then 
-		rm ${lane}.assembled.fastq
-		rm ${lane}.unassembled.forward.fastq
-		rm ${lane}.unassembled.reverse.fastq
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.assembled.fastq
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.unassembled.forward.fastq
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.unassembled.reverse.fastq
 		else
 		pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
         fi
@@ -127,7 +127,7 @@ process pear {
         """
 		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then
-		rm ${lane}.indexed.bam
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.indexed.bam
 		else
         bwa mem -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${lane}.assembled.bam
         bwa mem -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${lane}.forward.bam
@@ -159,8 +159,8 @@ process readgroups {
 	"""
 		if [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then
-		rm ${lane}.RG.bam
-		rm ${lane}.RG.bam.bai
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam.bai
 	
 		else
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
@@ -192,7 +192,7 @@ process duplicates {
 	"""
 			if [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
 		then
-		rm ${lane}.dups.bam
+		rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.dups.bam
 				else
 	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
 	rm /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
