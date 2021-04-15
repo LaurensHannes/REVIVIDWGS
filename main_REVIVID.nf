@@ -348,7 +348,7 @@ process variantrecalibration {
 	tag "$id"
        	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 	time { 30.minutes * task.attempt }
-	cpus { 6 * task.attempt }
+	cpus 6
 		 errorStrategy 'retry' 
 		maxRetries 3
 	
