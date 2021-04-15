@@ -75,7 +75,7 @@ gzipped_ch.into{temp_ch1;temp_ch2}
 process pear {
 
         tag "$lane"
-        time '1h'
+        time { 1.hour * task.attempt }
 		memory '2 GB'
 		cpus 9
         errorStrategy 'retry'
@@ -150,6 +150,7 @@ process readgroups {
 
 	input:
 	tuple val(id), val(lane), file(bam) from mapped_ch
+	path home from params.home
 	
 	output:
 	tuple val(id),val(lane), file("${lane}.RG.bam"),file("${lane}.RG.bam.bai")into mapped_RG_ch	
@@ -161,7 +162,6 @@ process readgroups {
 		then
 		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam
 		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${lane}.RG.bam.bai
-	
 		else
 	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
 	samtools index -@ ${task.cpus} ${lane}.RG.bam
@@ -183,6 +183,7 @@ process duplicates {
 		
 	input:
 	 tuple val(id),val(lane),file(bam),file(bai) from mapped_RG_ch
+path home from params.home
 
 	output:
 	tuple val(id),file("${lane}.dups.bam")into dups_ch
