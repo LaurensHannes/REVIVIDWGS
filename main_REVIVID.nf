@@ -87,7 +87,7 @@ process pear {
 		path home from params.home
 		
         output:
-        tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq")  optional true into paired_ch
+        tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq") into paired_ch
 
         """
 		if [ -f $home/tempstorage/${id}/${lane}*.fastq ] || [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
@@ -122,7 +122,7 @@ process pear {
         path home from params.home
 
         output:
-        tuple val(id), val(lane), file("${lane}.indexed.bam") optional true into mapped_ch
+        tuple val(id), val(lane), file("${lane}.indexed.bam")into mapped_ch
 
         """
 		if [ -f $home/tempstorage/${id}/${lane}.indexed.bam ] || [ -f $home/tempstorage/${id}/${lane}.RG.bam ] || [ -f $home/tempstorage/${id}/${lane}.dups.bam ] || [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ] || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
@@ -152,7 +152,7 @@ process readgroups {
 	tuple val(id), val(lane), file(bam) from mapped_ch
 	
 	output:
-	tuple val(id),val(lane), file("${lane}.RG.bam"),file("${lane}.RG.bam.bai") optional true into mapped_RG_ch	
+	tuple val(id),val(lane), file("${lane}.RG.bam"),file("${lane}.RG.bam.bai")into mapped_RG_ch	
 		
 
 
@@ -185,8 +185,8 @@ process duplicates {
 	 tuple val(id),val(lane),file(bam),file(bai) from mapped_RG_ch
 
 	output:
-	tuple val(id),file("${lane}.dups.bam") optional true into dups_ch
-	tuple val(id),file("${lane}.metrics.txt") optional true into dup_metrics_ch
+	tuple val(id),file("${lane}.dups.bam")into dups_ch
+	tuple val(id),file("${lane}.metrics.txt")into dup_metrics_ch
 
 	
 	"""
@@ -219,7 +219,7 @@ process mergebams {
 
 	
 	output:
-	tuple val(id),file("${id}.bam"),file("${id}.bam.bai") optional true into mergedbam_ch
+	tuple val(id),file("${id}.bam"),file("${id}.bam.bai")into mergedbam_ch
 
 	"""
 	if [ -f $home/tempstorage/${id}/${id}.bam ] || [ -f $home/tempstorage/${id}/${id}.recallibrated.bam ]  || [ -f $home/tempstorage/${id}/${id}.vcf ] || [ -f $home/tempstorage/${id}/${id}.filtered.vcf ]  || [ -f $home/tempstorage/${id}/${id}.filtered.vcf.gz ]
@@ -249,7 +249,7 @@ process generateCRAM {
         path faidx from params.genomefai
 				
 		output:
-		tuple val(id),file("${id}.cram"),file("${id}.cram.crai") optional true into mergedcram_ch
+		tuple val(id),file("${id}.cram"),file("${id}.cram.crai")into mergedcram_ch
 		tuple val(id),file(bam),file(bai) into mergedbam3_ch
 		
 		"""
