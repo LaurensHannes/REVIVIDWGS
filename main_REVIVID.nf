@@ -393,7 +393,8 @@ process compressandindex {
 
 	tag "$id"
        	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
-
+	cpus 4
+	time '15m'
 
 input:
 	tuple val(id), file(vcf) from individual_vcf_ch 
