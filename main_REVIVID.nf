@@ -563,10 +563,14 @@ process subset {
 
         tag "$family"
        	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/$family"
-
+		cpus 1
+		time '10m'
 
         input:
         tuple val(family), val(AR), file(ARannotatedVCF), file(ARannotatedTXT) from annotated_AR_ch
+		
+		output:
+		tuple val(family), val(AR), file("${family}.${AR}.subset.txt") into subsetAR_ch
 
         """
         cat $ARannotatedTXT | awk '\$12 < 0.00002 || NR==1' >  ${family}.${AR}.subset.txt
