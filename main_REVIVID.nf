@@ -554,8 +554,8 @@ process annotate {
         tuple val(family), val(denovo), file("${family}.denovo.hg38_multianno.vcf"),file("${family}.denovo.hg38_multianno.txt") into annotated_denovo_ch
         tuple val(family), val(AR), file("${family}.AR.hg38_multianno.vcf") ,file("${family}.AR.hg38_multianno.txt") into annotated_AR_ch
         """
-        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -intronhgvs --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20210123,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
-        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -intronhgvs --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20210123,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $denovogatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -intronhgvs 10000 --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.denovo -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20210123,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
+        perl /staging/leuven/stg_00086/resources/programs/annovar/table_annovar.pl $ARgatkfvcfgz /staging/leuven/stg_00086/resources/humandb/ -intronhgvs 10000 --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.AR -remove -polish -protocol refgene,avsnp150,gnomad30_genome,clinvar_20210123,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f -nastring . -polish -intronhgvs 50 -vcfinput
         """
 }
 
