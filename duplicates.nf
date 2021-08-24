@@ -4,7 +4,7 @@ process duplicates {
         errorStrategy 'retry'
          maxErrors 3
 		memory { 2.GB * task.attempt }
-		cpus 2
+		cpus 16
 
 		
 	input:
