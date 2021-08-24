@@ -11,7 +11,7 @@ params.ped ='/mnt/hdd2/data/lau/phd/testyard/FNRCP/FNRCP.ped'
 params.home ='/mnt/hdd2/data/lau/phd/testyard/FNRCP'
 params.indexes = '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta.*'
 params.genome ='/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta'
-
+indexes_ch = Channel.fromPath(params.indexes).toList()
 //script
 workflow {
 myFile = file(params.ped)
@@ -31,7 +31,7 @@ Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
 importfastq(idfamily_ch, params.home) 
 
 importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
-gzipped_ch.view()
+//gzipped_ch.view()
 
 pear(gzipped_ch, params.home)
 alignment(pear.out, params.genome,params.indexes, params.home)
