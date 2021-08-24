@@ -14,7 +14,7 @@ process importfastq {
         path home
 
         output:
-         path '$home/FASTQ/$family/$id/*.fastq.gz'
+         path "$home/FASTQ/$family/$id/*.fastq.gz"
 
         """
         [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
