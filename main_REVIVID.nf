@@ -4,6 +4,10 @@ nextflow.enable.dsl=2
 include { importfastq } from './importfastq.nf'
 include { pear } from './pear.nf'
 include { alignment } from './alignment.nf'
+include { readgroups } from './readgroups.nf'
+include { duplicates } from './duplicates.nf'
+include { mergebams } from './mergebams.nf'
+include { generateCRAM } from './generateCRAM.nf'
 // script parameters
 
 
@@ -36,6 +40,10 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 pear(gzipped_ch, params.home)
 alignment(pear.out, params.genome,indexes_ch, params.home)
 alignment.out.view()
-
+readgroups(alignment.out,params.home)
+duplicates(readgroups.out,params.home)
+mergebams(duplicates.out[0],params.home)
+generateCRAM(mergebams.out,params.genome,indexes_ch)
+generateCRAM.out.view()
 
 }
