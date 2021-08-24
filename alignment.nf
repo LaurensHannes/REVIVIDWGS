@@ -1,6 +1,6 @@
  process alignment {
 
-		cpus 9
+		cpus 4
 		memory { 8.GB * task.attempt }
 		tag "$lane"
 			 time { 1.hour * task.attempt }
