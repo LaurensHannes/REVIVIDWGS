@@ -2,6 +2,8 @@
 nextflow.enable.dsl=2
 
 include { importfastq } from './importfastq.nf'
+include { pear } from './pear.nf'
+include { alignment } from './alignment.nf'
 // script parameters
 
 
