@@ -7,7 +7,7 @@ process importfastq {
         errorStrategy 'retry'
          maxErrors 3
 		disk { 50.GB * task.attempt }
-		memory { 16.GB * task.attempt }
+		memory { 8.GB * task.attempt }
 		
         input:
         tuple val(id),val(family) 
