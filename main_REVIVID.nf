@@ -34,7 +34,7 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 //gzipped_ch.view()
 
 pear(gzipped_ch, params.home)
-alignment(pear.out, params.genome,params.indexes, params.home)
+alignment(pear.out, params.genome,indexes_ch, params.home)
 alignment.out.view()
 
 
