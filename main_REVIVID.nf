@@ -9,8 +9,8 @@ include { alignment } from './alignment.nf'
 
 params.ped ='/mnt/hdd2/data/lau/phd/testyard/FNRCP/FNRCP.ped'
 params.home ='/mnt/hdd2/data/lau/phd/testyard/FNRCP'
-params.indexes = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta.*'
-params.genome ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta'
+params.indexes = '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta.*'
+params.genome ='/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta'
 
 //script
 workflow {
