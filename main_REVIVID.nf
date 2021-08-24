@@ -44,6 +44,6 @@ readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out,params.genome,indexes_ch)
-generateCRAM.out.view()
+
 
 }
