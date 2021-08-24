@@ -7,7 +7,8 @@ include { importfastq } from './importfastq.nf'
 
 params.ped ='/mnt/hdd2/data/lau/phd/testyard/FNRCP/FNRCP.ped'
 params.home ='/mnt/hdd2/data/lau/phd/testyard/FNRCP'
-
+params.indexes = '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta.*'
+params.genome ='/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta'
 
 //script
 workflow {
@@ -29,4 +30,10 @@ importfastq(idfamily_ch, params.home)
 
 importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 gzipped_ch.view()
+
+pear(gzipped_ch, params.home)
+alignment(pear.out, params.genome,params.indexes, params.home)
+alignment.out.view()
+
+
 }
