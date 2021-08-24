@@ -1,7 +1,7 @@
 #! usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-include {importfastq } from './importfastq.nf'
+include { importfastq } from './importfastq.nf'
 // script parameters
 
 
