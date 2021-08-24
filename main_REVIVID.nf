@@ -10,7 +10,7 @@ params.home ='/mnt/hdd2/data/lau/phd/testyard/FNRCP'
 
 
 //script
-
+workflow {
 myFile = file(params.ped)
 myReader = myFile.newReader()
 String line
@@ -24,8 +24,8 @@ while( line = myReader.readLine() ) {
 myReader.close()
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
-workflow {
-importfastq {idfamily_ch, params.home} 
+
+importfastq (idfamily_ch, params.home) 
 
 fastqgz_ch.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 gzipped_ch.into{temp_ch1;temp_ch2}
