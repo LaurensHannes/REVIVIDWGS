@@ -56,7 +56,7 @@ generateCRAM(mergebams.out,params.genome,indexes_ch)
 
 emit:
 mergebams.out
-generateCRAM.out
+generateCRAM.out[0]
 }
 workflow createvcfs {
 main:
