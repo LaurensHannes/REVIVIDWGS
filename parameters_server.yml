@@ -1,8 +1,4 @@
-ped:
-	- [ /mnt/hdd2/data/lau/phd/testyard/FNRCP/FNRCP.ped' ]
-home:
-	- [ '/mnt/hdd2/data/lau/phd/testyard/FNRCP' ]
-indexes:
-	- [ '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta.*' ]
-genome:
-	- [ '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta' ]
+ped: '/mnt/hdd2/data/lau/phd/testyard/FNRCP/FNRCP.ped' 
+home: '/mnt/hdd2/data/lau/phd/testyard/FNRCP' 
+indexes: '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta.*' 
+genome: '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta' 
