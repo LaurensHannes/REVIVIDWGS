@@ -60,10 +60,10 @@ mergebams.out
 generateCRAM.out[0]
 }
 workflow createvcfs {
-take: mergebams.out
+take: bam
 
 main:
-baserecalibrator(mergebams.out,params.genome, params.genomedict, params.snps, params.snpsindex)
+baserecalibrator(bam,params.genome, params.genomedict, params.snps, params.snpsindex)
 baserecalibrator.out.view()
 emit:
 baserecalibrator.out
