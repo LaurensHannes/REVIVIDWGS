@@ -8,14 +8,15 @@ include { readgroups } from './readgroups.nf'
 include { duplicates } from './duplicates.nf'
 include { mergebams } from './mergebams.nf'
 include { generateCRAM } from './generateCRAM.nf'
+include { baserecalibrator } from './baserecalibrator.nf'
+
+
 // script parameters
 
 
-params.ped ='/mnt/hdd2/data/lau/phd/testyard/FNRCP/FNRCP.ped'
-params.home ='/mnt/hdd2/data/lau/phd/testyard/FNRCP'
-params.indexes = '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta.*'
-params.genome ='/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta'
+
 indexes_ch = Channel.fromPath(params.indexes).toList()
+
 //script
 workflow {
 myFile = file(params.ped)
@@ -44,6 +45,7 @@ readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out,params.genome,indexes_ch)
-
+baserecalibrator(mergebams.out,params.genome, params.genomedict, params.snps, params.snpsindex)
+baserecalibrator.out.view()
 
 }

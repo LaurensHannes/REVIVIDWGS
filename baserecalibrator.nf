@@ -7,18 +7,17 @@ process baserecalibrator {
 	errorStrategy 'retry' 
 	maxRetries 3
 	container "docker://broadinstitute/gatk"
-	memory { 32.GB * task.attempt }
+	memory { 16.GB * task.attempt }
 
         input:
-        tuple val(id), file(merged), file(bai) from mergedbam2_ch
-        path genome from params.genome
-       path faidx from params.genomefai
-        path dict from params.genomedict
-	 path snps from params.snps
-        path snpsindex from params.snpsindex
+        tuple val(id), file(merged), file(bai) 
+        path genome 
+        path dict 
+		path snps
+        path snpsindex 
 
         output:
-        tuple val(id), file(merged), file(bai), file("${id}.recal_data.table") into recal_data_ch
+        tuple val(id), file(merged), file(bai), file("${id}.recal_data.table") 
 
         """
         gatk BaseRecalibrator -I $merged -R $genome -O ${id}.recal_data.table --known-sites $snps --verbosity WARNING
