@@ -1,6 +1,12 @@
 #! usr/bin/env nextflow
 nextflow.enable.dsl=2
 
+log.info """\
+ R E V I V I D - W G S - P I P E L I N E
+ =======================================
+
+ """
+
 include { importfastq } from './importfastq.nf'
 include { pear } from './pear.nf'
 include { alignment } from './alignment.nf'
@@ -18,7 +24,9 @@ include { baserecalibrator } from './baserecalibrator.nf'
 indexes_ch = Channel.fromPath(params.indexes).toList()
 
 //script
-workflow {
+workflow download_fastq_to_bam_and_cram {
+
+main:
 myFile = file(params.ped)
 myReader = myFile.newReader()
 String line
@@ -45,7 +53,21 @@ readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out,params.genome,indexes_ch)
+
+emit:
+mergebams.out
+generateCRAM.out
+}
+workflow createvcfs {
+main:
 baserecalibrator(mergebams.out,params.genome, params.genomedict, params.snps, params.snpsindex)
 baserecalibrator.out.view()
+emit:
+baserecalibrator.out
+}
+
+workflow { 
+download_fastq_to_bam_and_cram()
+createvcfs()
 
 }
