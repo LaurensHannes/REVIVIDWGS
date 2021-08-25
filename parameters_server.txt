@@ -1,0 +1,4 @@
+params.ped ='/mnt/hdd2/data/lau/phd/testyard/FNRCP/FNRCP.ped'
+params.home ='/mnt/hdd2/data/lau/phd/testyard/FNRCP'
+params.indexes = '/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta.*'
+params.genome ='/mnt/hdd/data/resources/reference_genome/broadhg38/Homo_sapiens_assembly38.fasta'
