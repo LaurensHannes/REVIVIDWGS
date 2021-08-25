@@ -2,6 +2,7 @@
 nextflow.enable.dsl=2
 
 log.info """\
+
  R E V I V I D - W G S - P I P E L I N E
  =======================================
 
@@ -68,6 +69,6 @@ baserecalibrator.out
 
 workflow { 
 download_fastq_to_bam_and_cram()
-createvcfs()
+createvcfs(download_fastq_to_bam_and_cram.out[0])
 
 }
