@@ -5,6 +5,7 @@ process mergebams {
 	 time { 2.hour * task.attempt }
 	 errorStrategy 'retry' 
 	maxRetries 3
+	publishdir: publishDir '/results/bams', mode: 'copy', overwrite: false
 	
 	input:
 	tuple val(id),file(bams)
