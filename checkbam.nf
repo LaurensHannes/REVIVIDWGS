@@ -14,7 +14,7 @@ process checkbam {
     V1=\$( cat $launchDir/results/bams/"$id"_validate_report.txt)
     if [ "\$V1" == "No errors found" ]; then
     echo "bamtastic"
-	doneID="\$id)
+	doneID="\$id"
 	else
 	todoID="\$id"
 	todoF="\$family"
