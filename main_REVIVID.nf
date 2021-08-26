@@ -86,6 +86,7 @@ baserecalibrator.out
 workflow { 
 allbams = Channel.fromPath( '/results/bams/*.bam*' )
 allbams.groupTuple().view()
+Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 checkbam.out[0].view()
 
