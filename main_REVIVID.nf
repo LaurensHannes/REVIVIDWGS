@@ -53,9 +53,9 @@ Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
 //workflows
 
 workflow download_fastq_to_bam_and_cram {
-
-main:
 take: idfam
+main:
+
 importfastq(idfam, params.home) 
 
 importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
