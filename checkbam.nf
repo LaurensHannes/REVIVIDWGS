@@ -9,8 +9,8 @@ process checkbam {
 	
 	"""
 	gatk ValidateSamFile -I ./results/bams/$id.bam -O /results/bams/$id_validate_report.txt
-    V1=$( cat /results/bams/$id_validate_report.txt)
-    if [ "$V1" == "No errors found" ]; then
+    V1=\$( cat /results/bams/$id_validate_report.txt)
+    if [ "\$V1" == "No errors found" ]; then
     outcome="true"
 	else
 	outcome="false"
