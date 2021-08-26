@@ -1,8 +1,9 @@
 process generateCRAM {
 
 	tag "$id"
-
-		
+		myDir = file('./results/crams')
+		myDir.mkdirs()
+			
 		input:
 		tuple val(id),file(bam),file(bai) 
 		path genome

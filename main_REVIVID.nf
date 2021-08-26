@@ -22,6 +22,7 @@ include { mergebams } from './mergebams.nf'
 include { generateCRAM } from './generateCRAM.nf'
 include { baserecalibrator } from './baserecalibrator.nf'
 include { delete_file } from './delete_file.nf'
+include { checkbam } from './checkbam.nf'
 
 
 // script parameters
@@ -79,6 +80,7 @@ baserecalibrator.out
 }
 
 workflow { 
+checkbams(idfamily_ch)
 download_fastq_to_bam_and_cram()
 createvcfs(download_fastq_to_bam_and_cram.out[0])
 
