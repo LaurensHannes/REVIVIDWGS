@@ -5,7 +5,7 @@ process checkbam {
 	input:
     tuple val(id),val(family) 
 	output:
-	tuple env(todoID),env(todoF) optional true
+	tuple env(todoID),env(todoF), optional: true
 	
 	"""
 	[ -f $launchDir/results/bams/"$id".bam ] && gatk ValidateSamFile -I $launchDir/results/bams/"$id".bam -O $launchDir/results/bams/"$id"_validate_report.txt
