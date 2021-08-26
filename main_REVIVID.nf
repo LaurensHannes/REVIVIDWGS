@@ -85,10 +85,11 @@ baserecalibrator.out
 }
 
 workflow { 
-checkbam(idfamily_ch)
-checkbam.out.view()
 allbams = Channel.fromPath( '/results/bams/*.bam*' )
 allbams.groupTuple().view()
+checkbam(idfamily_ch)
+checkbam.out.view()
+
 download_fastq_to_bam_and_cram()
 createvcfs(download_fastq_to_bam_and_cram.out[0])
 
