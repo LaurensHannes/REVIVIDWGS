@@ -90,7 +90,6 @@ checkbam(idfamily_ch)
 download_fastq_to_bam_and_cram()
 Channel.empty().set{ mixed }
 mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
-mixed.view()
-//createvcfs(mixed)
+createvcfs(mixed)
 
 }
