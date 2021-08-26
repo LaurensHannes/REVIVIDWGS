@@ -63,7 +63,6 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 
 pear(gzipped_ch, params.home)
 alignment(pear.out, params.genome,indexes_ch, params.home)
-alignment.out.view()
 readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)
@@ -81,7 +80,6 @@ take: bam
 
 main:
 baserecalibrator(bam,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
-baserecalibrator.out.view()
 emit:
 baserecalibrator.out
 }
