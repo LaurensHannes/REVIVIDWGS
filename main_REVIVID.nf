@@ -6,7 +6,7 @@ log.info """\
  R E V I V I D - W G S - P I P E L I N E
  =======================================
  #######################################
- ############### DSL2 ##################
+ ############### DSL 2 #################
  ############### W I P #################
  ############### alpha #################
  #######################################
@@ -86,7 +86,7 @@ baserecalibrator.out
 workflow { 
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
-checkbam.out[0].flatten().filter(~/GC*/).groupTuple().view()
+checkbam.out[0].view()
 //download_fastq_to_bam_and_cram(checkbam.out[0])
 //Channel.empty().set{ mixed }
 //mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
