@@ -7,7 +7,7 @@ process checkbam {
     tuple val(id),val(family) 
 	
 	output:
-	tuple val($todoID), val($todoF), optional: true
+	tuple val("$todoID"), val("$todoF"), optional: true
 	tuple val("$doneID"), path('$launchDir/results/bams/"$id".bam'),path('$launchDir/results/bams/"$id".bam.bai'), emit: createvcfsinput_ch, optional: true
 	"""
 	[ -f $launchDir/results/bams/"$id".bam ] && gatk ValidateSamFile -I $launchDir/results/bams/"$id".bam -O $launchDir/results/bams/"$id"_validate_report.txt
