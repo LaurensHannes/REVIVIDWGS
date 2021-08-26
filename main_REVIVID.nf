@@ -67,7 +67,6 @@ readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out,params.genome,indexes_ch)
-
 emit:
 mergebams.out
 generateCRAM.out[0]
@@ -91,6 +90,7 @@ checkbam(idfamily_ch)
 checkbam.out.view()
 
 download_fastq_to_bam_and_cram()
-createvcfs(download_fastq_to_bam_and_cram.out[0])
+mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
+createvcfs(mixed)
 
 }
