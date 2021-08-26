@@ -63,7 +63,7 @@ workflow createvcfs {
 take: bam
 
 main:
-baserecalibrator(bam,params.genome, params.genomedict, params.snps, params.snpsindex)
+baserecalibrator(bam,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 baserecalibrator.out.view()
 emit:
 baserecalibrator.out

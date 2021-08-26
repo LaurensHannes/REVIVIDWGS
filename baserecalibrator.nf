@@ -12,6 +12,7 @@ process baserecalibrator {
         input:
         tuple val(id), file(merged), file(bai) 
         path genome 
+		path indexes
         path dict 
 		path snps
         path snpsindex 
