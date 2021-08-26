@@ -87,7 +87,7 @@ baserecalibrator.out
 }
 
 workflow { 
-checkbams(idfamily_ch)
+checkbam(idfamily_ch)
 download_fastq_to_bam_and_cram()
 createvcfs(download_fastq_to_bam_and_cram.out[0])
 
