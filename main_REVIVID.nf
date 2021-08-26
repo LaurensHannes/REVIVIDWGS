@@ -87,7 +87,7 @@ workflow {
 allbams = Channel.fromPath( '/results/bams/*.bam*' )
 allbams.groupTuple().view()
 checkbam(idfamily_ch)
-checkbam.out.view()
+checkbam.out[0].view()
 
 download_fastq_to_bam_and_cram()
 mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
