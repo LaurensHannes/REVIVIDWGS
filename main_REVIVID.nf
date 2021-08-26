@@ -55,8 +55,8 @@ Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
 workflow download_fastq_to_bam_and_cram {
 
 main:
-
-importfastq(idfamily_ch, params.home) 
+take: idfam
+importfastq(idfam, params.home) 
 
 importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 //gzipped_ch.view()
@@ -87,7 +87,7 @@ workflow {
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 
-download_fastq_to_bam_and_cram()
+download_fastq_to_bam_and_cram(checkbam.out[0])
 Channel.empty().set{ mixed }
 mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
 createvcfs(mixed)
