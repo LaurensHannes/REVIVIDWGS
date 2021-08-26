@@ -88,7 +88,8 @@ workflow {
 checkbam(idfamily_ch)
 checkbam.out.view()
 download_fastq_to_bam_and_cram(checkbam.out)
-allbams = Channel.fromPath( '/results/bams/*.bam*' ).groupTuple().view()
+allbams = Channel.fromPath( '/results/bams/*.bam*' )
+allbams.groupTuple().view()
 createvcfs(download_fastq_to_bam_and_cram.out[0])
 
 }
