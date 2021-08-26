@@ -31,10 +31,10 @@ include { checkbam } from './checkbam.nf'
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
 
-//script
-workflow download_fastq_to_bam_and_cram {
 
-main:
+
+//script
+
 myFile = file(params.ped)
 myReader = myFile.newReader()
 String line
@@ -48,6 +48,13 @@ while( line = myReader.readLine() ) {
 myReader.close()
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
+
+
+//workflows
+
+workflow download_fastq_to_bam_and_cram {
+
+main:
 
 importfastq(idfamily_ch, params.home) 
 
