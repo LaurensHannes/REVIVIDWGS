@@ -89,6 +89,7 @@ checkbam(idfamily_ch)
 checkbam.out[0].flatten().filter(~/GC*/).groupTuple().view()
 download_fastq_to_bam_and_cram(checkbam.out[0].flatten().filter(~/GC*/).groupTuple())
 Channel.empty().set{ mixed }
+createvcfsinput_ch.view()
 mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
 createvcfs(mixed)
 
