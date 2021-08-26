@@ -65,8 +65,7 @@ emit:
 mergebams.out
 generateCRAM.out[0]
 
-publish:
-mergebams.out to:'bams/bamfiles
+
 }
 
 workflow createvcfs {
