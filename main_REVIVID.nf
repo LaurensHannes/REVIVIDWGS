@@ -5,11 +5,11 @@ log.info """\
 
  R E V I V I D - W G S - P I P E L I N E
  =======================================
- ########################################
- #################DSL2###################
- ################ W I P #################
- ################ alpha #################
- ########################################
+ #######################################
+ ################DSL2###################
+ ############### W I P #################
+ ############### alpha #################
+ #######################################
  
  """
 
@@ -21,6 +21,7 @@ include { duplicates } from './duplicates.nf'
 include { mergebams } from './mergebams.nf'
 include { generateCRAM } from './generateCRAM.nf'
 include { baserecalibrator } from './baserecalibrator.nf'
+include { delete_file } from './delete_file.nf'
 
 
 // script parameters
@@ -63,7 +64,11 @@ generateCRAM(mergebams.out,params.genome,indexes_ch)
 emit:
 mergebams.out
 generateCRAM.out[0]
+
+publish:
+mergebams.out to:'bams/bamfiles
 }
+
 workflow createvcfs {
 take: bam
 
