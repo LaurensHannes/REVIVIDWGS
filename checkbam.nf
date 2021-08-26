@@ -16,3 +16,5 @@ process checkbam {
 	outcome="false"
     fi
 	"""
+	
+	}
