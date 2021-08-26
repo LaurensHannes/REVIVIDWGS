@@ -90,8 +90,8 @@ checkbam(idfamily_ch)
 checkbam.out[0].view()
 
 download_fastq_to_bam_and_cram()
-mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
-mixed.view()
+createvcfsinput_ch.mix(download_fastq_to_bam_and_cram.out[0])
+createvcfsinput_ch.view()
 //createvcfs(mixed)
 
 }
