@@ -87,13 +87,10 @@ baserecalibrator.out
 workflow { 
 checkbam(idfamily_ch)
 checkbam.out.view()
-<<<<<<< HEAD
 download_fastq_to_bam_and_cram(checkbam.out)
 allbams = Channel.fromPath( '/results/bams/*.bam*' )
 allbams.groupTuple().view()
-=======
 download_fastq_to_bam_and_cram()
->>>>>>> parent of 2ace42d (conditional workflow added)
 createvcfs(download_fastq_to_bam_and_cram.out[0])
 
 }
