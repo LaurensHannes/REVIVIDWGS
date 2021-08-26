@@ -87,7 +87,6 @@ baserecalibrator.out
 workflow { 
 checkbam(idfamily_ch)
 checkbam.out.view()
-download_fastq_to_bam_and_cram()
 allbams = Channel.fromPath( '/results/bams/*.bam*' )
 allbams.groupTuple().view()
 download_fastq_to_bam_and_cram()
