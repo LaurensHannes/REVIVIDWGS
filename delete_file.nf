@@ -1,7 +1,6 @@
 process 'delete_file' {
   input:
-    file inputFile
-    val sampleName
+    tuple val(id), file(inputFile)
     output:
     // There is no output
   shell:
