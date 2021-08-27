@@ -75,8 +75,8 @@ duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out,params.genome,indexes_ch)
 emit:
-mergebams.out
-generateCRAM.out[0]
+bams = mergebams.out
+crams = generateCRAM.out[0]
 
 
 }
@@ -101,7 +101,7 @@ done_ch.mix(temp_ch).flatten().toSortedList().groupTuple().flatten().collate( 3 
 //alldone_ch.mix(mergebams.out).set{mixed}
 
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
-mergebams.out.mix(alldone_ch).set{mixed}
+download_fastq_to_bam_and_cram.out.bams.mix(alldone_ch).set{mixed}
 mixed.view()
 createvcfsinput_ch.view()
 mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
