@@ -1,12 +1,12 @@
 process 'delete_file' {
   input:
-    tuple val(id), file(inputFile)
-    tuple val(idnextstep), file(files)
+    tuple val(id), val(lane), file(inputFile)
+    tuple val(idnextstep), val(lanenextstep), file(files)
 	output:
     // There is no output
 	
 	when:
-	idnextstep =~ /id/
+	lanenextstep =~ /lane/
   shell:
     '''
     rm "$(readlink '!{inputFile}')"
