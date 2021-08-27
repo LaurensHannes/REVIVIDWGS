@@ -105,6 +105,6 @@ download_fastq_to_bam_and_cram.out.bams.mix(alldone_ch).set{mixed}
 mixed.view()
 //createvcfsinput_ch.view()
 //mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
-createvcfs(mixed)
+//createvcfs(mixed)
 
 }
