@@ -62,9 +62,10 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 //gzipped_ch.view()
 
 pear(gzipped_ch, params.home)
-if (pear.out)
+if (pear.out) {
 	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
-gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().view()
+}
+	gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().view()
 alignment(pear.out, params.genome,indexes_ch, params.home)
 readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
