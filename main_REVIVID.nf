@@ -64,12 +64,9 @@ gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().t
 //gzipped_ch.view()
 
 pear(gzipped_ch, params.home)
-pear.out[0].flatten().view()
-pear.out[0].flatten().filter(~/.*fastq/).toList().size.view()
-if ( pear.out[0].flatten().toList().size.view() > 0 ) {
-	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
-}
-	gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().view()
+//if ( pear.out[0].flatten().toList().size.view() > 0 ) {
+//	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
+//}
 alignment(pear.out, params.genome,indexes_ch, params.home)
 readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
@@ -93,10 +90,12 @@ baserecalibrator.out
 }
 
 workflow { 
+Channel.fromPath($launchDir/results/bams/*.bam)
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.view()
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
+*).view()
 Channel.empty().set{ mixed }
 createvcfsinput_ch.view()
 mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
