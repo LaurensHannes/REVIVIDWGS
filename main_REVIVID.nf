@@ -65,10 +65,10 @@ gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().t
 
 pear(gzipped_ch, params.home)
 pear.out[0].flatten().view()
-pear.out[0].flatten().filter(~/.*fastq/).toList().size()
-//if ( pear.out.flatten().toList().size() ! null ) {
-//	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
-//}
+pear.out[0].flatten().filter(~/.*fastq/).toList().size.view()
+if ( pear.out.flatten().toList().size > 0 ) {
+	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
+}
 	gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().view()
 alignment(pear.out, params.genome,indexes_ch, params.home)
 readgroups(alignment.out,params.home)
