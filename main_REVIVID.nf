@@ -96,7 +96,9 @@ temp_ch.view()
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
-done_ch.mix(temp_ch).flatten().toSortedList().groupTuple().flatten().collate( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.mix(mergebams[0].out).set{mixed}
+done_ch.mix(temp_ch).flatten().toSortedList().groupTuple().flatten().collate( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
+alldone_ch.mix(mergebams[0].out).set{mixed}
+mixed.view()
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 createvcfsinput_ch.view()
 mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
