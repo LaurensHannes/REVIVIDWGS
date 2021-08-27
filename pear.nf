@@ -13,7 +13,7 @@ process pear {
 		
         output:
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq")
-		file(R1), file(R2)
+		file($R1), file($R2)
         """
 		pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
 		"""
