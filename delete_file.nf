@@ -1,12 +1,14 @@
 process 'delete_file' {
+
+	tag "$inputFile"
+
+
   input:
-    tuple val(id), val(lane), file(inputFile)
-    tuple val(idnextstep), val(lanenextstep), file(files)
+	file(inputFile)
+
 	output:
     // There is no output
 	
-	when:
-	lanenextstep =~ /lane/
   shell:
     '''
     rm "$(readlink '!{inputFile}')"
