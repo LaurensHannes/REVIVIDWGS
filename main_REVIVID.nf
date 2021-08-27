@@ -66,6 +66,7 @@ gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().v
 alignment(pear.out, params.genome,indexes_ch, params.home)
 readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
+delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out,params.genome,indexes_ch)
 emit:
