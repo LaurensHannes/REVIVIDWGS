@@ -1,7 +1,6 @@
 process baserecalibrator {
 
 	tag "$id"
-	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 	cpus 4	
 	time { 5.hour * task.attempt }
 	errorStrategy 'retry' 
