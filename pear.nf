@@ -18,9 +18,10 @@ process pear {
         output:
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq")
 
-		script:
+		shell:
 		"""
 		pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
 		"""
+		script:
 		delete_file(R1)
 		}
