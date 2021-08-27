@@ -90,7 +90,7 @@ baserecalibrator.out
 }
 
 workflow { 
-Channel.fromPath("$launchDir/results/bams/*.bam")
+Channel.fromPath("./results/bams/*.bam")
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.view()
