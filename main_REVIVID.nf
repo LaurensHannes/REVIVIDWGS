@@ -92,7 +92,7 @@ baserecalibrator.out
 
 workflow { 
 main:
-temp_ch.view()
+//temp_ch.view()
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
@@ -102,7 +102,7 @@ done_ch.mix(temp_ch).flatten().toSortedList().groupTuple().flatten().collate( 3 
 
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 download_fastq_to_bam_and_cram.out.bams.mix(alldone_ch).set{mixed}
-mixed.flatten().toSortedList().groupTuple().flatten().collate ( 3 ).view()
+mixed.flatten().toSortedList().flatten().collate ( 3 ).view()
 //createvcfsinput_ch.view()
 //mixed.mix(createvcfsinput_ch,download_fastq_to_bam_and_cram.out[0])
 //createvcfs(mixed)
