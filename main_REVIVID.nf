@@ -31,6 +31,7 @@ include { checkbam } from './checkbam.nf'
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
 
+temp_ch= Channel.fromPath(./results/bams/*.bam)
 
 
 //script
@@ -91,7 +92,6 @@ baserecalibrator.out
 
 workflow { 
 main:
-temp_ch= Channel.fromPath(./results/bams/*.bam)
 temp_ch.view()
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
