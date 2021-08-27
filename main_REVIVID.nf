@@ -86,7 +86,7 @@ baserecalibrator.out
 workflow { 
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
-checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> val(id)}.view()
+checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.view()
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 Channel.empty().set{ mixed }
 createvcfsinput_ch.view()
