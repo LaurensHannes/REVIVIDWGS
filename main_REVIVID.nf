@@ -62,7 +62,8 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 //gzipped_ch.view()
 
 pear(gzipped_ch, params.home)
-alignment(pear.out[0], params.genome,indexes_ch, params.home)
+gzipped_ch.flatten().collate{ 4 }.map(id,fam,R1,R2 -> R1,R2).view()
+alignment(pear.out, params.genome,indexes_ch, params.home)
 readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)

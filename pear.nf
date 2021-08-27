@@ -1,5 +1,4 @@
-nextflow.enable.dsl=2
-include { delete_file } from './delete_file.nf'
+
 process pear {
 
 
@@ -18,10 +17,7 @@ process pear {
         output:
         tuple val(id), val(lane), file("${lane}.assembled.fastq"), file("${lane}.unassembled.forward.fastq"), file("${lane}.unassembled.reverse.fastq")
 
-		shell:
 		"""
 		pear -j ${task.cpus} -f $R1 -r $R2 -o $lane
 		"""
-		script:
-		delete_file(R1)
 		}
