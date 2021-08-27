@@ -90,6 +90,7 @@ baserecalibrator.out
 }
 
 workflow { 
+main:
 temp_ch= Channel.fromPath(./results/bams/*.bam)
 temp_ch.view()
 Channel.empty().set{ createvcfsinput_ch }
