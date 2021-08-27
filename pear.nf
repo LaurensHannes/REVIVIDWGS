@@ -3,7 +3,7 @@ process pear {
         tag "$lane"
         time { 1.hour * task.attempt }
 		memory '2 GB'
-		cpus 9
+		cpus 15
         errorStrategy 'retry'
         maxRetries 3
 
