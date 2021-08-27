@@ -63,8 +63,8 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 
 pear(gzipped_ch, params.home)
 pear.out[0].flatten().view()
-pear.out[0].flatten().toList.size()
-//if ( pear.out.flatten().toList().size() > 0 ) {
+pear.out[0].flatten().filter(~/.*fastq/).toList.size()
+//if ( pear.out.flatten().toList().size() ! null ) {
 //	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
 //}
 	gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().view()
