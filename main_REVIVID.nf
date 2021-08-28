@@ -23,7 +23,7 @@ include { generateCRAM } from './generateCRAM.nf'
 include { baserecalibrator } from './baserecalibrator.nf'
 include { delete_file } from './delete_file.nf'
 include { checkbam } from './checkbam.nf'
-include { applyBSQR } from './applyBSQR.nf'
+include { applyBQSR } from './applyBQSR.nf'
 include { genotype } from './genotype.nf'
 include { variantrecalibration } from './variantrecalibration.nf'
 
