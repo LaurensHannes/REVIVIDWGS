@@ -96,7 +96,7 @@ main:
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
-done_ch.mix(temp_ch).flatten().toSortedList().groupTuple().flatten().collate( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
+done_ch.mix(temp_ch).flatten().toSortedList().flatten().collate( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
 
 //alldone_ch.mix(mergebams.out).set{mixed}
 
