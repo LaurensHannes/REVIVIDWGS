@@ -89,8 +89,8 @@ take: bam
 
 main:
 baserecalibrator(bam,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
-applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.dict)
-genotype(applyBQSR.out,params.genome,indexes_ch,params.dict,params.mask)
+applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
+genotype(applyBQSR.out,params.genome,indexes_ch,params.genomedict,params.mask)
 emit:
 baserecalibrator.out
 }
