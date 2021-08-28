@@ -96,8 +96,8 @@ temp_ch.view()
 Channel.empty().set{ createvcfsinput_ch }
 checkbam(idfamily_ch)
 checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
-done_ch.toSortedList().flatten().collate(1).cross(temp_ch).flatten().collate( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
-done_ch.toSortedList().flatten().collate(1).view()
+//done_ch.toSortedList().flatten().collate(1).cross(temp_ch).flatten().collate( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
+//done_ch.toSortedList().flatten().collate(1).view()
 done_ch.toSortedList().flatten().collate(1).combine(temp_ch, by:0).view()
 alldone_ch.view()
 
