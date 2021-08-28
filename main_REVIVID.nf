@@ -92,15 +92,11 @@ baserecalibrator.out
 
 workflow { 
 main:
-temp_ch.view()
 checkbam(idfamily_ch)
 checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
 done_ch.toSortedList().flatten().collate(1).combine(temp_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
-alldone_ch.view()
-
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 download_fastq_to_bam_and_cram.out.bams.concat(alldone_ch).set{mixed}
-mixed.flatten().collate( 3 ).view()
 createvcfs(mixed)
 
 }
