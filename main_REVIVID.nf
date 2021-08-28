@@ -23,6 +23,9 @@ include { generateCRAM } from './generateCRAM.nf'
 include { baserecalibrator } from './baserecalibrator.nf'
 include { delete_file } from './delete_file.nf'
 include { checkbam } from './checkbam.nf'
+include { applyBSQR } from './applyBSQR.nf'
+include { genotype } from './genotype.nf'
+include { variantrecalibration } from './variantrecalibration.nf'
 
 
 // script parameters
@@ -86,6 +89,8 @@ take: bam
 
 main:
 baserecalibrator(bam,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
+applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.dict)
+genotype(applyBQSR.out,params.genome,indexes_ch,params.dict,params.mask)
 emit:
 baserecalibrator.out
 }

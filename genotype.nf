@@ -6,20 +6,17 @@ process genotype {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 	memory { 8.GB * task.attempt }
-	       	storeDir "/staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}"
 
 
         input:
-        tuple val(id), file(bam),file(bai) from BQSR_applied_ch
-        path genome from params.genome
-        path dict from params.genomedict
-//        path index from params.indexes
-        path faidx from params.genomefai
-	path mask from params.maskrepeats
+        tuple val(id), file(bam),file(bai) 
+        path genome 
+        path indexes
+path dict		
+		path mask 
 
         output:
-        tuple val(id), file("${id}.vcf") into vcf_uncallibrated_ch
-
+        tuple val(id), file("${id}.vcf") 
         """
         gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I $bam -O ${id}.vcf --sequence-dictionary ${dict} --native-pair-hmm-threads ${task.cpus}
         """
