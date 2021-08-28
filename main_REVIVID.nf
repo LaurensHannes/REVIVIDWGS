@@ -31,7 +31,7 @@ include { checkbam } from './checkbam.nf'
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
 
-temp_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}
+temp_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 
 
 //script
