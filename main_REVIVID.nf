@@ -26,7 +26,7 @@ include { checkbam } from './checkbam.nf'
 include { applyBQSR } from './applyBQSR.nf'
 include { genotype } from './genotype.nf'
 include { variantrecalibration } from './variantrecalibration.nf'
-include { compressandindex } from '.compressandindex.nf'
+include { compressandindex } from './compressandindex.nf'
 include { mergevcf } from './mergevcf.nf'
 
 
