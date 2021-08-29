@@ -12,7 +12,7 @@ process fastQC {
 	        tuple val(id), val(lane),file(R1), file(R2)
 				
 	output:
-			tuple val(), val(lane), file("*.fastqc.html")
+			tuple val(), val(lane), file("*R1_fastqc.html"), file("*R2_fastqc.html")
 	"""
 	fastqc $R1 $R2
 	"""
