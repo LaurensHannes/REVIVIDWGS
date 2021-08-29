@@ -26,6 +26,8 @@ include { checkbam } from './checkbam.nf'
 include { applyBQSR } from './applyBQSR.nf'
 include { genotype } from './genotype.nf'
 include { variantrecalibration } from './variantrecalibration.nf'
+include { compressandindex } from '.compressandindex.nf'
+include { mergevcf } from './mergevcf.nf'
 
 
 // script parameters
@@ -92,8 +94,13 @@ baserecalibrator(bam,params.genome, indexes_ch, params.genomedict, params.snps, 
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.genomedict,params.mask)
 variantrecalibration(genotype.out,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
+compressandindex(variantrecalibration.out)
+
+mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
+
+
 emit:
-variantrecalibration.out
+mergevcf.out
 }
 
 workflow { 
