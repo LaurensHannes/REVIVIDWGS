@@ -72,7 +72,6 @@ gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().t
 //gzipped_ch.view()
 
 fastQC(gzipped_ch)
-garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)}).view()
 pear(gzipped_ch, params.home)
 //if ( pear.out[0].flatten().toList().size.view() > 0 ) {
 //	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
@@ -83,6 +82,8 @@ duplicates(readgroups.out,params.home)
 
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out,params.genome,indexes_ch)
+garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)}).view()
+
 emit:
 bams = mergebams.out
 crams = generateCRAM.out[0]
