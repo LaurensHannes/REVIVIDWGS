@@ -17,11 +17,11 @@ process variantrecalibration {
 	path snpsindex 
 	path indels 
 	path indelsindex 
-	path mask from 
+	path mask
 
 
 	output:
-	tuple val(id), file("${id}.filtered.vcf")  into individual_vcf_ch
+	tuple val(id), file("${id}.filtered.vcf")  
 
 	"""
 	gatk CNNScoreVariants -V $vcf -R $genome -O ${id}.pretranched.vcf
