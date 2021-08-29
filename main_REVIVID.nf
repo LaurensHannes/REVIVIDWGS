@@ -39,6 +39,7 @@ indexes_ch = Channel.fromPath(params.indexes).toList()
 
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 
+garbage_ch = Channel.empty()
 
 //script
 
@@ -71,6 +72,7 @@ gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().t
 //gzipped_ch.view()
 
 fastQC(gzipped_ch)
+garbage.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)},gzipped_ch.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)}).view()
 pear(gzipped_ch, params.home)
 //if ( pear.out[0].flatten().toList().size.view() > 0 ) {
 //	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
