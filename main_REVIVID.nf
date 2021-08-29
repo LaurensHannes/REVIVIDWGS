@@ -14,6 +14,7 @@ log.info """\
  """
 
 include { importfastq } from './importfastq.nf'
+include { fastQC } from './fastQC.nf'
 include { pear } from './pear.nf'
 include { alignment } from './alignment.nf'
 include { readgroups } from './readgroups.nf'
@@ -69,6 +70,7 @@ gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().t
 
 //gzipped_ch.view()
 
+fastQC(gzipped_ch)
 pear(gzipped_ch, params.home)
 //if ( pear.out[0].flatten().toList().size.view() > 0 ) {
 //	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
