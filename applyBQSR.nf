@@ -21,7 +21,7 @@ process applyBQSR {
         """
         gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.recallibrated.bam
 		samtools index -@ ${task.cpus} ${id}.recallibrated.bam
-		echo "done" >  /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam /staging/leuven/stg_00086/Laurens/FNRCP/tempstorage/${id}/${id}.bam.bai
+		
 		
         """
 
