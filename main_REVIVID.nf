@@ -29,7 +29,7 @@ include { genotype } from './genotype.nf'
 include { variantrecalibration } from './variantrecalibration.nf'
 include { compressandindex } from './compressandindex.nf'
 include { mergevcf } from './mergevcf.nf'
-
+include { test } from './test.nf'
 
 // script parameters
 params.fastqgz = '/mnt/hdd2/data/lau/phd/testyard/FNRCP/FASTQ/*/*/*.fastq.gz'
@@ -86,7 +86,7 @@ duplicates(readgroups.out,params.home)
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)},alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)},mergebams.out[0].flatten().filter{ ~/.*done.*/ }).flatten().view().set{workflow1garbage}
-
+test(workflow1garbage,mergebams.out[1])
 //delete_file(workflow1garbage,mergebams.out[1])
 
 emit:
