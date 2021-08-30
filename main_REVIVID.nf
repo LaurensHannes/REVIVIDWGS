@@ -32,7 +32,8 @@ include { mergevcf } from './mergevcf.nf'
 
 
 // script parameters
-
+params.fastqgz = '/mnt/hdd2/data/lau/phd/testyard/FASTQ/*/*/*.fastq.gz'
+fastqgz_ch = channel.fromPath(params.fastqgz)
 
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
@@ -64,9 +65,10 @@ workflow download_fastq_to_bam_and_cram {
 take: idfam
 main:
 
-importfastq(idfam, params.home) 
+//importfastq(idfam, params.home) 
+//importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
-importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
+fastqgz_ch.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 //gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().toList().size.view()
 
 
