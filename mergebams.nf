@@ -16,6 +16,7 @@ process mergebams {
 	
 	output:
 	tuple val(id),file("${id}.bam"),file("${id}.bam.bai")
+	tuple val(id),val("true")
 
 	"""
 	samtools merge -@ ${task.cpus} ${id}.bam $bams
