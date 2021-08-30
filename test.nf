@@ -14,7 +14,7 @@ process 'test' {
 	
   shell:
     '''
-    echo $identifier
-	echo $inputFile
+    echo ${identifier}
+	echo ${inputFile}
     '''
 }
