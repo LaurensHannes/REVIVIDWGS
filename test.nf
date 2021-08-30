@@ -1,4 +1,4 @@
-process 'delete_file' {
+process 'test' {
 
 	tag "$inputFile"
 
