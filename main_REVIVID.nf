@@ -32,7 +32,7 @@ include { mergevcf } from './mergevcf.nf'
 
 
 // script parameters
-params.fastqgz = '/mnt/hdd2/data/lau/phd/testyard/FASTQ/*/*/*.fastq.gz'
+params.fastqgz = '/mnt/hdd2/data/lau/phd/testyard/FNRCP/FASTQ/*/*/*.fastq.gz'
 fastqgz_ch = channel.fromPath(params.fastqgz)
 
 
