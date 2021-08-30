@@ -13,8 +13,8 @@ process 'test' {
 	$permission = "true"
 	
   shell:
-    '''
+    """
     echo ${identifier}
 	echo ${inputFile}
-    '''
+    """
 }
