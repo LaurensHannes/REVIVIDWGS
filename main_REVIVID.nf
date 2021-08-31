@@ -96,7 +96,9 @@ garbage = workflow1garbage
 
 }
 workflow testwf {
-take: data,bams
+take: 
+data
+bams
 main:
 
 test(data)
