@@ -6,6 +6,8 @@ process genotype {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 	memory { 8.GB * task.attempt }
+	cpus 8
+
 
 
         input:

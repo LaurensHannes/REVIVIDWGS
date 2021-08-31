@@ -3,6 +3,7 @@ process fastQC {
         tag "$id"
 		 time { 10.hour * task.attempt }
 		 errorStrategy 'retry' 
+		 	cpus 1
 		maxRetries 3
 		container "biocontainers/fastqc:v0.11.9_cv8"
 	     memory { 8.GB * task.attempt }
