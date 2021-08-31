@@ -11,4 +11,4 @@ indels: '/mnt/hdd/data/resources/reference_genome/broadhg38/Mills_and_1000G_gold
 indelsindex: '/mnt/hdd/data/resources/reference_genome/broadhg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi'
 programs: '/mnt/hdd/data/resources/programs'
 humandb: '/mnt/hdd/data/resources/humandb'
-annovardbs: '-protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f'
+annovardbs: '-protocol refgene,avsnp150,gnomad30_genome,clinvar_20200316,regsnpintron,dbnsfp35c -operation g,f,f,f,f,f'
