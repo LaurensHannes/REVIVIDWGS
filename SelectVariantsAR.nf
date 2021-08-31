@@ -5,7 +5,7 @@ process SelectVariantsAR {
 
 		
         input:
-        tuple val(family), file(vcfgz), file(vcfgztbi) from vcftorecessive
+        tuple val(family), file(vcfgz), file(vcfgztbi)
 		path genome
 		path dict 
 		path indexes
