@@ -36,14 +36,10 @@ include { annotate as annotatedenovo; annotate as annotateAR } from './annotate.
 
 
 // script parameters
-params.fastqgz = '/mnt/hdd2/data/lau/phd/testyard/FNRCP/FASTQ/*/*/*.fastq.gz'
-fastqgz_ch = channel.fromPath(params.fastqgz)
 
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
-
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
-
 garbage_ch = Channel.empty()
 
 //script
@@ -68,21 +64,10 @@ Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
 workflow download_fastq_to_bam_and_cram {
 take: idfam
 main:
-
-//importfastq(idfam, params.home) 
-//importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
-
-fastqgz_ch.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3),file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
-//.map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
-//gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten().toList().size.view()
-
-
-
+importfastq(idfam, params.home) 
+importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 fastQC(gzipped_ch)
 pear(gzipped_ch, params.home)
-//if ( pear.out[0].flatten().toList().size.view() > 0 ) {
-//	delete_file(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(R1,R2)}.flatten())
-//}
 alignment(pear.out, params.genome,indexes_ch, params.home)
 readgroups(alignment.out,params.home)
 duplicates(readgroups.out,params.home)
@@ -92,7 +77,7 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 
 garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)},alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)}).groupTuple().dump(tag:"garbage").set{workflow1garbage}
 duplicates.out[0].flatten().collate ( 2 ).map{lane,bam -> tuple(bam.getBaseName(2))}.join(workflow1garbage).flatten().dump(tag:"merged").set{garbagemerge}
-//
+
 
 emit:
 bams = mergebams.out[0]
