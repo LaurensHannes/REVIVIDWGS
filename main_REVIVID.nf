@@ -30,6 +30,8 @@ include { variantrecalibration } from './variantrecalibration.nf'
 include { compressandindex } from './compressandindex.nf'
 include { mergevcf } from './mergevcf.nf'
 include { test } from './test.nf'
+include { SelectVariantsdenovo } from '.SelectVariantsdenovo'
+
 
 // script parameters
 params.fastqgz = '/mnt/hdd2/data/lau/phd/testyard/FNRCP/FASTQ/*/*/*.fastq.gz'
@@ -118,8 +120,18 @@ mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> t
 
 
 emit:
-mergevcf.out
+triovcf = mergevcf.out
 }
+
+workflow trioVCFanalysis {
+take:vcf
+
+main:
+SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+
+}
+
+
 
 workflow { 
 main:
@@ -130,5 +142,6 @@ download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).groupT
 download_fastq_to_bam_and_cram.out.bams.concat(alldone_ch).set{mixed}
 testwf(download_fastq_to_bam_and_cram.out.garbage)
 createvcfs(mixed)
+trioVCFanalysis(createvcfs.out.triovcf)
 
 }
