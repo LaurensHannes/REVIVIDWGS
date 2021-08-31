@@ -18,6 +18,6 @@ process importfastq {
          path "$id*.fastq.gz"
 
         """
-        gsutil cp -prn gs://gcpi-rkjbr/**/$id/uploads/$id.*.fastq.gz ./
+        gsutil cp -prn gs://gcpi-rkjbr/**/$id.*.fastq.gz ./
         """
 }
