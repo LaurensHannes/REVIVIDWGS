@@ -9,7 +9,7 @@ process pear {
 		cpus 9
         errorStrategy 'retry'
         maxRetries 3
-		container = 'docker://LaurensHannes/REVIVID'
+		container = 'docker://laurenshannes/revivid'
 		
         input:
         tuple val(id), val(lane),file(R1), file(R2)
