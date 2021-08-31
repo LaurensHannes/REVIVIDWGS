@@ -31,6 +31,8 @@ include { compressandindex } from './compressandindex.nf'
 include { mergevcf } from './mergevcf.nf'
 include { test } from './test.nf'
 include { SelectVariantsdenovo } from './SelectVariantsdenovo.nf'
+include { SelectVariantsAR } from './SelectVariantsAR.nf'
+include { annotate as annotatedenovo, annotate as annotateAR } from './annotate.nf'
 
 
 // script parameters
@@ -128,7 +130,9 @@ take:vcf
 
 main:
 SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
-
+SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+annotatedenovo(SelectVariantsdenovo.out[0])
+annotateAR(SelectVariantsAR.out[0])
 }
 
 
