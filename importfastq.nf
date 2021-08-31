@@ -8,6 +8,7 @@ process importfastq {
          maxErrors 3
 		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
+		publishDir "./FASTQ/$family/$id", mode: 'copy', overwrite: false
 		
         input:
         tuple val(id),val(family) 
@@ -17,9 +18,6 @@ process importfastq {
          path "$home/FASTQ/$family/$id/*.fastq.gz"
 
         """
-        [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
-        [ ! -d "$home/FASTQ/$family" ] && mkdir "$home/FASTQ/$family"
-        [ ! -d "$home/FASTQ/$family/$id" ] && mkdir "$home/FASTQ/$family/$id"
-        gsutil cp -prn gs://gcpi-rkjbr/GC085/$id/uploads/$id.*.fastq.gz $home/FASTQ/$family/$id/
+        gsutil cp -prn gs://gcpi-rkjbr/*/$id/uploads/$id.*.fastq.gz ./
         """
 }
