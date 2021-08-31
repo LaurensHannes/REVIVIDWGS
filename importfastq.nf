@@ -15,9 +15,9 @@ process importfastq {
         path home
 
         output:
-         path "$home/FASTQ/$family/$id/*.fastq.gz"
+         path "$id*.fastq.gz"
 
         """
-        gsutil cp -prn gs://gcpi-rkjbr/*/$id/uploads/$id.*.fastq.gz ./
+        gsutil cp -prn gs://gcpi-rkjbr/**/$id/uploads/$id.*.fastq.gz ./
         """
 }
