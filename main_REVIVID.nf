@@ -32,7 +32,7 @@ include { mergevcf } from './mergevcf.nf'
 include { test } from './test.nf'
 include { SelectVariantsdenovo } from './SelectVariantsdenovo.nf'
 include { SelectVariantsAR } from './SelectVariantsAR.nf'
-include { annotate as annotatedenovo, annotate as annotateAR } from './annotate.nf'
+include { annotate as annotatedenovo; annotate as annotateAR } from './annotate.nf'
 
 
 // script parameters
