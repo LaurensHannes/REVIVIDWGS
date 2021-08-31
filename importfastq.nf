@@ -20,6 +20,6 @@ process importfastq {
         [ ! -d "$home/FASTQ" ] && mkdir "$home/FASTQ"
         [ ! -d "$home/FASTQ/$family" ] && mkdir "$home/FASTQ/$family"
         [ ! -d "$home/FASTQ/$family/$id" ] && mkdir "$home/FASTQ/$family/$id"
-        gsutil cp -prn gs://gcpi-rkjbr/GC085/$id/uploads/$id.200724.NovaSeq2.FCA.lane2.s_2_2.gcap_20_01.R*.fastq.gz $home/FASTQ/$family/$id/
+        gsutil cp -prn gs://gcpi-rkjbr/GC085/$id/uploads/$id.*.fastq.gz $home/FASTQ/$family/$id/
         """
 }
