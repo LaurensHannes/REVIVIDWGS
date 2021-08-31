@@ -30,7 +30,7 @@ include { variantrecalibration } from './variantrecalibration.nf'
 include { compressandindex } from './compressandindex.nf'
 include { mergevcf } from './mergevcf.nf'
 include { test } from './test.nf'
-include { SelectVariantsdenovo } from '.SelectVariantsdenovo'
+include { SelectVariantsdenovo } from './SelectVariantsdenovo.nf'
 
 
 // script parameters
