@@ -12,13 +12,14 @@ process genotype {
         tuple val(id), file(bam),file(bai) 
         path genome 
         path indexes
+		path broadinterval
 path dict		
 		path mask 
 
         output:
         tuple val(id), file("${id}.vcf") 
         """
-        gatk HaplotypeCaller --verbosity INFO -XL $mask -R $genome -I $bam -O ${id}.vcf --sequence-dictionary ${dict} --native-pair-hmm-threads ${task.cpus}
+        gatk HaplotypeCaller --verbosity INFO -L -broadinterval -XL $mask -R $genome -I $bam -O ${id}.vcf --sequence-dictionary ${dict} --native-pair-hmm-threads ${task.cpus}
         """
 
 }

@@ -114,7 +114,7 @@ take: bam
 main:
 baserecalibrator(bam,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
-genotype(applyBQSR.out,params.genome,indexes_ch,params.genomedict,params.mask)
+genotype(applyBQSR.out,params.genome,indexes_ch,params.genomedict,params.mask,params.broadinterval)
 variantrecalibration(genotype.out,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 compressandindex(variantrecalibration.out)
 
