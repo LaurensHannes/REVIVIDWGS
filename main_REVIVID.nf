@@ -85,7 +85,7 @@ duplicates(readgroups.out,params.home)
 
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
-garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)},alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)},mergebams.out[0].flatten().filter{ ~/.*done.*/ }).groupTuple().flatten().unique()..dump(tag:"garbage").view().set{workflow1garbage}
+garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)},alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)},mergebams.out[0].flatten().filter{ ~/.*done.*/ }).groupTuple().flatten().unique().dump(tag:"garbage").view().set{workflow1garbage}
 
 //delete_file(workflow1garbage,mergebams.out[1])
 
