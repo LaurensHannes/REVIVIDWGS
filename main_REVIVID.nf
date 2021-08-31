@@ -85,7 +85,7 @@ duplicates(readgroups.out,params.home)
 
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
-garbage_ch.concat(gzipped_ch,pear.out,alignment.out,readgroups.out,mergebams.out[0].flatten().first().groupTuple().flatten().unique().view().set{workflow1garbage}
+garbage_ch.concat(gzipped_ch,pear.out,alignment.out,readgroups.out,mergebams.out[0].flatten().first()).groupTuple().flatten().unique().view().set{workflow1garbage}
 
 //delete_file(workflow1garbage,mergebams.out[1])
 
