@@ -131,8 +131,8 @@ take:vcf
 main:
 SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
-annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb)
-annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb)
+annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
+annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
 }
 
 
