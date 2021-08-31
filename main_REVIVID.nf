@@ -98,7 +98,6 @@ garbage = garbagemerge
 workflow testwf {
 take: 
 data
-bams
 main:
 
 delete_file(data)
