@@ -41,7 +41,7 @@ include { annotate as annotatedenovo; annotate as annotateAR } from './annotate.
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 garbage_ch = Channel.empty()
-
+testcollection = Channel.empty()
 //script
 
 myFile = file(params.ped)
@@ -85,7 +85,7 @@ emit:
 bams = mergebams.out[0]
 crams = generateCRAM.out[0]
 garbage = garbagemerge
-testgarbage = testgarbage_ch
+testgarbage = testcollection
 }
 workflow testwf {
 take: 
