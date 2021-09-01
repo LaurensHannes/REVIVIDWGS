@@ -1,7 +1,7 @@
 process fastQC {
 
         tag "$id"
-		 time { 10.hour * task.attempt }
+		 time { 3.hour * task.attempt }
 		 errorStrategy 'retry' 
 		 	cpus 1
 		maxRetries 3
