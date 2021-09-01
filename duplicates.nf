@@ -4,8 +4,8 @@ process duplicates {
         errorStrategy 'retry'
          maxErrors 3
 		memory { 2.GB * task.attempt }
-		cpus 16
-
+		cpus { 18 * task.attempt }
+			 time { 4.hour * task.attempt }
 		
 	input:
 	tuple val(id),val(lane),file(bam),file(bai) 

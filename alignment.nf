@@ -1,9 +1,9 @@
  process alignment {
 
-		cpus 9
+		cpus { 18 * task.attempt }
 		memory { 8.GB * task.attempt }
 		tag "$lane"
-			 time { 1.hour * task.attempt }
+			 time { 4.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 
