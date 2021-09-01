@@ -8,12 +8,7 @@ process 'delete_file' {
 		cpus 1
   input:
 	file(inputFile)
-	tuple val(identifier), val(permission)
-	output:
-    // There is no output
-	
-	when: 
-	$permission = "true"
+
 	
   shell:
     '''
