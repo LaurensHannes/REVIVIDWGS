@@ -71,15 +71,21 @@ pear(gzipped_ch, params.home)
 gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.join(fastQC.out.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane)}).join(pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane)}).set{testgarbage_ch}
 
 alignment(pear.out, params.genome,indexes_ch, params.home)
+pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)}.join(alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane)}).set{testgarbage_ch2}
+
 readgroups(alignment.out,params.home)
+alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane)}).set{testgarbage_ch3}
+
 duplicates(readgroups.out,params.home)
+readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}).join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(bam.getBaseName(2))}).set{testgarbage_ch4}
+
 
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
-
+duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id,bam)}).join(mergebams.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}.join(generateCRAM.out[0].flatten().collate ( 3 ).map{id,cram,crai -> tuple(id)}.set{testgarbage_ch5}
 garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)},alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)}).groupTuple().dump(tag:"garbage").set{workflow1garbage}
 duplicates.out[0].flatten().collate ( 2 ).map{lane,bam -> tuple(bam.getBaseName(2))}.join(workflow1garbage).flatten().dump(tag:"merged").set{garbagemerge}
-testcollection.concat(testgarbage_ch)
+testcollection.concat(testgarbage_ch,testgarbage_ch2,testgarbage_ch3,testgarbage_ch4,testgarbage_ch5)
 
 emit:
 bams = mergebams.out[0]
@@ -133,7 +139,7 @@ checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).m
 done_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 download_fastq_to_bam_and_cram.out.bams.concat(alldone_ch).set{mixed}
-testwf(download_fastq_to_bam_and_cram.out.garbage,download_fastq_to_bam_and_cram.out.testgarbage)
+testwf(download_fastq_to_bam_and_cram.out.garbage,download_fastq_to_bam_and_cram.out.testgarbage.flatten())
 createvcfs(mixed)
 trioVCFanalysis(createvcfs.out.triovcf)
 
