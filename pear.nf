@@ -6,10 +6,10 @@ process pear {
         tag "$lane"
         time { 1.hour * task.attempt }
 		memory '2 GB'
-		cpus 9
         errorStrategy 'retry'
         maxRetries 3
 		container = 'docker://laurenshannes/revivid'
+		cpus { 9 * task.attempt }
 		
         input:
         tuple val(id), val(lane),file(R1), file(R2)
