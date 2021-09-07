@@ -3,7 +3,7 @@ process duplicates {
         tag "$lane"
         errorStrategy 'retry'
          maxErrors 3
-		memory { 2.GB * task.attempt }
+		memory { 4.GB * task.attempt }
 		cpus { 18 * task.attempt }
 			 time { 4.hour * task.attempt }
 		
@@ -17,7 +17,7 @@ process duplicates {
 
 	
 	"""
-	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt
+	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --MAX_RECORDS_IN_RAM 2000000 --COMPRESSION_LEVEL 9
 
 	"""
 }
