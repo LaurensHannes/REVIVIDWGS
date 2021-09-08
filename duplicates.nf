@@ -6,6 +6,7 @@ process duplicates {
 		memory { 60.GB * task.attempt }
 		cpus { 18 * task.attempt }
 			 time { 4.hour * task.attempt }
+		scratch './scratch'
 		
 	input:
 	tuple val(id),val(lane),file(bam),file(bai) 
