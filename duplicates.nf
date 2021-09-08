@@ -3,9 +3,9 @@ process duplicates {
         tag "$lane"
         errorStrategy 'retry'
          maxErrors 3
-		memory { 60.GB * task.attempt }
-		cpus { 18 * task.attempt }
-			 time { 4.hour * task.attempt }
+		memory { 4.GB * task.attempt }
+		cpus { 4 * task.attempt }
+			 time { 1.hour * task.attempt }
 		scratch './scratch'
 		
 	input:
