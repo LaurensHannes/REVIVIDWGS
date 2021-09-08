@@ -3,7 +3,7 @@ process duplicates {
         tag "$lane"
         errorStrategy 'retry'
          maxErrors 3
-		memory { 4.GB * task.attempt }
+		memory { 32.GB * task.attempt }
 		cpus { 18 * task.attempt }
 			 time { 4.hour * task.attempt }
 		

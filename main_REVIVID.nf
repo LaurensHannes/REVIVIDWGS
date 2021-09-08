@@ -74,7 +74,7 @@ alignment(pear.out, params.genome,indexes_ch, params.home)
 pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)}.join(alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane)}).dump(tag:"garbage2").set{testgarbage_ch2}
 
 readgroups(alignment.out,params.home)
-alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane)}).set{testgarbage_ch3}
+alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane)}).dump(tag:"garbage3").set{testgarbage_ch3}
 
 duplicates(readgroups.out,params.home)
 readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(bam.getBaseName(2))}).set{testgarbage_ch4}
@@ -85,7 +85,7 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id,bam)}.join(mergebams.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).join(generateCRAM.out[0].flatten().collate ( 3 ).map{id,cram,crai -> tuple(id)}).set{testgarbage_ch5}
 garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),pear.out.flatten().collate( 5 ).map{id,lane,paired,forward,reverse -> tuple(lane,paired,forward,reverse)},alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)}).groupTuple().dump(tag:"garbage").set{workflow1garbage}
 duplicates.out[0].flatten().collate ( 2 ).map{lane,bam -> tuple(bam.getBaseName(2))}.join(workflow1garbage).flatten().dump(tag:"merged").set{garbagemerge}
-testcollection.concat(testgarbage_ch,testgarbage_ch2).dump(tag:"G12345")
+testcollection.concat(testgarbage_ch,testgarbage_ch2,testgarbage_ch3).dump(tag:"G12345")
 
 emit:
 bams = mergebams.out[0]
