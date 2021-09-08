@@ -6,7 +6,7 @@ process duplicates {
 		memory { 4.GB * task.attempt }
 		cpus { 4 * task.attempt }
 			 time { 1.hour * task.attempt }
-		scratch "$home/scratch"
+		scratch "$NXF_HOME/scratch"
 		
 	input:
 	tuple val(id),val(lane),file(bam),file(bai) 
