@@ -1,7 +1,7 @@
 process 'test' {
 
 	tag "$inputFile"
-
+	cpcus 1
 
   input:
 	file(inputFile)
