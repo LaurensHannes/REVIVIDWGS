@@ -1,6 +1,7 @@
 process importfastq {
 
         tag "$id"
+		 cache false
       container "docker://laurenshannes/gsutil"
    
 		cpus 4
