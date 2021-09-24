@@ -4,7 +4,7 @@ process duplicates {
         errorStrategy 'retry'
          maxErrors 3
 		memory { 28.GB * task.attempt }
-		cpus { 3 * task.attempt }
+		cpus { 2 * task.attempt }
 			 time { 4.hour * task.attempt }
 		scratch "$NXF_HOME/scratch"
 		
