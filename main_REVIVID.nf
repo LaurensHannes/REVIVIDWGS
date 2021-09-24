@@ -78,7 +78,7 @@ alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(re
 
 duplicates(readgroups.out,params.home)
 
-readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(bam.getBaseName(2)).dump(tag:"garbage4part2")}.dump(tag:"garbage4part3")).dump(tag:"garbage4").set{testgarbage_ch4}
+readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id).dump(tag:"garbage4part2")}.dump(tag:"garbage4part3")).dump(tag:"garbage4").set{testgarbage_ch4}
 
 
 
