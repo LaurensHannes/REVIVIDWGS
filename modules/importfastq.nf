@@ -19,6 +19,6 @@ process importfastq {
          path "$id*.fastq.gz"
 
         """
-        gsutil cp -prn gs://gcpi-rkjbr/**/$id.*R[12].fastq.gz ./
+		gsutil cp -prn gs://gcpi-rkjbr/**/$id.200724.NovaSeq2.FCA.lane1.s_1_[12].gcap_20_01.R[12].fastq.gz ./
         """
 }
