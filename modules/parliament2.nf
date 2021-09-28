@@ -4,7 +4,7 @@ process parliament2 {
         errorStrategy 'retry'
          maxErrors 3
 		       container "docker://dnanexus/parliament2:latest"
-			   runOptions =  "bin/bash"  --bind "./:/home/dnanexus/in" --bind "./:/home/dnanexus/out"
+			   runOptions =  "bin/bash"  -B "./:/home/dnanexus/in" -B "./:/home/dnanexus/out"
 		memory { 28.GB * task.attempt }
 		cpus { 4 * task.attempt }
 			 time { 4.hour * task.attempt }
