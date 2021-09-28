@@ -148,8 +148,8 @@ checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).m
 done_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 download_fastq_to_bam_and_cram.out.bams.concat(alldone_ch).set{mixed}
-testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createvcfs.out.vcfgarbage.flatten())
 createvcfs(mixed)
+testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createvcfs.out.vcfgarbage.flatten())
 trioVCFanalysis(createvcfs.out.triovcf)
 
 }
