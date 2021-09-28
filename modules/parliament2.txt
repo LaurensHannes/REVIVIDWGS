@@ -1,0 +1,19 @@
+process parliament2 { 
+
+        tag "$id"
+        errorStrategy 'retry'
+         maxErrors 3
+		       container "docker://dnanexus/parliament2:latest"
+			   runOptions =  "bin/bash"  --bind ./:/home/dnanexus/in --bind ./:/home/dnanexus/out
+			   
+
+
+		input:
+
+		tuple val(id), file(bam), file(bai)
+		path genome
+		path indexes
+
+		"""
+		python /home/dnanexus/parliament2.py
+		"""
