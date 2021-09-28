@@ -131,7 +131,7 @@ vcfcollection.concat(testgarbage_ch6,testgarbage_ch7,testgarbage_ch8,testgarbage
 
 emit:
 triovcf = mergevcf.out
-vcfgarbage = concatedvcfcollection.out
+vcfgarbage = concatedvcfcollection
 }
 
 workflow trioVCFanalysis {
