@@ -5,7 +5,10 @@ process parliament2 {
          maxErrors 3
 		       container "docker://dnanexus/parliament2:latest"
 			   runOptions =  "bin/bash"  --bind ./:/home/dnanexus/in --bind ./:/home/dnanexus/out
-			   
+		memory { 28.GB * task.attempt }
+		cpus { 4 * task.attempt }
+			 time { 4.hour * task.attempt }
+		
 
 
 		input:
@@ -15,5 +18,5 @@ process parliament2 {
 		path indexes
 
 		"""
-		python /home/dnanexus/parliament2.py
+		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai $genome.fai
 		"""

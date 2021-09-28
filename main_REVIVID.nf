@@ -33,7 +33,7 @@ include { test } from './testmodules/test.nf'
 include { SelectVariantsdenovo } from './modules/SelectVariantsdenovo.nf'
 include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
 include { annotate as annotatedenovo; annotate as annotateAR } from './modules/annotate.nf'
-
+include { parliament2 } from './modules/parliament2.nf'
 
 // script parameters
 
@@ -81,8 +81,8 @@ alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(re
 
 duplicates(readgroups.out,params.home)
 
-
 readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id)}.dump(tag:"garbage4part2")).dump(tag:"garbage4").set{testgarbage_ch4}
+
 
 
 
@@ -159,6 +159,7 @@ checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).m
 done_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 download_fastq_to_bam_and_cram.out.bams.concat(alldone_ch).set{mixed}
+parliament2(mixed)
 createvcfs(mixed)
 testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createvcfs.out.vcfgarbage.flatten())
 trioVCFanalysis(createvcfs.out.triovcf)
