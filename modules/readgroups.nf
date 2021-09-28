@@ -1,7 +1,7 @@
 process readgroups {
 
 	tag "$lane"
-		cpus { 18 * task.attempt }
+		cpus { 16 * task.attempt }
 			 time { 4.hour * task.attempt }
 	input:
 	tuple val(id), val(lane), file(bam) 
