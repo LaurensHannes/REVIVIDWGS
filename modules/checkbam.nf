@@ -4,6 +4,7 @@ process checkbam {
 
 	tag "$id"
 	cpus 1
+	container "docker://broadinstitute/gatk"
 	input:
     tuple val(id),val(family) 
 	
