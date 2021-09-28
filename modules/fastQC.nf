@@ -1,11 +1,12 @@
 process fastQC {
 
         tag "$id"
-		 time { 10.hour * task.attempt }
+		 time { 3.hour * task.attempt }
 		 errorStrategy 'retry' 
+		 	cpus 1
 		maxRetries 3
 		container "biocontainers/fastqc:v0.11.9_cv8"
-	     memory { 8.GB * task.attempt }
+	     memory { 2.GB * task.attempt }
 		publishDir "./QC/$id", mode: 'copy', overwrite: false
 	
 	input: 

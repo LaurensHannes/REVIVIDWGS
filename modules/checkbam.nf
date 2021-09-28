@@ -3,6 +3,7 @@ process checkbam {
 
 
 	tag "$id"
+	cpus 1
 	input:
     tuple val(id),val(family) 
 	

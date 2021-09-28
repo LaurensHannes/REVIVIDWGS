@@ -1,7 +1,7 @@
 process 'test' {
 
 	tag "$inputFile"
-
+	cpus 1
 
   input:
 	file(inputFile)
