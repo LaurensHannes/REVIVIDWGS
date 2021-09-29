@@ -5,7 +5,6 @@ process checkbam {
 	tag "$id"
 	cpus 1
 	container "docker://broadinstitute/gatk"
-	runOptions = ' -B   /staging/leuven/stg_00086/Laurens/REVIVIDWGS/results/bams/'
 	input:
     tuple val(id),val(family) 
 	
