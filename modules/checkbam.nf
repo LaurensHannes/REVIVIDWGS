@@ -3,7 +3,8 @@ process checkbam {
 
 	tag "$id"
 	cpus 1
-
+	executor local
+	
 	input:
     tuple val(id),val(family) 
 	
