@@ -2,7 +2,7 @@ process 'test' {
 
 	tag "$inputFile"
 	cpus 1
-
+executor 'local'
   input:
 	file(inputFile)
 
