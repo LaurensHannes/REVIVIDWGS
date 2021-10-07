@@ -18,7 +18,7 @@ process parliament2 {
 		path indexes
 
 		"""
-		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai $genome.fai
+		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai "$genome".fai
 		"""
 		
 		}
