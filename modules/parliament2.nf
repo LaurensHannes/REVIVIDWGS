@@ -1,7 +1,7 @@
 process parliament2 { 
 
         tag "$id"
-        errorStrategy 'retry'
+        errorStrategy 'ignore'
          maxErrors 3
 		       container "docker://dnanexus/parliament2:latest"
 			   runOptions = '-B ./:/home/dnanexus/in -B ./:/home/dnanexus/out /bin/bash'
