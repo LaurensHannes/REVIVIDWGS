@@ -4,7 +4,7 @@ process checkbam {
 	tag "$id"
 	cpus 1
 	executor 'local'
-	runOptions = '-B $launchDir/results/bams'
+	singularity.enabled = false
 	
 	input:
     tuple val(id),val(family) 
