@@ -26,6 +26,7 @@ include { delete_file } from './modules/delete_file.nf'
 include { checkbam } from './modules/checkbam.nf'
 include { applyBQSR } from './modules/applyBQSR.nf'
 include { genotype } from './modules/genotype.nf'
+include { leftalignandtrim } from './modules/leftalignandtrim.nf'
 include { variantrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
 include { mergevcf } from './modules/mergevcf.nf'
@@ -125,8 +126,11 @@ applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.jo
 variantrecalibration(genotype.out,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
 
+leftalignandtrim(variantrecalibration.out[0])
+variantrecalibration.out[0].flatten().collate ( 2 ).join(leftalignandtrim.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch9}
+
 compressandindex(variantrecalibration.out)
-variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(id)}).set{testgarbage_ch9}
+leftalignandtrim.out[0].flatten().collate ( 2 ).join(compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(id)}).set{testgarbage_ch9}
 
 
 mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
