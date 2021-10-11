@@ -20,7 +20,7 @@ process duplicates {
 
 	
 	"""
-	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --TMP_DIR $NXF_HOME/tmp
+	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt 
 
 	"""
 }
