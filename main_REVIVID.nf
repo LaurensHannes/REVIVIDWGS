@@ -154,8 +154,8 @@ annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovar
 
 workflow { 
 main:
-checkbam(idfamily_ch)
-checkbam.out.test_ch.filter( ~/.*done.*/ ).dump(tag:"done").groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
+checkbam(idfamily_ch).dump(tag:"done")
+checkbam.out.test_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
 done_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
 download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 download_fastq_to_bam_and_cram.out.bams.concat(alldone_ch).set{mixed}
