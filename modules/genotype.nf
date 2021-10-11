@@ -22,7 +22,7 @@ process genotype {
         output:
         tuple val(id), file("${id}.vcf") 
         """
-        gatk HaplotypeCaller --verbosity INFO -L $broadinterval -XL $mask -R $genome -I $bam -O ${id}.vcf --sequence-dictionary ${dict} --native-pair-hmm-threads ${task.cpus}
+        gatk HaplotypeCaller --verbosity INFO -L $broadinterval -XL $mask -R $genome -I $bam -O ${id}.vcf --sequence-dictionary ${dict} -pcr_indel_model NONE --native-pair-hmm-threads ${task.cpus}
         """
 
 }
