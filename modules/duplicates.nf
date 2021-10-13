@@ -4,8 +4,8 @@ process duplicates {
 		
 		container "docker://broadinstitute/gatk"
         errorStrategy 'retry'
-         maxErrors 3
-		memory { 28.GB * task.attempt }
+         maxErrors 5
+		memory { 8.GB * task.attempt }
 		cpus { 2 * task.attempt }
 			 time { 4.hour * task.attempt }
 
