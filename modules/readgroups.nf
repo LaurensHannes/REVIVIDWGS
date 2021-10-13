@@ -1,8 +1,9 @@
 process readgroups {
 
 	tag "$lane"
-
-		cpus { 16 * task.attempt }
+        errorStrategy 'retry'
+         maxRetries 3
+		cpus { 4 * task.attempt }
 
 			 time { 4.hour * task.attempt }
 	input:
