@@ -2,6 +2,8 @@ process mergebams {
 
 	tag "$id"
     cpus 16
+	   		label 'standard'
+
 	 time { 2.hour * task.attempt }
 	 errorStrategy 'retry' 
 	maxRetries 3

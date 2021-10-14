@@ -6,7 +6,7 @@ process parliament2 {
          maxErrors 3
 		       container "docker://sameerdcosta/parliament2:latest"
 			   runOptions = '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw /bin/bash'
-		memory { 28.GB * task.attempt }
+		memory { 8.GB * task.attempt }
 		cpus { 4 * task.attempt }
 			 time { 4.hour * task.attempt }
 		
