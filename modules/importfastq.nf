@@ -3,7 +3,7 @@ process importfastq {
         tag "$id"
 
       container "docker://laurenshannes/gsutil"
-   		label 'standard'
+   
 		cpus 4
         errorStrategy 'retry'
          maxErrors 3

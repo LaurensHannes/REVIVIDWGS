@@ -2,7 +2,6 @@
 
 
 		cpus { 16 * task.attempt }
-		   		label 'standard'
 
 		memory { 8.GB * task.attempt }
 		tag "$lane"

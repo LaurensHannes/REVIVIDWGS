@@ -1,10 +1,8 @@
 process duplicates { 
 
         tag "$lane"
-
+		
 		container "docker://broadinstitute/gatk"
-		   		label 'standard'
-
         errorStrategy 'retry'
          maxRetries 3
 		memory { 20.GB * task.attempt }
