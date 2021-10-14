@@ -4,6 +4,8 @@ process checkbam {
 	tag "$id"
 	cpus 1
 	executor 'local'
+	   		label 'standard'
+
 
 	
 	input:
