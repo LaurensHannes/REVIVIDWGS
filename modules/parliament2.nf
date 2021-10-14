@@ -1,6 +1,7 @@
 process parliament2 { 
 
         tag "$id"
+		label 'parliament'
         errorStrategy 'ignore'
          maxErrors 3
 		       container "docker://sameerdcosta/parliament2:latest"
