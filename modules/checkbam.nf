@@ -4,7 +4,7 @@ process checkbam {
 	tag "$id"
 	cpus 1
 	executor 'local'
-	   		label 'standard'
+     runOptions = "-B $launchDir"
 
 
 	
