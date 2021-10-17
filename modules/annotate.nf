@@ -2,7 +2,7 @@ process annotate {
         tag "$family"
 		cpus 16
 			publishDir "./results/annotated/$analysis", mode: 'copy', overwrite: false
-			containerOptions "-B $programpath $humandbpath"
+			containerOptions "-B $programpath -B $humandbpath"
 
         input:
         tuple val(family), val(analysis), file(vcfgz),file(vcfgztbi)
