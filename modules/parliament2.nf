@@ -8,7 +8,7 @@ process parliament2 {
 			   containerOptions '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw'
 		memory { 64.GB * task.attempt }
 		cpus { 36 * task.attempt }
-			 time { 4.hour * task.attempt }
+			 time { 8.hour * task.attempt }
 		
 
 
