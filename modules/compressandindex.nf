@@ -12,7 +12,7 @@ output:
         tuple val(id), file("${id}.filtered.vcf.gz"), file("${id}.filtered.vcf.gz.tbi") 
 
 """
-        bcftools view --threads ${task.cpus} -o ${id}.filtered.vcf.gz -O z ${id}.filtered.vcf
+        bcftools view --threads ${task.cpus} -o ${id}.filtered.vcf.gz -O z $vcf
         tabix ${id}.filtered.vcf.gz
 """
 }
