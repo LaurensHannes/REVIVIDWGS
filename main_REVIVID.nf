@@ -129,7 +129,7 @@ genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten
 leftalignandtrim(variantrecalibration.out[0],params.genome)
 variantrecalibration.out[0].flatten().collate ( 2 ).join(leftalignandtrim.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch9}
 
-compressandindex(variantrecalibration.out)
+compressandindex(leftalignandtrim.out)
 leftalignandtrim.out[0].flatten().collate ( 2 ).join(compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(id)}).set{testgarbage_ch9}
 
 
