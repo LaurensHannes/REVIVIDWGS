@@ -13,6 +13,7 @@ process leftalignandtrim {
         input:
         tuple val(id), file(vcf)
         path genome 
+		path indexes
 	
 		
         output:
