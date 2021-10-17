@@ -20,7 +20,7 @@ process leftalignandtrim {
         
 		
 		"""
-		gatk LeftAlignAndTrimVariants -R reference.fasta -V $vcf -O ${id}.alignedandtrimmed.vcf
+		gatk LeftAlignAndTrimVariants -R $genome -V $vcf -O ${id}.alignedandtrimmed.vcf
  
 		"""		
 		
