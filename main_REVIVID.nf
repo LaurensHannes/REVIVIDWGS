@@ -126,7 +126,7 @@ applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.jo
 variantrecalibration(genotype.out,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
 
-leftalignandtrim(variantrecalibration.out[0],params.genome,indexes_ch)
+leftalignandtrim(variantrecalibration.out[0],params.genome,indexes_ch,params.genomedict)
 variantrecalibration.out[0].flatten().collate ( 2 ).join(leftalignandtrim.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch9}
 
 compressandindex(leftalignandtrim.out)

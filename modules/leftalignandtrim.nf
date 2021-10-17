@@ -14,7 +14,7 @@ process leftalignandtrim {
         tuple val(id), file(vcf)
         path genome 
 		path indexes
-	
+		path dict
 		
         output:
         tuple val(id), file("${id}.alignedandtrimmed.vcf") 
