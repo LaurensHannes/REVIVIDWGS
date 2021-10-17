@@ -2,6 +2,7 @@ process annotate {
         tag "$family"
 		cpus 16
 			publishDir "./results/annotated/$analysis", mode: 'copy', overwrite: false
+			containerOptions '-B $programpath'
 // change input names for gz and gztbi
         input:
         tuple val(family), val(analysis), file(vcfgz),file(vcfgztbi)
