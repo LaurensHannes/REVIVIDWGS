@@ -3,7 +3,7 @@ process annotate {
 		cpus 16
 			publishDir "./results/annotated/$analysis", mode: 'copy', overwrite: false
 			containerOptions "-B $programpath $humandbpath"
-// change input names for gz and gztbi
+
         input:
         tuple val(family), val(analysis), file(vcfgz),file(vcfgztbi)
 		val(programpath)
@@ -14,6 +14,6 @@ process annotate {
         tuple val(family), val(analysis), file("${family}.${analysis}.hg38_multianno.vcf"),file("${family}.${analysis}.hg38_multianno.txt") 
 
         """
-        perl ${programpath}/annovar/table_annovar.pl $vcfgz ${humandbpath} -intronhgvs 25 --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.${analysis} -remove -polish ${annovardbs} -nastring . -polish -intronhgvs 50 -vcfinput
+        perl ${programpath}/annovar/table_annovar.pl $vcfgz ${humandbpath} -intronhgvs 25 --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.${analysis} -remove -polish ${annovardbs} -nastring . -polish -vcfinput
         """
 }
