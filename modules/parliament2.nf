@@ -6,8 +6,8 @@ process parliament2 {
          maxRetries 3
 		       container "docker://sameerdcosta/parliament2:latest"
 			   containerOptions '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw'
-		memory { 72.GB * task.attempt }
-		cpus { 72 * task.attempt }
+		memory { 64.GB * task.attempt }
+		cpus { 36 * task.attempt }
 			 time { 4.hour * task.attempt }
 		
 
@@ -19,7 +19,7 @@ process parliament2 {
 		path indexes
 
 		"""
-		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai "$genome".fai
+		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai "$genome".fai --genotype --svviz --filter_short_contigs
 		"""
 		
 		}
