@@ -1,6 +1,6 @@
 process leftalignandtrim {
 
-        tag "$id"
+        tag "$family"
 		 time { 1.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
@@ -11,17 +11,17 @@ process leftalignandtrim {
 
 
         input:
-        tuple val(id), file(vcf)
+        tuple val(family), file(vcfgz), file(vcfgztbi)
         path genome 
 		path indexes
 		path dict
 		
         output:
-        tuple val(id), file("${id}.alignedandtrimmed.vcf") 
+        tuple val(family), file("${family}.alignedandtrimmed.vcf.gz"), file("${family}.alignedandtrimmed.vcf.gz.tbi") 
         
 		
 		"""
-		gatk LeftAlignAndTrimVariants -R $genome -V $vcf -O ${id}.alignedandtrimmed.vcf
+		gatk LeftAlignAndTrimVariants -R $genome -V $vcfgz -O ${family}.alignedandtrimmed.vcf.gz
  
 		"""		
 		
