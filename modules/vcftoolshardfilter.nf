@@ -1,4 +1,4 @@
-vcftoolshardfilter {
+process vcftoolshardfilter {
 
 		tag "$family"
 
