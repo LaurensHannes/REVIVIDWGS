@@ -1,4 +1,4 @@
-process checkbam {
+process checkvcf {
 
 
 	tag "$id"
@@ -12,10 +12,10 @@ process checkbam {
     tuple val(id),val(family) 
 	
 	output:
-	tuple val(id), val(family), env(status), emit: bamcheck_ch
+	tuple val(id), val(family), env(status), emit: vcfcheck_ch
 	
 	"""
-	if [ -f $launchDir/results/bams/"$id".bam ]
+	if [ -f $launchDir/results/vcf/"$id".vcf ]
     then 
 	status="done"
 	else

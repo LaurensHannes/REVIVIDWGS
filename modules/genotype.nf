@@ -7,6 +7,9 @@ process genotype {
 		container "docker://broadinstitute/gatk"
 	memory { 8.GB * task.attempt }
 	cpus 8
+		myDir = file('./results/vcfs')
+	myDir.mkdirs()
+	publishDir './results/vcfs', mode: 'copy', overwrite: false
 
 
 

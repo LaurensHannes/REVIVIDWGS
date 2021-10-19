@@ -42,6 +42,8 @@ include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
+donevcfs_ch = channel.fromPath('./results/vcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
+
 garbage_ch = Channel.empty()
 testcollection = Channel.empty()
 
@@ -113,7 +115,7 @@ test(test)
 
 }
 
-workflow createvcfs {
+workflow createindividualvcfs {
 take: bam 
 
 main:
@@ -124,7 +126,16 @@ baserecalibrator.out[0].flatten().collate ( 4 ).map{id,bam,bai,recaltable -> tup
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.join(genotype.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch7}
 
-variantrecalibration(genotype.out,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
+vcfcollection.concat(testgarbage_ch6,testgarbage_ch7).set{concatedvcfcollection}
+
+emit:
+individualvcf = genotype.out[0]
+
+workflow createfamilyvcfs {
+take: vcf
+
+main: 
+variantrecalibration(vcf,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
 
 compressandindex(variantrecalibration.out[0])
@@ -139,7 +150,7 @@ vcftoolshardfilter(mergevcf.out[0])
 leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
 //mergevcf.out[0].flatten().collate ( 3 ).join(leftalignandtrim.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch9}
 
-vcfcollection.concat(testgarbage_ch6,testgarbage_ch7,testgarbage_ch8,testgarbage_ch9,testgarbage_ch10).set{concatedvcfcollection}
+
 
 
 emit:
@@ -155,20 +166,31 @@ SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,p
 SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
+
 }
 
 
 
 workflow { 
 main:
+
 checkbam(idfamily_ch)
-checkbam.out.test_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{done_ch}
-done_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{alldone_ch}
-download_fastq_to_bam_and_cram(checkbam.out.test_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
-download_fastq_to_bam_and_cram.out.bams.concat(alldone_ch).set{mixed}
-parliament2(mixed,params.genome,indexes_ch)
-createvcfs(mixed)
-testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createvcfs.out.vcfgarbage.flatten())
-trioVCFanalysis(createvcfs.out.triovcf)
+checkbam.out.bamcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{bamdone_ch}
+bamdone_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{bamalldone_ch}
+download_fastq_to_bam_and_cram(checkbam.out.bamcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
+download_fastq_to_bam_and_cram.out.bams.concat(bamalldone_ch).set{bammixed}
+
+parliament2(bammixed,params.genome,indexes_ch)
+
+checkvcf(idfamily_ch)
+checkvcf.out.vcfcheck_ch.dump(tag:"vcfdone").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{vcfdone_ch}
+vcfdone_ch.toSortedList().flatten().collate(1).combine(donevcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{vcfalldone_ch}
+createindividualvcfs(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vcftodo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id)}.join(bammixed))
+createindividualvcfs.out.bams.concat(vcfalldone_ch).set{vcfmixed}
+
+createfamilyvcfs(vcfmixed)
+testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
+trioVCFanalysis(createfamilyvcfs.out.triovcf)
+trioVCFanalysis(createfamilyvcfs.out.triovcf)
 
 }
