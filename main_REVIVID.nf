@@ -141,7 +141,7 @@ vcfcollection.concat(testgarbage_ch6,testgarbage_ch7,testgarbage_ch8,testgarbage
 
 
 emit:
-triovcf = mergevcf.out
+triovcf = leftalignandtrim.out
 vcfgarbage = concatedvcfcollection
 }
 
