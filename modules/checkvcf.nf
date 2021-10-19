@@ -15,7 +15,7 @@ process checkvcf {
 	tuple val(id), val(family), env(status), emit: vcfcheck_ch
 	
 	"""
-	if [ -f $launchDir/results/vcf/"$id".vcf ]
+	if [ -f $launchDir/results/vcfs/"$id".vcf ]
     then 
 	status="done"
 	else
