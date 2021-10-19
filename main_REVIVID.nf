@@ -127,7 +127,7 @@ baserecalibrator.out[0].flatten().collate ( 4 ).map{id,bam,bai,recaltable -> tup
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.join(genotype.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch7}
 
-vcfcollection.concat(testgarbage_ch6,testgarbage_ch7).set{concatedvcfcollection}
+
 
 emit:
 individualvcf = genotype.out[0]
@@ -153,7 +153,7 @@ vcftoolshardfilter(mergevcf.out[0])
 leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
 //mergevcf.out[0].flatten().collate ( 3 ).join(leftalignandtrim.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch9}
 
-
+vcfcollection.concat(testgarbage_ch9,testgarbage_ch10).set{concatedvcfcollection}
 
 
 emit:
