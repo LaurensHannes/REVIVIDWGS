@@ -35,6 +35,7 @@ include { SelectVariantsdenovo } from './modules/SelectVariantsdenovo.nf'
 include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
 include { annotate as annotatedenovo; annotate as annotateAR } from './modules/annotate.nf'
 include { parliament2 } from './modules/parliament2.nf'
+include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 
 // script parameters
 
@@ -134,7 +135,8 @@ variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0]
 
 mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
 compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(familymap[id]),id,vcfgz,vcfgztbi}.join(mergevcf.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch10}
-leftalignandtrim(mergevcf.out[0],params.genome,indexes_ch,params.genomedict)
+vcftoolshardfilter(mergevcf.out[0])
+leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
 //mergevcf.out[0].flatten().collate ( 3 ).join(leftalignandtrim.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch9}
 
 vcfcollection.concat(testgarbage_ch6,testgarbage_ch7,testgarbage_ch8,testgarbage_ch9,testgarbage_ch10).set{concatedvcfcollection}

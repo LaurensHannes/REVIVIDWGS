@@ -14,9 +14,9 @@ process SelectVariantsdenovo {
 
         output:
         tuple val(family), val("denovo"), file("${family}.denovo.vcf.gz"), file("${family}.denovo.vcf.gz.tbi") 
-        """
-		gatk FilterVcf -I $vcfgz -O filtered${vcfgz} --MIN_DP 10 --MIN_GQ 30
-        gatk SelectVariants -V filtered${vcfgz} -ped $ped -R $genome -XL $mask --exclude-filtered false --mendelian-violation true --mendelian-violation-qual-threshold 30 -O ${family}.denovo.vcf.gz --remove-unused-alternates true
+     
+		"""
+        gatk SelectVariants -V $vcfgz -ped $ped -R $genome -XL $mask --exclude-filtered false --mendelian-violation true --mendelian-violation-qual-threshold 30 -O ${family}.denovo.vcf.gz --remove-unused-alternates true
         """
 //exclude-filtered changed to false --remove-unused-alternates to false  --restrict-alleles-to BIALLELIC (removed)
 }
