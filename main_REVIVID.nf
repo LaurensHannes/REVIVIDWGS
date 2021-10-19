@@ -139,7 +139,7 @@ take: vcf
 
 main: 
 variantrecalibration(vcf,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
-genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
+//genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
 
 compressandindex(variantrecalibration.out[0])
 
