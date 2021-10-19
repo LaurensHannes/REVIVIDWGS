@@ -194,6 +194,6 @@ createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).set{vcfmixed}
 createfamilyvcfs(vcfmixed)
 testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
 trioVCFanalysis(createfamilyvcfs.out.triovcf)
-trioVCFanalysis(createfamilyvcfs.out.triovcf)
+
 
 }
