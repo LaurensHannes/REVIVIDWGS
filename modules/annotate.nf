@@ -1,7 +1,7 @@
 process annotate {
         tag "$family"
 		cpus 16
-			publishDir "./results/annotated/$analysis", mode: 'copy', overwrite: false
+			publishDir "./results/annotated/$analysis", mode: 'copy', overwrite: true
 			containerOptions "-B $programpath -B $humandbpath"
 
         input:
