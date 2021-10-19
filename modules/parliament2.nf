@@ -2,13 +2,13 @@ process parliament2 {
 
         tag "$id"
 		label 'parliament'
-        errorStrategy 'ignore'
+        errorStrategy 'retry'
          maxRetries 3
 		       container "docker://sameerdcosta/parliament2:latest"
 			   containerOptions '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw'
 		memory { 64.GB * task.attempt }
-		cpus { 36 * task.attempt }
-			 time { 8.hour * task.attempt }
+		cpus 36
+			 time { 12.hour * task.attempt }
 		
 
 
