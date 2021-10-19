@@ -131,6 +131,8 @@ vcfcollection.concat(testgarbage_ch6,testgarbage_ch7).set{concatedvcfcollection}
 emit:
 individualvcf = genotype.out[0]
 
+}
+
 workflow createfamilyvcfs {
 take: vcf
 
