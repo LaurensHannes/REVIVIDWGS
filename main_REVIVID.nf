@@ -153,17 +153,17 @@ variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0]
 
 
 //mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
-compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(familymap[id]),id,vcfgz,vcfgztbi}.join(mergevcf.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch10}
-vcftoolshardfilter(mergevcf.out[0])
+//compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(familymap[id]),id,vcfgz,vcfgztbi}.join(mergevcf.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch10}
+vcftoolshardfilter(compressandindex.out[0])
 leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
 //mergevcf.out[0].flatten().collate ( 3 ).join(leftalignandtrim.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch9}
 
-vcfcollection.concat(testgarbage_ch9,testgarbage_ch10).set{concatedvcfcollection}
+//vcfcollection.concat(testgarbage_ch9,testgarbage_ch10).set{concatedvcfcollection}
 
 
 emit:
 triovcf = leftalignandtrim.out
-vcfgarbage = concatedvcfcollection
+//vcfgarbage = concatedvcfcollection
 }
 
 workflow trioVCFanalysis {
@@ -197,7 +197,8 @@ createindividualvcfs(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vc
 createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).set{vcfmixed}
 
 createfamilyvcfs(vcfmixed)
-testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
+testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),download_fastq_to_bam_and_cram.out.testgarbage.flatten())
+//testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
 trioVCFanalysis(createfamilyvcfs.out.triovcf)
 
 
