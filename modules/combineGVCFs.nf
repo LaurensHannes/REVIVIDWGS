@@ -8,14 +8,14 @@ process combineGVCFs {
 		container "docker://broadinstitute/gatk"
 		
 	input:
-	tuple val(family), path(vcf) 
+	tuple val(family), path(vcf1), path(vcf2), path(vcf3) 
 	path genome 
 	
 	output:
 	tuple val(family), path("${family}.g.vcf.gz")
 	
 """
-	gatk CombineGVCFs -R $genome -V $vcf -O ${family}.g.vcf.gz
+	gatk CombineGVCFs -R $genome -V $vcf1 -V $vcf2 -V $vcf3 -O ${family}.g.vcf.gz
 """
 
 }
