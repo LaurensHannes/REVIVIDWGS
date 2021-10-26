@@ -8,7 +8,7 @@ process combineGVCFs {
 		container "docker://broadinstitute/gatk"
 		
 	input:
-	tuple (val(family), tuple( path(vcf1), path(vcf2), path(vcf3))) 
+	tuple (val(family), path(vcf1), path(vcf2), path(vcf3))
 	path genome 
 	
 	output:
