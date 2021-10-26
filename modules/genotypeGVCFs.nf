@@ -16,7 +16,7 @@ process genotypeGVCFs {
 		path mask 
 	
 	output:
-	tuple val(family), path("${family}.vcf.gz"), path("${family}.vcf.gz.tbi")
+	tuple val(family), path("${family}.vcf.gz")
 	
 """
 	gatk genotypeGVCFs -R $genome -V -$vcf -O ${family}.vcf.gz -L $broadinterval --sequence-dictionary $dict
