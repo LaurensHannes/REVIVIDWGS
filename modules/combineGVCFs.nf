@@ -15,7 +15,7 @@ process combineGVCFs {
 	tuple val(family), path("${family}.g.vcf.gz")
 	
 """
-	gatk CombineGVCFs -R $genome -V -$vcf -O ${family}.g.vcf.gz
+	gatk CombineGVCFs -R $genome -V $vcf -O ${family}.g.vcf.gz
 """
 
 }
