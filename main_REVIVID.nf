@@ -31,6 +31,8 @@ include { leftalignandtrim } from './modules/leftalignandtrim.nf'
 include { variantrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
 include { mergevcf } from './modules/mergevcf.nf'
+include { combineGVCFs } from './modules/combineGVCFs.nf'
+include { genotypeGVCFs } from './modules/genotypeGVCFs.nf'
 include { test } from './testmodules/test.nf'
 include { SelectVariantsdenovo } from './modules/SelectVariantsdenovo.nf'
 include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
@@ -138,7 +140,10 @@ workflow createfamilyvcfs {
 take: vcf
 
 main: 
-variantrecalibration(vcf,params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
+combineGVCFs(idfamily_ch.join(vcf).map{ id, family, vcf -> tuple(family, vcf)}.groupTuple(),params.genome)
+genotypeGVCFs(genotypeGVCFs,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+
+variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 //genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
 
 compressandindex(variantrecalibration.out[0])
@@ -147,7 +152,7 @@ variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0]
 
 
 
-mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
+//mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
 compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(familymap[id]),id,vcfgz,vcfgztbi}.join(mergevcf.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch10}
 vcftoolshardfilter(mergevcf.out[0])
 leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
