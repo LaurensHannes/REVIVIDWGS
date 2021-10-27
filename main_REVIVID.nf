@@ -140,7 +140,7 @@ workflow createfamilyvcfs {
 take: vcf
 
 main: 
-combineGVCFs((idfamily_ch.join(vcf).map{ id, family, vcf -> tuple(family, vcf)}.groupTuple().flatten().collate ( 4 ).dump(tag:"combine")),params.genome)
+combineGVCFs((idfamily_ch.join(vcf).map{ id, family, vcf -> tuple(family, vcf)}.groupTuple().flatten().collate ( 4 ).dump(tag:"combine")),params.genome,,params.genome,indexes_ch,params.genomedict)
 genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)

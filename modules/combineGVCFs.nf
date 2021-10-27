@@ -10,7 +10,9 @@ process combineGVCFs {
 	input:
 	tuple val(family), path(vcf1), path(vcf2), path(vcf3)
 	path genome 
-	
+	        path indexes
+
+		path dict
 	output:
 	tuple val(family), path("${family}.g.vcf.gz")
 	
