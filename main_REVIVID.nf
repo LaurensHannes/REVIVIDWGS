@@ -129,7 +129,7 @@ baserecalibrator.out[0].flatten().collate ( 4 ).map{id,bam,bai,recaltable -> tup
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.join(genotype.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch7}
 
-idfamily_ch.join(genotype.out[0]).map{ id, family, vcf -> tuple(family, vcf)}.groupTuple().view()
+
 
 emit:
 individualvcf = genotype.out[0]
@@ -140,7 +140,7 @@ workflow createfamilyvcfs {
 take: vcf
 
 main: 
-combineGVCFs((idfamily_ch.join(vcf).map{ id, family, vcf -> tuple(family, vcf)}.groupTuple()).dump(tag:"combine"),params.genome)
+combineGVCFs((idfamily_ch.join(vcf).map{ id, family, vcf -> tuple(family, vcf)}.groupTuple().flatten().collate ( 4 ).dump(tag:"combine"),params.genome)
 genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
