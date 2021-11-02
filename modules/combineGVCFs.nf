@@ -2,7 +2,7 @@ process combineGVCFs {
 
 	tag "$family"
 	cpus 4
-	time { 30.minutes * task.attempt }
+	time { 2.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
@@ -14,7 +14,7 @@ process combineGVCFs {
 	path dict
 	
 	output:
-	tuple val(family), path("${family}.g.vcf.gz")
+	tuple val(family), path("${family}.g.vcf.gz"), path("${family}.g.vcf.gz.tbi")
 	
 """
 	gatk IndexFeatureFile -I $vcf1

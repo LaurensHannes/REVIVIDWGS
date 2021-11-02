@@ -6,9 +6,10 @@ process genotypeGVCFs {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 	memory { 8.GB * task.attempt }
-		
+	cpus 4
+	
 	input:
-	tuple val(family), path(vcf) 
+	tuple val(family), path(vcf), path(vcftbi)
         path genome 
         path indexes
 		path broadinterval
@@ -16,7 +17,7 @@ process genotypeGVCFs {
 		path mask 
 	
 	output:
-	tuple val(family), path("${family}.vcf.gz")
+	tuple val(family), path("${family}.vcf.gz"), path("${family}.vcf.gz.tbi")
 	
 """
 	gatk genotypeGVCFs -R $genome -V -$vcf -O ${family}.vcf.gz -L $broadinterval --sequence-dictionary $dict
