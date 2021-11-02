@@ -10,13 +10,16 @@ process combineGVCFs {
 	input:
 	tuple val(family), path(vcf1), path(vcf2), path(vcf3)
 	path genome 
-	        path indexes
-
-		path dict
+	path indexes
+	path dict
+	
 	output:
 	tuple val(family), path("${family}.g.vcf.gz")
 	
 """
+	gatk IndexFeatureFile -I $vcf1
+	gatk IndexFeatureFile -I $vcf2
+	gatk IndexFeatureFile -I $vcf3
 	gatk CombineGVCFs -R $genome -V $vcf1 -V $vcf2 -V $vcf3 -O ${family}.g.vcf.gz
 """
 
