@@ -148,7 +148,7 @@ variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexe
 
 //compressandindex(variantrecalibration.out[0])
 
-variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(id)}).set{testgarbage_ch9}
+//variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(id)}).set{testgarbage_ch9}
 
 
 
