@@ -146,7 +146,7 @@ genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 //genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
 
-compressandindex(variantrecalibration.out[0])
+//compressandindex(variantrecalibration.out[0])
 
 variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(id)}).set{testgarbage_ch9}
 
@@ -154,7 +154,8 @@ variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0]
 
 //mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
 //compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(familymap[id]),id,vcfgz,vcfgztbi}.join(mergevcf.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch10}
-vcftoolshardfilter(compressandindex.out[0])
+vcftoolshardfilter(variantrecalibration.out[0])
+//vcftoolshardfilter(compressandindex.out[0])
 leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
 //mergevcf.out[0].flatten().collate ( 3 ).join(leftalignandtrim.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch9}
 

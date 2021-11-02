@@ -9,7 +9,7 @@ process variantrecalibration {
 	container "docker://broadinstitute/gatk"
 
 	input:
-	tuple val(family), path(vcf)
+	tuple val(family), path(vcf), path(vcftbi)
 	path genome
     path dict 
 	path indexes
