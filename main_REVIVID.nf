@@ -36,7 +36,7 @@ include { genotypeGVCFs } from './modules/genotypeGVCFs.nf'
 include { test } from './testmodules/test.nf'
 include { SelectVariantsdenovo } from './modules/SelectVariantsdenovo.nf'
 include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
-include { annotate as annotatedenovo; annotate as annotateAR } from './modules/annotate.nf'
+include { annotate as annotatedenovo; annotate as annotateAR; annotate as annotateX } from './modules/annotate.nf'
 include { parliament2 } from './modules/parliament2.nf'
 include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 
@@ -173,9 +173,10 @@ take:vcf
 main:
 SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsX(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
-
+annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
 }
 
 
