@@ -2,7 +2,7 @@ process SelectVariantsX {
 
 
         tag "$family"
-		cpus 4
+		cpus 2
 		
         input:
         tuple val(family), file(vcfgz), file(vcfgztbi)
