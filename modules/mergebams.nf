@@ -7,7 +7,7 @@ process mergebams {
 	maxRetries 3
 	myDir = file('./results/bams')
 	myDir.mkdirs()
-	publishDir './results/bams', mode: 'copy', overwrite: false
+	publishDir './results/bams', mode: 'copy', overwrite: true
 	
 	input:
 	tuple val(id),file(bams)

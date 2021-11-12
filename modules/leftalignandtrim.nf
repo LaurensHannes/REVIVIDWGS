@@ -7,7 +7,7 @@ process leftalignandtrim {
 		container "docker://broadinstitute/gatk"
 	memory { 8.GB * task.attempt }
 	cpus 1
-
+publishDir "./results/${family}/vcfs", mode: 'copy', overwrite: true
 
 
         input:

@@ -9,7 +9,7 @@ process parliament2 {
 		memory { 64.GB * task.attempt }
 		cpus 36
 			 time { 12.hour * task.attempt }
-		
+			publishDir "./results/CNV/$id/parliament", mode: 'copy', overwrite: true
 
 
 		input:
