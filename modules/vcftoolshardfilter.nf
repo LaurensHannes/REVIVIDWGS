@@ -1,7 +1,8 @@
 process vcftoolshardfilter {
 
 		tag "$family"
-
+			cpus 2
+		
         input:
         tuple val(family), file(vcfgz), file(vcfgztbi)
 		
