@@ -19,7 +19,7 @@ process parliament2 {
 		path indexes
 
 		"""
-		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai "$genome".fai --genotype --svviz --filter_short_contigs
+		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai "$genome".fai --genotype --filter_short_contigs
 		"""
 		
 		}
