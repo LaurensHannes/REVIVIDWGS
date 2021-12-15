@@ -18,8 +18,13 @@ process parliament2 {
 		path genome
 		path indexes
 
+		output:
+		
+		tuple val(id), file("${id}.survivor_sorted.vcf")
+
 		"""
 		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai "$genome".fai --genotype --filter_short_contigs
+		
 		"""
 		
 		}
