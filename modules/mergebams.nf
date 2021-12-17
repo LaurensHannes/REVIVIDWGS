@@ -19,7 +19,8 @@ process mergebams {
 	tuple val(id),val("true")
 
 	"""
-	samtools merge -@ ${task.cpus} ${id}.bam $bams
+	samtools merge -@ ${task.cpus} ${id}.temp.bam $bams
+	samtools sort -@ ${task.cpus} > ${id}.bam
 	samtools index -@ ${task.cpus} ${id}.bam
 	"""
 
