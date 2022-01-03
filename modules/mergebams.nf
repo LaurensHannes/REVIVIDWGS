@@ -20,7 +20,7 @@ process mergebams {
 
 	"""
 	samtools merge -@ ${task.cpus} ${id}.temp.bam $bams
-	samtools sort -@ ${task.cpus} > ${id}.bam
+	samtools sort -@ ${task.cpus} ${id}.temp.bam > ${id}.bam
 	samtools index -@ ${task.cpus} ${id}.bam
 	"""
 
