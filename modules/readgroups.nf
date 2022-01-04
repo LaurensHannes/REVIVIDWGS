@@ -16,8 +16,10 @@ process readgroups {
 
 
 	"""
-	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
+	gatk AddOrReplaceReadGroups -I $bam -O ${lane}.temp.RG.bam -LB REVIVID -PL ILLUMINA -PU $lane -SM $id 
+	samtools sort -@ ${task.cpus} ${lane}.temp.RG.bam > ${lane}.RG.bam
 	samtools index -@ ${task.cpus} ${lane}.RG.bam
+	rm ${lane}.temp.RG.bam
 	"""
 
 }
