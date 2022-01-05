@@ -20,7 +20,7 @@ process duplicates {
 
 	
 	"""
-	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --TAGGING_POLICY OpticalOnly --MAX_RECORDS_IN_RAM 50000
+	gatk MarkDuplicatesSpark -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --TAGGING_POLICY OpticalOnly --MAX_RECORDS_IN_RAM 50000
 
 	"""
 }
