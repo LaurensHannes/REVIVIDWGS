@@ -20,7 +20,7 @@ process duplicates {
 
 	
 	"""
-	gatk MarkDuplicatesSpark -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --duplicate-tagging-policy OpticalOnly 
+	gatk MarkDuplicatesSpark -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --duplicate-tagging-policy OpticalOnly --tmp-dir $home/temp
 
 	"""
 }
