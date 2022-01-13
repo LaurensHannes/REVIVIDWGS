@@ -20,11 +20,9 @@ process duplicates {
 
 	
 	"""
-<<<<<<< HEAD
-	gatk MarkDuplicatesSpark -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --duplicate-tagging-policy OpticalOnly --tmp-dir $home/temp
-=======
+
 	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --TAGGING_POLICY OpticalOnly --MAX_RECORDS_IN_RAM 50000
->>>>>>> parent of dd59f21 (Update duplicates.nf)
+
 
 	"""
 }
