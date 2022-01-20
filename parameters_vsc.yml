@@ -1,4 +1,5 @@
-ped: '/staging/leuven/stg_00086/Laurens/REVIVID/FNRCP.ped' 
+ped: '/staging/leuven/stg_00086/Laurens/REVIVID/FNRCP.ped'
+arch: '/archive/leuven/arc_00086/' 
 home: '/staging/leuven/stg_00086/Laurens/FNRCP' 
 indexes: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta.*' 
 genome: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta' 

@@ -9,12 +9,13 @@ process importfastq {
          maxErrors 3
 		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
-		publishDir "./FASTQ/$family/$id", mode: 'copy', overwrite: false
+		publishDir "$arch/FASTQ/$family/$id", mode: 'copy', overwrite: false
 		
         input:
         tuple val(id),val(family) 
         path home
-
+		path arch
+	
         output:
          path "$id*.fastq.gz"
 
