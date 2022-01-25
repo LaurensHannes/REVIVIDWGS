@@ -20,6 +20,7 @@ include { readgroups } from './modules/readgroups.nf'
 include { duplicates } from './modules/duplicates.nf'
 include { mergebams } from './modules/mergebams.nf'
 include { generateCRAM } from './modules/generateCRAM.nf'
+include { CollectWgsMetrics } from './modules/CollectWgsMetrics.nf'
 include { baserecalibrator } from './modules/baserecalibrator.nf'
 include { delete_file } from './modules/delete_file.nf'
 include { checkbam } from './modules/checkbam.nf'
@@ -94,6 +95,7 @@ readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.
 
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
+CollectWgsMetrics(mergebams.out[0],params.genome)
 duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id,bam)}.join(mergebams.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).join(generateCRAM.out[0].flatten().collate ( 3 ).map{id,cram,crai -> tuple(id)}).dump(tag:"garbage5").set{testgarbage_ch5}
 garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)}).groupTuple().dump(tag:"garbage").set{workflow1garbage}
 duplicates.out[0].flatten().collate ( 2 ).map{lane,bam -> tuple(bam.getBaseName(2))}.join(workflow1garbage).flatten().dump(tag:"merged").set{garbagemerge}
