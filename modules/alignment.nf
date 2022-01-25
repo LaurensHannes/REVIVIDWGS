@@ -3,7 +3,7 @@
 
 		cpus { 16 * task.attempt }
 
-		memory { 8.GB * task.attempt }
+		memory { 32.GB * task.attempt }
 		tag "$lane"
 			 time { 4.hour * task.attempt }
 		 errorStrategy 'retry' 
