@@ -8,7 +8,7 @@ process parliament2 {
 			   containerOptions '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw'
 		memory { 64.GB * task.attempt }
 		cpus 36
-			 time { 12.hour * task.attempt }
+			 time { 16.hour * task.attempt }
 			publishDir "./results/CNV/$id/parliament", mode: 'copy', overwrite: true
 
 

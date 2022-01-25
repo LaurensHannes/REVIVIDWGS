@@ -11,7 +11,7 @@
 
 
 		input:
-        tuple val(id),val(lane), file(assembled), file(forward), file(reverse)
+        tuple val(id), val(lane),file(R1), file(R2)
         path genome
         path indexes
         path home
@@ -20,11 +20,6 @@
         tuple val(id), val(lane), file("${lane}.indexed.bam")
 
         """
-        bwa mem -t ${task.cpus} $genome $assembled | samtools view -@ ${task.cpus} -bS > ${lane}.assembled.bam
-        bwa mem -t ${task.cpus} $genome $forward | samtools view -@ ${task.cpus} -bS > ${lane}.forward.bam
-        bwa mem -t ${task.cpus} $genome $reverse | samtools view -@ ${task.cpus} -bS > ${lane}.reverse.bam
-        samtools merge -@ ${task.cpus} ${lane}.indexed.unsorted.bam  ${lane}.assembled.bam ${lane}.forward.bam ${lane}.reverse.bam
-        samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam ${lane}.indexed.unsorted.bam
-		rm ${lane}.assembled.bam ${lane}.forward.bam ${lane}.reverse.bam ${lane}.indexed.unsorted.bam
+        bwa mem -t ${task.cpus} $genome $R1 $R2 | samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam
         """
 }
