@@ -15,7 +15,6 @@ log.info """\
 
 include { importfastq } from './modules/importfastq.nf'
 include { fastQC } from './modules/fastQC.nf'
-include { pear } from './modules/pear.nf'
 include { alignment } from './modules/alignment.nf'
 include { readgroups } from './modules/readgroups.nf'
 include { duplicates } from './modules/duplicates.nf'
