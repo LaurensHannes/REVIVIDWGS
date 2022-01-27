@@ -7,7 +7,7 @@ process duplicates {
          maxRetries 9
 		memory { 32.GB * task.attempt }
 		cpus 2
-			 time { 15.minute * task.attempt }
+			 time { 20.minute * task.attempt }
 
 		
 	input:
