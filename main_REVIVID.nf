@@ -87,7 +87,7 @@ alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(re
 
 duplicates(readgroups.out,params.home)
 
-readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id)}.dump(tag:"garbage4part2")).dump(tag:"garbage4").set{testgarbage_ch4}
+//readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id)}.dump(tag:"garbage4part2")).dump(tag:"garbage4").set{testgarbage_ch4}
 
 
 
@@ -96,16 +96,16 @@ readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
-duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id,bam)}.join(mergebams.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).join(generateCRAM.out[0].flatten().collate ( 3 ).map{id,cram,crai -> tuple(id)}).dump(tag:"garbage5").set{testgarbage_ch5}
-garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)}).groupTuple().dump(tag:"garbage").set{workflow1garbage}
-duplicates.out[0].flatten().collate ( 2 ).map{lane,bam -> tuple(bam.getBaseName(2))}.join(workflow1garbage).flatten().dump(tag:"merged").set{garbagemerge}
-testcollection.concat(testgarbage_ch,testgarbage_ch3,testgarbage_ch4,testgarbage_ch5).dump(tag:"G12345").set{concatedtestcollection}
+//duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id,bam)}.join(mergebams.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).join(generateCRAM.out[0].flatten().collate ( 3 ).map{id,cram,crai -> tuple(id)}).dump(tag:"garbage5").set{testgarbage_ch5}
+//garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)}).groupTuple().dump(tag:"garbage").set{workflow1garbage}
+//duplicates.out[0].flatten().collate ( 2 ).map{lane,bam -> tuple(bam.getBaseName(2))}.join(workflow1garbage).flatten().dump(tag:"merged").set{garbagemerge}
+//testcollection.concat(testgarbage_ch,testgarbage_ch3,testgarbage_ch4,testgarbage_ch5).dump(tag:"G12345").set{concatedtestcollection}
 
 emit:
 bams = mergebams.out[0]
 crams = generateCRAM.out[0]
-garbage = garbagemerge
-testgarbage = concatedtestcollection
+//garbage = garbagemerge
+//testgarbage = concatedtestcollection
 }
 workflow testwf {
 take: 
