@@ -1,7 +1,11 @@
 process SelectVariantsdenovo {
 
         tag "$family"
-		cpus 4
+		cpus 2
+		time { 15.minute * task.attempt }
+		errorStrategy 'retry'
+         maxRetries 9
+		container "docker://broadinstitute/gatk"
 	
         input:
         tuple val(family), file(vcfgz), file(vcfgztbi) 

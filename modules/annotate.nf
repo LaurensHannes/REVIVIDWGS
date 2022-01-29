@@ -3,7 +3,10 @@ process annotate {
 		cpus 16
 			publishDir "./results/annotated/$analysis", mode: 'copy', overwrite: true
 			containerOptions "-B $programpath -B $humandbpath"
-
+		time { 1.hour * task.attempt }
+		errorStrategy 'retry'
+         maxRetries 9
+		 
         input:
         tuple val(family), val(analysis), file(vcfgz),file(vcfgztbi)
 		val(programpath)
