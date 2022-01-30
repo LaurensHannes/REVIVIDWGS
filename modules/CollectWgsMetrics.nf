@@ -2,7 +2,7 @@ process CollectWgsMetrics {
 
 	tag "$id"
 	cpus 1	
-	time { 1.hour * task.attempt }
+	time { 3.hour * task.attempt }
 	errorStrategy 'retry' 
 	maxRetries 3
 	container "docker://broadinstitute/gatk"
