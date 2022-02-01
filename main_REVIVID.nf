@@ -25,6 +25,7 @@ include { baserecalibrator } from './modules/baserecalibrator.nf'
 include { delete_file } from './modules/delete_file.nf'
 include { checkbam } from './modules/checkbam.nf'
 include { checkvcf } from './modules/checkvcf.nf'
+include { checkfamilyvcf } from './modules/checkfamilyvcfnew.nf'
 include { applyBQSR } from './modules/applyBQSR.nf'
 include { genotype } from './modules/genotype.nf'
 include { leftalignandtrim } from './modules/leftalignandtrim.nf'
@@ -47,6 +48,7 @@ include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 donevcfs_ch = channel.fromPath('./results/vcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
+donefamily vcfs_ch = channel.fromPath('./results/familyvcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
 
 garbage_ch = Channel.empty()
 testcollection = Channel.empty()
@@ -68,6 +70,7 @@ while( line = myReader.readLine() ) {
 myReader.close()
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
+Channel.fromList(ids).map { it -> familymap[it] }set{ family_ch }
 
 
 //workflows
@@ -198,10 +201,17 @@ vcfdone_ch.toSortedList().flatten().collate(1).combine(donevcfs_ch, by:0).map{id
 createindividualvcfs(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vcftodo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id)}.join(bammixed))
 createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).set{vcfmixed}
 
-createfamilyvcfs(vcfmixed)
+checkfamilyvcf(family_ch)
+checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> family}.set{familyvcfdone_ch}
+familyvcfdone_ch.toSortedList().flatten().collate(1).combine(donefamilyvcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{familyvcfalldone_ch}
+createfamilyvcfs(checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> tuple(family)}.join(vcfmixed))
+createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed} 
+
 //right-one testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),download_fastq_to_bam_and_cram.out.testgarbage.flatten())
 //testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
-trioVCFanalysis(createfamilyvcfs.out.triovcf)
+
+
+trioVCFanalysis(familyvcfmixed)
 
 
 }
