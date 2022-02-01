@@ -7,7 +7,7 @@ process parliament2 {
 		       container "docker://sameerdcosta/parliament2:latest"
 			   containerOptions '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw'
 		memory { 64.GB * task.attempt }
-		cpus 24
+		cpus 36
 			 time { 16.hour * task.attempt }
 			publishDir "./results/CNV/$id/parliament", mode: 'copy', overwrite: true
 
