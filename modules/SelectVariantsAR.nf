@@ -3,10 +3,10 @@ process SelectVariantsAR {
 
         tag "$family"
 		cpus 2
-		time { 15.minute * task.attempt }
+		time { 30.minute * task.attempt }
 		errorStrategy 'retry'
          maxRetries 9
-		 memory { 4.GB * task.attempt }
+		 memory { 16.GB * task.attempt }
 		container "docker://broadinstitute/gatk"
 		
         input:
