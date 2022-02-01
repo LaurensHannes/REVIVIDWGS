@@ -16,7 +16,7 @@ process checkfamilyvcf {
 	
 	"""
 	if [ -f $launchDir/results/familyvcfs/"$family".alignedandtrimmed.vcf.gz ]
-    then 
+	then 
 	status="done"
 	else
 	status="todo"
