@@ -1,12 +1,12 @@
 process leftalignandtrim {
 
         tag "$family"
-		 time { 1.hour * task.attempt }
+		 time { 15.minute * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
-	memory { 8.GB * task.attempt }
-	cpus 1
+	memory { 4.GB * task.attempt }
+	cpus 2
 publishDir "./results/${family}/vcfs", mode: 'copy', overwrite: true
 
 
