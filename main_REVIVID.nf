@@ -48,7 +48,7 @@ include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 donevcfs_ch = channel.fromPath('./results/vcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
-donefamilyvcfs_ch = channel.fromPath('./results/familyvcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
+donefamilyvcfs_ch = channel.fromPath('./results/familyvcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 ).view()
 
 garbage_ch = Channel.empty()
 testcollection = Channel.empty()
@@ -203,7 +203,7 @@ createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).set{vcfmixed}
 
 checkfamilyvcf(family_ch)
 checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*done.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> family}.set{familyvcfdone_ch}
-familyvcfdone_ch.toSortedList().flatten().collate(1).combine(donefamilyvcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{familyvcfalldone_ch}
+familyvcfdone_ch.toSortedList().flatten().collate(1).combine(donefamilyvcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{familyvcfalldone_ch}.view()
 createfamilyvcfs(checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> tuple(family)}.join(vcfmixed))
 createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed} 
 
