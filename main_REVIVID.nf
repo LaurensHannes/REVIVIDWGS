@@ -199,6 +199,7 @@ parliament2(bammixed,params.genome,indexes_ch)
 
 checkvcf(idfamily_ch)
 checkvcf.out.vcfcheck_ch.dump(tag:"vcfdone").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{vcfdone_ch}
+checkvcf.out.vcfcheck_ch.view()
 vcfdone_ch.toSortedList().flatten().collate(1).combine(donevcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{vcfalldone_ch}
 createindividualvcfs(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vcftodo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id)}.join(bammixed))
 createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).set{vcfmixed}
