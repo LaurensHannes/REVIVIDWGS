@@ -73,7 +73,7 @@ myReader.close()
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
 Channel.fromList(ids).map { it -> [familymap[it]] }.dump(tag:"family").set{ family_ch }
-
+family_ch.view()
 
 //workflows
 
