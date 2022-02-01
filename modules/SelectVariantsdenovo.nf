@@ -9,7 +9,7 @@ process SelectVariantsdenovo {
 		container "docker://broadinstitute/gatk"
 	
         input:
-        tuple val(family), file(vcfgz), file(vcfgztbi) 
+        tuple val(family), file(vcfgz)
 		path genome
 		path dict 
 		path indexes
@@ -21,6 +21,7 @@ process SelectVariantsdenovo {
         tuple val(family), val("denovo"), file("${family}.denovo.vcf.gz"), file("${family}.denovo.vcf.gz.tbi") 
      
 		"""
+		gatk IndexFeatureFile -I $vcfgz
         gatk SelectVariants -V $vcfgz -ped $ped -R $genome -XL $mask --exclude-filtered false --mendelian-violation true --mendelian-violation-qual-threshold 30 -O ${family}.denovo.vcf.gz --remove-unused-alternates true
         """
 //exclude-filtered changed to false --remove-unused-alternates to false  --restrict-alleles-to BIALLELIC (removed)
