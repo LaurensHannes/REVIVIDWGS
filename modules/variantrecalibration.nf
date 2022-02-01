@@ -21,7 +21,7 @@ process variantrecalibration {
 
 
 	output:
-	tuple val(family), file("${family}.filtered.vcf.gz")  
+	tuple val(family), file("${family}.filtered.vcf.gz"), file("${family}.filtered.vcf.gz".tbi)
 
 	"""
 	gatk CNNScoreVariants -V $vcf -R $genome -O ${family}.pretranched.vcf.gz
