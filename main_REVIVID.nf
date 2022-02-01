@@ -207,7 +207,7 @@ createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).set{vcfmixed}
 checkfamilyvcf(family_ch.flatten()).view()
 checkfamilyvcf.out.familyvcfcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> family}.set{familyvcfdone_ch}
 familyvcfdone_ch.toSortedList().flatten().collate(1).combine(donefamilyvcfs_ch, by:0).map{family,vcf -> tuple(family,vcf)}.set{familyvcfalldone_ch}
-checkfamilyvcf.out.familyvcfcheck_ch.view()
+checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().view()
 createfamilyvcfs(checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 2 ).map{family,status -> tuple(family)}.join(vcfmixed))
 createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed} 
 
