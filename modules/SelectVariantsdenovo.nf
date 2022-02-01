@@ -5,6 +5,7 @@ process SelectVariantsdenovo {
 		time { 15.minute * task.attempt }
 		errorStrategy 'retry'
          maxRetries 9
+		 memory { 4.GB * task.attempt }
 		container "docker://broadinstitute/gatk"
 	
         input:
