@@ -199,11 +199,11 @@ parliament2(bammixed,params.genome,indexes_ch)
 
 checkvcf(idfamily_ch)
 checkvcf.out.vcfcheck_ch.dump(tag:"vcfdone").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{vcfdone_ch}
-checkvcf.out.vcfcheck_ch.view()
 vcfdone_ch.toSortedList().flatten().collate(1).combine(donevcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{vcfalldone_ch}
 createindividualvcfs(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vcftodo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id)}.join(bammixed))
-vcfalldone_ch.view()
 createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).set{vcfmixed}
+
+vcfmixed.view()
 
 checkfamilyvcf(family_ch.flatten()).view()
 checkfamilyvcf.out.familyvcfcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> family}.set{familyvcfdone_ch}
@@ -211,7 +211,7 @@ familyvcfdone_ch.toSortedList().flatten().collate(1).combine(donefamilyvcfs_ch, 
 familyvcfalldone_ch.view()
 createfamilyvcfs(checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 2 ).map{family,status -> tuple(family)}.join(vcfmixed))
 createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed} 
-familyvcfmixed.view()
+
 
 //right-one testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),download_fastq_to_bam_and_cram.out.testgarbage.flatten())
 //testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
