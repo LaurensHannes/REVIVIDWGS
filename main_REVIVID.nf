@@ -72,7 +72,7 @@ while( line = myReader.readLine() ) {
 myReader.close()
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
-Channel.fromList(ids).map { it -> [familymap[it]] }.unique().dump(tag:"family").set{ family_ch }
+Channel.fromList(ids).map { it -> familymap[it] }.unique().dump(tag:"family").set{ family_ch }
 family_ch.view()
 
 //workflows
