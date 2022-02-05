@@ -7,7 +7,8 @@ process baserecalibrator {
 	maxRetries 3
 	container "docker://broadinstitute/gatk"
 	memory { 16.GB * task.attempt }
-
+	scratch '$VSC_SCRATCH'
+	
         input:
         tuple val(id), file(merged), file(bai) 
         path genome 
