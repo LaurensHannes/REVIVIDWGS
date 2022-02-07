@@ -8,7 +8,8 @@ process duplicates {
 		memory { 32.GB * task.attempt }
 		cpus 2
 			 time { 20.minute * task.attempt }
-
+		scratch '$VSC_SCRATCH_NODE'
+	stageInMode	'copy'
 		
 	input:
 	tuple val(id),val(lane),file(bam),file(bai) 

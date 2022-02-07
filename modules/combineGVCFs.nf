@@ -6,6 +6,8 @@ process combineGVCFs {
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
+		scratch '$VSC_SCRATCH_NODE'
+	stageInMode	'copy'
 		
 	input:
 	tuple val(family), path(vcf1), path(vcf2), path(vcf3)

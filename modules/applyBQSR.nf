@@ -5,7 +5,8 @@ process applyBQSR {
 		 errorStrategy 'retry' 
 		maxRetries 3
 		cpus 4
-		scratch '$VSC_SCRATCH'
+		scratch '$VSC_SCRATCH_NODE'
+	stageInMode	'copy'
 
         input:
 

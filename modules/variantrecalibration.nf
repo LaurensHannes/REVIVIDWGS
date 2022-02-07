@@ -5,7 +5,8 @@ process variantrecalibration {
 	cpus 6
 		 errorStrategy 'retry' 
 		maxRetries 3
-	
+		scratch '$VSC_SCRATCH_NODE'
+	stageInMode	'copy'
 	container "docker://broadinstitute/gatk"
 
 	input:
