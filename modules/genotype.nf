@@ -11,7 +11,7 @@ process genotype {
 	myDir.mkdirs()
 	publishDir './results/vcfs', mode: 'copy', overwrite: false
 	scratch '$VSC_SCRATCH_NODE'
-	stageInMode	copy
+	stageInMode	'copy'
 
 
         input:
