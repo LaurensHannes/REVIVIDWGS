@@ -3,6 +3,8 @@ process generateCRAM {
 	tag "$id"
 		myDir = file('./results/crams')
 		myDir.mkdirs()
+		publishDir './results/crams', mode: 'copy', overwrite: true
+
 			
 		input:
 		tuple val(id),file(bam),file(bai) 
