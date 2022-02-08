@@ -14,7 +14,7 @@ process duplicates {
 		
 	input:
 	tuple val(id),val(lane),file(bam),file(bai) 
-	path home
+
 
 	output:
 	tuple val(id),file("${lane}.dups.bam")
