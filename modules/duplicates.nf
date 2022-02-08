@@ -8,7 +8,8 @@ process duplicates {
 		memory { 32.GB * task.attempt }
 		cpus 2
 			 time { 30.minute * task.attempt }
-
+		scratch '/lustre1/project/stg_00086/scratch'
+			stageInMode	'copy'
 
 		
 	input:
