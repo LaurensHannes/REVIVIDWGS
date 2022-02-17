@@ -32,6 +32,6 @@ process importfastq {
 		
 		if( download == "false")
 		"""
-		ln -s ${arch}/FASTQ/$family/$id/$id.*R[12].fastq.gz \$pwd/
+		ln -s ${arch}/FASTQ/$family/$id/$id.*R[12].fastq.gz \$PWD/
 		"""
 }
