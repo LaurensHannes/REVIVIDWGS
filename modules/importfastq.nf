@@ -16,13 +16,22 @@ process importfastq {
         tuple val(id),val(family) 
         path home
 		path arch
+		val download
 	
         output:
          path "$id*.fastq.gz"
-
+		
+		script:
+				
+		if( download == "true")
         """
-
+ 
         gsutil cp -prn gs://gcpi-rkjbr/**/$id.*R[12].fastq.gz ./
 
         """
+		
+		if( download == "false")
+		"""
+		ln -s $arch/FASTQ/$family/$id/$id.*R[12].fastq.gz ./
+		"""
 }
