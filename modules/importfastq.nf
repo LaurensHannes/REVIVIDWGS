@@ -10,7 +10,7 @@ process importfastq {
          maxErrors 3
 		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
-		storeDir "$arch/FASTQ/$family/$id"
+		storeDir "${arch}/FASTQ/$family/$id"
 		
         input:
         tuple val(id),val(family) 
