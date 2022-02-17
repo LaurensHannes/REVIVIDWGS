@@ -41,8 +41,11 @@ include { SelectVariantsX } from './modules/SelectVariantsX.nf'
 include { annotate as annotatedenovo; annotate as annotateAR; annotate as annotateX } from './modules/annotate.nf'
 include { parliament2 } from './modules/parliament2.nf'
 include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
+include { splitbam } from './modules/splitbam.nf'
 
 // script parameters
+
+chromosomes_ch = Channel.fromList(['chr1','chr2','chr3','chr4','chr5','chr6','chr7','chr8','chr9','chr10','chr11','chr12','chr13','chr14','chr15','chr16','chr17','chr18','chr19','chr20','chr21','chr22','chrX','chrY','chrM')
 
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
@@ -91,11 +94,11 @@ fastQC(gzipped_ch)
 
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
 gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.dump(tag:"gzippedG").join(fastQC.out.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane)}.dump(tag:"fastQCG")).join(alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane)}).dump(tag:"G1").set{testgarbage_ch}
-
-readgroups(alignment.out,params.home)
+splitbam(alignment.out,chromosomes_ch)
+//readgroups(alignment.out,params.home)
 alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane)}).dump(tag:"garbage3").set{testgarbage_ch3}
 
-duplicates(readgroups.out)
+duplicates(splitbam.out)
 
 //readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id)}.dump(tag:"garbage4part2")).dump(tag:"garbage4").set{testgarbage_ch4}
 
@@ -112,7 +115,8 @@ CollectWgsMetrics(mergebams.out[0],params.genome)
 //testcollection.concat(testgarbage_ch,testgarbage_ch3,testgarbage_ch4,testgarbage_ch5).dump(tag:"G12345").set{concatedtestcollection}
 
 emit:
-bams = mergebams.out[0]
+bams = duplicates.out[0]
+mergedbams = mergebams.out[0]
 crams = generateCRAM.out[0]
 //garbage = garbagemerge
 //testgarbage = concatedtestcollection
@@ -198,7 +202,7 @@ checkbam(idfamily_ch)
 checkbam.out.bamcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{bamdone_ch}
 bamdone_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{bamalldone_ch}
 download_fastq_to_bam_and_cram(checkbam.out.bamcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
-download_fastq_to_bam_and_cram.out.bams.concat(bamalldone_ch).set{bammixed}
+download_fastq_to_bam_and_cram.out.mergedbams.concat(bamalldone_ch).set{bammixed}
 
 parliament2(bammixed,params.genome,indexes_ch)
 
