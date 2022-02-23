@@ -22,7 +22,7 @@ process duplicates {
 	
 	"""
 
-	gatk MarkDuplicates -I $bam -O ${lane}.${chr}.dups.bam -M ${lane}.metrics.txt --TAGGING_POLICY OpticalOnly 
+	gatk MarkDuplicates -I $bam -O ${lane}.${chr}.dups.bam -M ${lane}.metrics.txt --TAGGING_POLICY OpticalOnly -MAX_FILE_HANDLES 2000 --SORTING_COLLECTION_SIZE_RATIO 0.025 --MAX_OPTICAL_DUPLICATE_SET_SIZE -1 --MAX_RECORDS_IN_RAM 50000
 
 
 	"""
