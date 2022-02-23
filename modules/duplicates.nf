@@ -12,17 +12,17 @@ process duplicates {
 
 		
 	input:
-	tuple val(id),val(lane),file(bam),file(bai) 
+	tuple val(id),val(lane),val(chr),file(bam),file(bai) 
 
 
 	output:
-	tuple val(id),file("${lane}.dups.bam")
+	tuple val(id),file("${lane}.${chr}.dups.bam")
 	tuple val(id),file("${lane}.metrics.txt")
 
 	
 	"""
 
-	gatk MarkDuplicates -I $bam -O ${lane}.dups.bam -M ${lane}.metrics.txt --TAGGING_POLICY OpticalOnly 
+	gatk MarkDuplicates -I $bam -O ${lane}.${chr}.dups.bam -M ${lane}.metrics.txt --TAGGING_POLICY OpticalOnly 
 
 
 	"""

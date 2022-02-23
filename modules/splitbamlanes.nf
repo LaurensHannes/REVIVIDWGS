@@ -13,7 +13,7 @@ process splitbamlanes {
 	each chr
 	
 	output:
-	tuple val(id), val(lane), file("${lane}.${chr}.bam"), file("${lane}.${chr}.bam.bai")
+	tuple val(id), val(lane),val(chr), file("${lane}.${chr}.bam"), file("${lane}.${chr}.bam.bai")
 
 	
 """
