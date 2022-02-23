@@ -14,7 +14,7 @@ process generateCRAM {
 				
 		output:
 		tuple val(id),file("${id}.cram"),file("${id}.cram.crai")
-		tuple val(id),file(bam),file(bai)
+
 		
 		"""
 		samtools view -@ ${task.cpus} -C -o ${id}.cram -T $genome $bam 
