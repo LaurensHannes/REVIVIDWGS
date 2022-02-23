@@ -1,6 +1,7 @@
 process generateCRAM {
 
 	tag "$id"
+	cpus 4
 		myDir = file('./results/crams')
 		myDir.mkdirs()
 		publishDir './results/crams', mode: 'copy', overwrite: true
