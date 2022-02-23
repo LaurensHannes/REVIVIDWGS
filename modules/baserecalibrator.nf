@@ -6,9 +6,8 @@ process baserecalibrator {
 	errorStrategy 'retry' 
 	maxRetries 3
 	container "docker://broadinstitute/gatk"
-	memory { 16.GB * task.attempt }
-		scratch '$VSC_SCRATCH_NODE'
-	stageInMode	'copy'
+	memory { 4.GB * task.attempt }
+
 	
         input:
         tuple val(id), file(merged), file(bai) 

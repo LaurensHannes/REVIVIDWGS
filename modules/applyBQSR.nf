@@ -1,12 +1,10 @@
 process applyBQSR {
 
         tag "$id"
-		 time { 5.hour * task.attempt }
+		 time { 1.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		cpus 4
-		scratch '$VSC_SCRATCH_NODE'
-	stageInMode	'copy'
 
         input:
 

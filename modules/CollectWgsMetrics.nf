@@ -8,8 +8,6 @@ process CollectWgsMetrics {
 	container "docker://broadinstitute/gatk"
 	memory { 4.GB * task.attempt }
 	publishDir "./QC/$id", mode: 'copy', overwrite: false
-	scratch '$VSC_SCRATCH_NODE'
-	stageInMode	'copy'
 
         input:
         tuple val(id), file(merged), file(bai) 

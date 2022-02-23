@@ -7,8 +7,7 @@ process genotypeGVCFs {
 		container "docker://broadinstitute/gatk"
 	memory { 8.GB * task.attempt }
 	cpus 4
-			scratch '$VSC_SCRATCH_NODE'
-	stageInMode	'copy'
+
 	
 	input:
 	tuple val(family), path(vcf), path(vcftbi)
