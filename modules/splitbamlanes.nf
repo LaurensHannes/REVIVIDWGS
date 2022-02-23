@@ -10,7 +10,7 @@ process splitbamlanes {
 		
 	input:
 	tuple val(id),val(lane),file(bam),file(bai) 
-	each val(chr)
+	each chr
 	
 	output:
 	tuple val(id), val(lane), file("${lane}.${chr}.bam"), file("${lane}.${chr}.bam.bai")
