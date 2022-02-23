@@ -10,7 +10,7 @@ process splitbamindividuals {
 		
 	input:
 	tuple val(id),file(bam),file(bai) 
-	val(chr)
+	each chr
 	
 	output:
 	tuple val(id), file("${id}.${chr}.bam"), file("${id}.${chr}.bam.bai")
