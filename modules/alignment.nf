@@ -19,7 +19,7 @@
         output:
         tuple val(id), val(lane), file("${lane}.indexed.bam")
 
-        """
+        '''
         bwa mem -t ${task.cpus} -R "@RG\tSM:${id}\tLB:REVIVID\tPL:ILLUMINA\tPU:${lane}" $genome $R1 $R2 | samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam
-        """
+        '''
 }
