@@ -17,7 +17,7 @@
         path home
 
         output:
-        tuple val(id), val(lane), file("${lane}.indexed.bam")
+        tuple val(id), val(lane), file("${lane}.indexed.bam"),file("${lane}.indexed.bam.bai")
 
         """
         bwa mem -t ${task.cpus} -R "@RG\\tID:${id}\\tSM:${id}\\tLB:REVIVID\\tPL:ILLUMINA\\tPU:${lane}" $genome $R1 $R2 | samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam
