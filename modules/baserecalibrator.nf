@@ -18,9 +18,9 @@ process baserecalibrator {
         path snpsindex 
 
         output:
-        tuple val(id), val(chr), file(merged), file(bai), file("${id}.recal_data.table") 
+        tuple val(id), val(chr), file(merged), file(bai), file("${id}.${chr}.recal_data.table") 
 
         """
-        gatk BaseRecalibrator -I $merged -R $genome -O ${id}.recal_data.table --known-sites $snps --verbosity WARNING
+        gatk BaseRecalibrator -I $merged -R $genome -O ${id}.${chr}.recal_data.table --known-sites $snps --verbosity WARNING
         """
 }
