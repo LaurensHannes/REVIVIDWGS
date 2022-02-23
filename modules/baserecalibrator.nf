@@ -1,6 +1,6 @@
 process baserecalibrator {
 
-	tag "$id"
+	tag "$id $chr"
 	cpus 4	
 	time { 30.minute * task.attempt }
 	errorStrategy 'retry' 

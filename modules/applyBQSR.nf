@@ -1,6 +1,6 @@
 process applyBQSR {
 
-        tag "$id"
+        tag "$id $chr"
 		 time { 1.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
