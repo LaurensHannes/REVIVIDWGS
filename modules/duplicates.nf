@@ -1,6 +1,6 @@
 process duplicates { 
 
-        tag "$lane"
+        tag "$lane $chr"
 		
 		container "docker://broadinstitute/gatk"
         errorStrategy 'retry'
@@ -8,7 +8,7 @@ process duplicates {
 		memory { 4.GB * task.attempt }
 		cpus 2
 			 time { 15.minute * task.attempt }
-
+		maxForks 3
 
 		
 	input:
