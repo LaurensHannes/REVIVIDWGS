@@ -2,7 +2,7 @@ process baserecalibrator {
 
 	tag "$id"
 	cpus 4	
-	time { 5.hour * task.attempt }
+	time { 30.minute * task.attempt }
 	errorStrategy 'retry' 
 	maxRetries 3
 	container "docker://broadinstitute/gatk"
