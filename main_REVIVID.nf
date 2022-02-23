@@ -41,7 +41,8 @@ include { SelectVariantsX } from './modules/SelectVariantsX.nf'
 include { annotate as annotatedenovo; annotate as annotateAR; annotate as annotateX } from './modules/annotate.nf'
 include { parliament2 } from './modules/parliament2.nf'
 include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
-include { splitbam } from './modules/splitbam.nf'
+include { splitbamlanes } from './modules/splitbamlanes.nf'
+include { splitbamindividuals } from './modules/splitbamindividuals.nf'
 
 // script parameters
 
@@ -94,11 +95,11 @@ fastQC(gzipped_ch)
 
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
 gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.dump(tag:"gzippedG").join(fastQC.out.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane)}.dump(tag:"fastQCG")).join(alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane)}).dump(tag:"G1").set{testgarbage_ch}
-splitbam(alignment.out,chromosomes_ch)
+splitbamlanes(alignment.out,chromosomes_ch)
 //readgroups(alignment.out,params.home)
 //alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane)}).dump(tag:"garbage3").set{testgarbage_ch3}
 
-duplicates(splitbam.out)
+duplicates(splitbamlanes.out)
 
 //readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id)}.dump(tag:"garbage4part2")).dump(tag:"garbage4").set{testgarbage_ch4}
 
@@ -136,7 +137,8 @@ workflow createindividualvcfs {
 take: bam 
 
 main:
-baserecalibrator(bam,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
+splitbamindividuals(bam,chromosomes_ch)
+baserecalibrator(splitbamindividuals.out[0],params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 baserecalibrator.out[0].flatten().collate ( 4 ).map{id,bam,bai,recaltable -> tuple(id,bam,bai)}.join(applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).set{testgarbage_ch6}
 

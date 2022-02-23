@@ -1,4 +1,4 @@
-process splitbam {
+process splitbamlanes {
 
 		cpus { 2 * task.attempt }
 
@@ -10,7 +10,7 @@ process splitbam {
 		
 	input:
 	tuple val(id),val(lane),file(bam) 
-	val(chr)
+	each val(chr)
 	
 	output:
 	tuple val(id), val(lane), file("${lane}.${chr}.bam"), file("${lane}.${chr}.bam.bai")
