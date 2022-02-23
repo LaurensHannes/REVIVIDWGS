@@ -32,6 +32,7 @@ include { leftalignandtrim } from './modules/leftalignandtrim.nf'
 include { variantrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
 include { mergevcf } from './modules/mergevcf.nf'
+include { combineindividualGVCFs } from './modules/combineindividualGVCFs.nf'
 include { combineGVCFs } from './modules/combineGVCFs.nf'
 include { genotypeGVCFs } from './modules/genotypeGVCFs.nf'
 include { test } from './testmodules/test.nf'
@@ -145,10 +146,10 @@ baserecalibrator.out[0].flatten().collate ( 4 ).map{id,bam,bai,recaltable -> tup
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.join(genotype.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch7}
 
-
+combineindividualGVCFs(genotype.out[0].flatten().groupTuple(),params.genome,indexes_ch,params.genomedict)
 
 emit:
-individualvcf = genotype.out[0]
+individualvcf = combineindividualGVCFs.out[0]
 
 }
 
