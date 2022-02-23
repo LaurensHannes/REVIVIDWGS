@@ -10,7 +10,7 @@ process importfastq {
          maxErrors 3
 		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
-		storeDir "${arch}/FASTQ/$family/$id"
+		storeDir "/vsc-hard-mounts/leuven-archive/arc_00086/FASTQ/$family/$id"
 		
         input:
         tuple val(id),val(family) 
@@ -32,6 +32,6 @@ process importfastq {
 		
 		if( download == "false")
 		"""
-		ln -s ${arch}/FASTQ/$family/$id/$id.*R[12].fastq.gz .
+		ln -s /vsc-hard-mounts/leuven-archive/arc_00086/FASTQ/$family/$id/$id.*R[12].fastq.gz .
 		"""
 }
