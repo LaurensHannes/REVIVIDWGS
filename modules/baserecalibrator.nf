@@ -10,7 +10,7 @@ process baserecalibrator {
 
 	
         input:
-        tuple val(id), file(merged), file(bai) 
+        tuple val(id), val(chr), file(merged), file(bai) 
         path genome 
 		path indexes
         path dict 
@@ -18,7 +18,7 @@ process baserecalibrator {
         path snpsindex 
 
         output:
-        tuple val(id), file(merged), file(bai), file("${id}.recal_data.table") 
+        tuple val(id), val(chr), file(merged), file(bai), file("${id}.recal_data.table") 
 
         """
         gatk BaseRecalibrator -I $merged -R $genome -O ${id}.recal_data.table --known-sites $snps --verbosity WARNING

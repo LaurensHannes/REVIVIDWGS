@@ -15,7 +15,7 @@ process genotype {
 
 
         input:
-        tuple val(id), file(bam),file(bai) 
+        tuple val(id), val(chr),file(bam),file(bai) 
         path genome 
         path indexes
 		path broadinterval
@@ -24,9 +24,9 @@ process genotype {
 		
 		
         output:
-        tuple val(id), file("${id}.g.vcf.gz")
+        tuple val(id), file("${id}.${chr}.g.vcf.gz")
         """
-        gatk HaplotypeCaller  --java-options "-Xmx16g" --verbosity INFO -ERC GVCF -L $broadinterval -XL $mask -R $genome -I $bam -O ${id}.g.vcf.gz --sequence-dictionary ${dict} --pcr-indel-model NONE -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation --native-pair-hmm-threads ${task.cpus}
+        gatk HaplotypeCaller  --java-options "-Xmx16g" --verbosity INFO -ERC GVCF -L, ${chr} -L $broadinterval -XL $mask -R $genome -I $bam -O ${id}.${chr}.g.vcf.gz --sequence-dictionary ${dict} --pcr-indel-model NONE -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation --native-pair-hmm-threads ${task.cpus}
         """
 
 }
