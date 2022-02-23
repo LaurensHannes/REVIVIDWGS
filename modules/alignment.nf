@@ -21,5 +21,6 @@
 
         """
         bwa mem -t ${task.cpus} -R "@RG\\tID:${id}\\tSM:${id}\\tLB:REVIVID\\tPL:ILLUMINA\\tPU:${lane}" $genome $R1 $R2 | samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam
-        """
+        samtools index -@ ${task.cpus} ${lane}.indexed.bam
+		"""
 }

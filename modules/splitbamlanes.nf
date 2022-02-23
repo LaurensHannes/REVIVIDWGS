@@ -9,7 +9,7 @@ process splitbamlanes {
 		maxRetries 3
 		
 	input:
-	tuple val(id),val(lane),file(bam) 
+	tuple val(id),val(lane),file(bam),file(bai) 
 	val(chr)
 	
 	output:
