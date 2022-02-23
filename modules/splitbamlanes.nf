@@ -1,8 +1,8 @@
 process splitbamlanes {
 
-		cpus { 2 * task.attempt }
+		cpus { 1 * task.attempt }
 
-		memory { 8.GB * task.attempt }
+		memory { 2.GB * task.attempt }
 		tag "$lane $chr"
 			 time { 15.minute * task.attempt }
 		 errorStrategy 'retry' 
