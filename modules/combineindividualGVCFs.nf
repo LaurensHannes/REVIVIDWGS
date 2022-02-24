@@ -16,7 +16,7 @@ process combineindividualGVCFs {
 	path dict
 	
 	output:
-	tuple val(id), path("${id}.g.vcf.gz"), path("${id}.g.vcf.gz.tbi")
+	tuple val(id), path("${id}.g.vcf.gz")
 	
 """
 	gatk IndexFeatureFile -I $vcf1
