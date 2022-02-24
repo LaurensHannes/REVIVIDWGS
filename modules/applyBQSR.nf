@@ -1,10 +1,10 @@
 process applyBQSR {
 
         tag "$id $chr"
-		 time { 1.hour * task.attempt }
+		 time { 30.minute * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
-		cpus 4
+		cpus 2
 
         input:
 
@@ -15,11 +15,11 @@ process applyBQSR {
 
 
         output:
-        tuple val(id), val(chr) ,file("${id}.recallibrated.bam"),file("${id}.recallibrated.bam.bai") 
+        tuple val(id), val(chr) ,file("${id}.${chr}.recallibrated.bam"),file("${id}.${chr}.recallibrated.bam.bai") 
 
         """
-        gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.recallibrated.bam
-		samtools index -@ ${task.cpus} ${id}.recallibrated.bam
+        gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.${chr}.recallibrated.bam
+		samtools index -@ ${task.cpus} ${id}.${chr}.recallibrated.bam
 		
 		
         """
