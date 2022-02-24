@@ -8,7 +8,7 @@
 			 time { 8.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
-		container "docker://informationsea/bwa-mem2"
+		
 
 
 		input:
