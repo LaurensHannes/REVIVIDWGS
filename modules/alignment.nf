@@ -8,6 +8,7 @@
 			 time { 8.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
+		container "docker://informationsea/bwa-mem2"
 
 
 		input:
@@ -20,7 +21,7 @@
         tuple val(id), val(lane), file("${lane}.indexed.bam"),file("${lane}.indexed.bam.bai")
 
         """
-        bwa mem -t ${task.cpus} -R "@RG\\tID:${id}\\tSM:${id}\\tLB:REVIVID\\tPL:ILLUMINA\\tPU:${lane}" $genome $R1 $R2 | samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam
+        bwa-mem2 -t ${task.cpus} -R "@RG\\tID:${id}\\tSM:${id}\\tLB:REVIVID\\tPL:ILLUMINA\\tPU:${lane}" $genome $R1 $R2 | samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam
         samtools index -@ ${task.cpus} ${lane}.indexed.bam
 		"""
 }
