@@ -139,13 +139,14 @@ take: bam
 
 main:
 splitbamindividuals(bam,chromosomes_ch)
-splitbamindividuals.out[0].view()
+
 baserecalibrator(splitbamindividuals.out[0],params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
+baserecalibrator.out[0].view()
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
-baserecalibrator.out[0].flatten().collate ( 4 ).map{id,bam,bai,recaltable -> tuple(id,bam,bai)}.join(applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).set{testgarbage_ch6}
+//baserecalibrator.out[0].flatten().collate ( 5 ).map{id,bam,bai,recaltable -> tuple(id,bam,bai)}.join(applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).set{testgarbage_ch6}
 
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.join(genotype.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch7}
+//applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.join(genotype.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch7}
 
 combineindividualGVCFs(genotype.out[0].groupTuple().flatten().collate ( 26 ),params.genome,indexes_ch,params.genomedict)
 
