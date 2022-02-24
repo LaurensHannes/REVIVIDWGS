@@ -1,6 +1,6 @@
 process genotype {
 
-        tag "$id"
+        tag "$id $chr"
 		 time { 30.minute * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3

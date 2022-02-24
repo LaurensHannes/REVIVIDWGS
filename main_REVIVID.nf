@@ -141,7 +141,6 @@ main:
 splitbamindividuals(bam,chromosomes_ch)
 
 baserecalibrator(splitbamindividuals.out[0],params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
-baserecalibrator.out[0].view()
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 //baserecalibrator.out[0].flatten().collate ( 5 ).map{id,bam,bai,recaltable -> tuple(id,bam,bai)}.join(applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).set{testgarbage_ch6}
 

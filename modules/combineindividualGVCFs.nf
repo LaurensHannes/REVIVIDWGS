@@ -44,8 +44,7 @@ process combineindividualGVCFs {
 	gatk IndexFeatureFile -I $vcf23
 	gatk IndexFeatureFile -I $vcf24
 	gatk IndexFeatureFile -I $vcf25
-	gatk CombineGVCFs -R $genome -V $vcf1 -V $vcf2 -V $vcf3 -V vcf4 -V vcf5 -V vcf6 -V vcf7 -V vcf8 -V vcf9 -V vcf10 -V vcf11 -V vcf12 -V vcf13 -V vcf14 -V vcf15 -V vcf16 -V vcf17 -V vcf18 -V vcf19 -V vcf20 -V vcf21 -V vcf22 -V vcf23 -V vcf24 -V vcf25
- -O ${id}.g.vcf.gz
+	gatk CombineGVCFs -R $genome -V $vcf1 -V $vcf2 -V $vcf3 -V $vcf4 -V $vcf5 -V $vcf6 -V $vcf7 -V $vcf8 -V $vcf9 -V $vcf10 -V $vcf11 -V $vcf12 -V $vcf13 -V $vcf14 -V $vcf15 -V $vcf16 -V $vcf17 -V $vcf18 -V $vcf19 -V $vcf20 -V $vcf21 -V $vcf22 -V $vcf23 -V $vcf24 -V $vcf25 -O ${id}.g.vcf.gz
 """
 
 }
