@@ -188,7 +188,9 @@ triovcf = leftalignandtrim.out
 }
 
 workflow triovcfanalysis {
-take:vcf,cnvvcf
+take:
+vcf
+cnvvcf
 
 main:
 SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
