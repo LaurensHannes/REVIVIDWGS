@@ -26,6 +26,6 @@ process mergeCNV{
 		ls ${vcf2} >> ${fam}
 		ls ${vcf3} >> ${fam}
 		survivor merge ${fam} 100 1 1 0 1 100 ${fam}.merge.vcf
-				"""
+		"""
 		
 		}
