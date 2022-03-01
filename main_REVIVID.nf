@@ -199,7 +199,7 @@ SelectVariantsX(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
-AnnotSV(vcf.join(cnvvcf).groupTuple())
+AnnotSV(vcf.join(cnvvcf).groupTuple().flatten().collate( 3 ))
 }
 
 workflow CNVanalysis {
