@@ -210,6 +210,9 @@ parliament2(bam,params.genome,indexes_ch)
 mergeCNV(idfamily_ch.join(parliament2.out[0].map{ id, family, vcf -> tuple(family,vcf)}.groupTuple()))
 }
 
+emit:
+mergeCNV.out[0]
+
 workflow { 
 main:
 
