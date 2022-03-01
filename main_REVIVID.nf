@@ -41,6 +41,8 @@ include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
 include { SelectVariantsX } from './modules/SelectVariantsX.nf'
 include { annotate as annotatedenovo; annotate as annotateAR; annotate as annotateX } from './modules/annotate.nf'
 include { parliament2 } from './modules/parliament2.nf'
+include { AnnotSV } from './modules/AnnotSV.nf'
+include { mergeCNV } from './modules/mergeCNV.nf'
 include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 include { splitbamlanes } from './modules/splitbamlanes.nf'
 include { splitbamindividuals } from './modules/splitbamindividuals.nf'
@@ -186,7 +188,7 @@ triovcf = leftalignandtrim.out
 }
 
 workflow trioVCFanalysis {
-take:vcf
+take:vcf,cnvvcf
 
 main:
 SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
@@ -195,9 +197,16 @@ SelectVariantsX(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
+AnnotSV(vcf.join(cnvvcf).groupTuple())
 }
 
+workflow CNVanalysis {
+take:bam
 
+main:
+parliament2(bam,params.genome,indexes_ch)
+mergeCNV(idfamily_ch.join(parliament2.out[0].map{ id, family, vcf -> tuple(family,vcf)}.groupTuple()))
+}
 
 workflow { 
 main:
@@ -208,7 +217,7 @@ bamdone_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id
 download_fastq_to_bam_and_cram(checkbam.out.bamcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)})
 download_fastq_to_bam_and_cram.out.mergedbams.concat(bamalldone_ch).set{bammixed}
 
-parliament2(bammixed,params.genome,indexes_ch)
+CNVanalysis(bammixed)
 
 checkvcf(idfamily_ch)
 checkvcf.out.vcfcheck_ch.dump(tag:"vcfdone").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{vcfdone_ch}

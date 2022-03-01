@@ -21,7 +21,7 @@ process parliament2 {
 
 		output:
 		
-		tuple val(id), file("${id}.survivor_sorted.vcf")
+		tuple val(id), file("${id}.combined.genotyped.vcf")
 
 		"""
 		python /home/dnanexus/parliament2.py --bam $bam --bai $bai -r $genome --fai "$genome".fai --genotype --filter_short_contigs
