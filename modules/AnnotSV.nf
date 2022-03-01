@@ -15,7 +15,7 @@ process AnnotSV{
 
 		input:
 
-		tuple(val(fam), tuple( file(cnvvcf), file(snvvcf)))
+		tuple(val(fam), tuple(  file(snvvcf),file(cnvvcf)))
 
 		output:
 		

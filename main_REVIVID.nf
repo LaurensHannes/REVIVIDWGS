@@ -187,7 +187,7 @@ triovcf = leftalignandtrim.out
 //vcfgarbage = concatedvcfcollection
 }
 
-workflow trioVCFanalysis {
+workflow triovcfanalysis {
 take:vcf,cnvvcf
 
 main:
@@ -239,7 +239,7 @@ createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed}
 //testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
 
 
-trioVCFanalysis(familyvcfmixed)
+triovcfanalysis(familyvcfmixed,CNVanalysis.out[0])
 
 
 }
