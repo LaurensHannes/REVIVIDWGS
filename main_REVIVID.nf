@@ -211,7 +211,7 @@ mergeCNV(idfamily_ch.join(parliament2.out[0].map{ id, family, vcf -> tuple(famil
 }
 
 emit:
-mergeCNV
+mergeCNV.out
 
 workflow { 
 main:
