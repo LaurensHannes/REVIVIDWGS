@@ -15,7 +15,7 @@ process mergeCNV{
 
 		input:
 
-		tuple val(fam), tuple(file(vcf1), file(vcf2), file(vcf3)) 
+		tuple val(fam), file(vcf1), file(vcf2), file(vcf3)
 
 		output:
 		
