@@ -145,7 +145,8 @@ take:bam
 main:
 parliament2(bam,params.genome,indexes_ch)
 createfilterbedfileCNV(bam)
-mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple(sort:true).flatten().collate( 7 ))
+idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ).view()
+mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ))
 
 emit:
 mergeCNV.out[0]
