@@ -22,7 +22,7 @@ process AnnotSV{
 		tuple val(fam), file("${fam}.merge.vcf")
 
 		"""
-         ./AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf
+         /AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf
 		"""
 		
 		}
