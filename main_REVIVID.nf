@@ -143,7 +143,7 @@ take:bam
 
 main:
 parliament2(bam,params.genome,indexes_ch)
-mergeCNV(idfamily_ch.join(parliament2.out[0].map{ id, family, vcf -> tuple(family,vcf)}.groupTuple().flatten().collate(2).view()))
+mergeCNV(idfamily_ch.join(parliament2.out[0]).map{ id, family, vcf -> tuple(family,vcf)}.groupTuple().flatten().collate(2).view())
 
 
 emit:
