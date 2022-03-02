@@ -7,8 +7,8 @@ process mergeCNV{
 		       container "docker://sameerdcosta/parliament2:latest"
 
 		memory { 4.GB * task.attempt }
-		cpus 1
-			 time { 5.minute * task.attempt }
+		cpus 2
+			 time { 30.minute * task.attempt }
 			publishDir "./results/CNV/$fam(", mode: 'copy', overwrite: true
 
 
