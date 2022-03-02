@@ -1,4 +1,4 @@
-process parliament2 { 
+process deeptrio { 
 
         tag "$id"
 		label 'parliament'
