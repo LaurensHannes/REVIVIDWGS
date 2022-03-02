@@ -7,8 +7,8 @@ process createfilterbedfileCNV{
 
 
 		memory { 4.GB * task.attempt }
-		cpus 9
-			 time { 15.minute * task.attempt }
+		cpus 18
+			 time { 1.hour * task.attempt }
 
 
 
