@@ -24,7 +24,7 @@ process createfilterbedfileCNV{
 
 		"""
 	samtools view -@ ${task.cpus} -H $bam > lowMQ.sam
-	samtools view -@ ${task.cpus} $bam | awk '$5<5 {print $0}' >>  lowMQ.sam
+	samtools view -@ ${task.cpus} $bam | awk '\$5<5 {print \$0}' >>  lowMQ.sam
 	samtools view -@ ${task.cpus} -S -b -h lowMQ.sam > lowMQ.bam
 	samtools depth lowMQ.bam >  ${id}.lowMQ.cov
 		"""
