@@ -91,48 +91,18 @@ main:
 importfastq(idfam, params.home,params.arch,params.download)
 importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
-
- 
-
 fastQC(gzipped_ch)
-
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
-//gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.dump(tag:"gzippedG").join(fastQC.out.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane)}.dump(tag:"fastQCG")).join(alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane)}).dump(tag:"G1").set{testgarbage_ch}
 splitbamlanes(alignment.out,chromosomes_ch)
-//readgroups(alignment.out,params.home)
-//alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)}.join(readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane)}).dump(tag:"garbage3").set{testgarbage_ch3}
-
 duplicates(splitbamlanes.out)
-
-//readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(id,bam,bai)}.dump(tag:"garbage4part1").join(duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id)}.dump(tag:"garbage4part2")).dump(tag:"garbage4").set{testgarbage_ch4}
-
-
-
-
-
 mergebams(duplicates.out[0].groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
-//duplicates.out[0].flatten().collate ( 2 ).map{id,bam -> tuple(id,bam)}.join(mergebams.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).join(generateCRAM.out[0].flatten().collate ( 3 ).map{id,cram,crai -> tuple(id)}).dump(tag:"garbage5").set{testgarbage_ch5}
-//garbage_ch.concat(gzipped_ch.flatten().collate( 4 ).map{id,lane,R1,R2 -> tuple(lane,R1,R2)}.flatten().toList(),alignment.out.flatten().collate( 3 ).map{id,lane,bam -> tuple(lane,bam)},readgroups.out.flatten().collate( 4 ).map{id,lane,bam,bai -> tuple(lane,bam,bai)}).groupTuple().dump(tag:"garbage").set{workflow1garbage}
-//duplicates.out[0].flatten().collate ( 2 ).map{lane,bam -> tuple(bam.getBaseName(2))}.join(workflow1garbage).flatten().dump(tag:"merged").set{garbagemerge}
-//testcollection.concat(testgarbage_ch,testgarbage_ch3,testgarbage_ch4,testgarbage_ch5).dump(tag:"G12345").set{concatedtestcollection}
 
 emit:
 bams = duplicates.out[0]
 mergedbams = mergebams.out[0]
 crams = generateCRAM.out[0]
-//garbage = garbagemerge
-//testgarbage = concatedtestcollection
-}
-workflow testwf {
-take: 
-data
-test
-main:
-
-delete_file(data)
-test(test)
 
 }
 
@@ -144,11 +114,7 @@ splitbamindividuals(bam,chromosomes_ch)
 
 baserecalibrator(splitbamindividuals.out[0],params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
-//baserecalibrator.out[0].flatten().collate ( 5 ).map{id,bam,bai,recaltable -> tuple(id,bam,bai)}.join(applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id)}).set{testgarbage_ch6}
-
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-//applyBQSR.out[0].flatten().collate ( 3 ).map{id,bam,bai -> tuple(id,bam,bai)}.join(genotype.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch7}
-
 combineindividualGVCFs(genotype.out[0].groupTuple(size: 25).flatten().collate ( 26 ),params.genome,indexes_ch,params.genomedict)
 
 emit:
@@ -164,27 +130,24 @@ combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
 genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
-//genotype.out[0].flatten().collate ( 2 ).join(variantrecalibration.out[0].flatten().collate ( 2 ).map{id,vcf -> tuple(id)}).set{testgarbage_ch8}
-
-//compressandindex(variantrecalibration.out[0])
-
-//variantrecalibration.out[0].flatten().collate ( 2 ).join(compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(id)}).set{testgarbage_ch9}
-
-
-
-//mergevcf(idfamily_ch.join(compressandindex.out).map{ id, family, vcf, index -> tuple(family,vcf,index)}.groupTuple())
-//compressandindex.out[0].flatten().collate ( 3 ).map{id,vcfgz,vcfgztbi -> tuple(familymap[id]),id,vcfgz,vcfgztbi}.join(mergevcf.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch10}
 vcftoolshardfilter(variantrecalibration.out[0])
-//vcftoolshardfilter(compressandindex.out[0])
 leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
-//mergevcf.out[0].flatten().collate ( 3 ).join(leftalignandtrim.out[0].flatten().collate ( 3 ).map{family,vcfgz,vcfgztbi -> tuple(family)}).set{testgarbage_ch9}
-
-//vcfcollection.concat(testgarbage_ch9,testgarbage_ch10).set{concatedvcfcollection}
 
 
 emit:
 triovcf = leftalignandtrim.out
-//vcfgarbage = concatedvcfcollection
+}
+
+workflow CNVanalysis {
+take:bam
+
+main:
+parliament2(bam,params.genome,indexes_ch)
+mergeCNV(idfamily_ch.join(parliament2.out[0].map{ id, family, vcf -> tuple(family,vcf)}.groupTuple().flaten().collate(2))
+
+
+emit:
+mergeCNV.out[0]
 }
 
 workflow triovcfanalysis {
@@ -202,17 +165,7 @@ annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardb
 AnnotSV(vcf.join(cnvvcf).groupTuple().flatten().collate( 3 ))
 }
 
-workflow CNVanalysis {
-take:bam
 
-main:
-parliament2(bam,params.genome,indexes_ch)
-mergeCNV(idfamily_ch.join(parliament2.out[0].map{ id, family, vcf -> tuple(family,vcf)}.groupTuple()))
-
-
-emit:
-mergeCNV.out[0]
-}
 workflow { 
 main:
 
