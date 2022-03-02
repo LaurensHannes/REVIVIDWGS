@@ -19,10 +19,10 @@ process AnnotSV{
 
 		output:
 		
-		tuple val(fam), file("${fam}.annotated.CNV.vcf")
+		tuple val(fam), file("**/${fam}.annotated.CNV.tsv")
 
 		"""
-         /AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf -outputFile ${fam}.annotated.CNV.vcf
+         /AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf -outputFile ${fam}.annotated.CNV.tsv
 		"""
 		
 		}
