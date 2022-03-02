@@ -7,7 +7,7 @@ process AnnotSV{
 		       container "docker://laurenshannes/annotsv:3.1"
 
 		memory { 4.GB * task.attempt }
-		cpus 1
+		cpus 2
 			 time { 30.minute * task.attempt }
 			publishDir "./results/annotated/CNV/$fam" , mode: 'copy', overwrite: true
 
@@ -19,10 +19,10 @@ process AnnotSV{
 
 		output:
 		
-		tuple val(fam), file("${fam}.merge.vcf")
+		tuple val(fam), file("${fam}.annotated.CNV.vcf")
 
 		"""
-         /AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf
+         /AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf -outputFile ${fam}.annotated.CNV.vcf
 		"""
 		
 		}
