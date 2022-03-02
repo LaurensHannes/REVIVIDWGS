@@ -25,9 +25,9 @@ process mergeCNV{
 		survivor bincov $lowmq1 10 2 > ${lowmq1}.bed
 		survivor bincov $lowmq2 10 2 > ${lowmq2}.bed
 		survivor bincov $lowmq3 10 2 > ${lowmq3}.bed
-		survivor filter ${vcf1} ${lowmq1}.bed 50 -1 0.01 10 ${vcf1}.filterd.vcf
-		survivor filter ${vcf2} ${lowmq2}.bed 50 -1 0.01 10 ${vcf2}.filterd.vcf
-		survivor filter ${vcf3} ${lowmq3}.bed 50 -1 0.01 10 ${vcf3}.filterd.vcf
+		survivor filter ${vcf1} ${lowmq1}.bed 25 -1 0 10 ${vcf1}.filterd.vcf
+		survivor filter ${vcf2} ${lowmq2}.bed 25 -1 0 10 ${vcf2}.filterd.vcf
+		survivor filter ${vcf3} ${lowmq3}.bed 25 -1 0 10 ${vcf3}.filterd.vcf
 		ls ${vcf1}.filterd.vcf >> ${fam}
 		ls ${vcf2}.filterd.vcf >> ${fam}
 		ls ${vcf3}.filterd.vcf >> ${fam}
