@@ -6,8 +6,8 @@ process createfilterbedfileCNV{
          maxRetries 3
 
 
-		memory { 4.GB * task.attempt }
-		cpus 18
+		memory { 8.GB * task.attempt }
+		cpus 4
 			 time { 1.hour * task.attempt }
 
 
