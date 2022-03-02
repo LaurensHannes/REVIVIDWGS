@@ -46,6 +46,7 @@ include { mergeCNV } from './modules/mergeCNV.nf'
 include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 include { splitbamlanes } from './modules/splitbamlanes.nf'
 include { splitbamindividuals } from './modules/splitbamindividuals.nf'
+include { createfilterbedfileCNV } from './modules/createfilterbedfileCNV.nf'
 
 // script parameters
 
@@ -143,7 +144,8 @@ take:bam
 
 main:
 parliament2(bam,params.genome,indexes_ch)
-mergeCNV(idfamily_ch.join(parliament2.out[0]).map{ id, family, vcf -> tuple(family,vcf)}.groupTuple().flatten().collate( 4 ))
+createfilterbedfileCNV(bam)
+mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0]).map{ id, family, vcf ,lowmq-> tuple(family,vcf,lowmq)}.groupTuple(sort:true).flatten().collate( 7 ))
 
 
 emit:
