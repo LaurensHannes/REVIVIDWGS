@@ -99,7 +99,6 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 emit:
-bams = duplicates.out[0]
 mergedbams = mergebams.out[0]
 crams = generateCRAM.out[0]
 
