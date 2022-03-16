@@ -94,9 +94,7 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 
 fastQC(gzipped_ch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
-splitbamlanes(alignment.out,chromosomes_ch)
-duplicates(splitbamlanes.out)
-mergebams(duplicates.out[0].groupTuple(),params.home)
+mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
