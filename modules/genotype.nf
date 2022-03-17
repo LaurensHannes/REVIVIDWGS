@@ -1,7 +1,7 @@
 process genotype {
 
         tag "$id $chr"
-		 time { 30.minute * task.attempt }
+		 time { 1.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
