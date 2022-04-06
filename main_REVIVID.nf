@@ -14,6 +14,7 @@ log.info """\
  """
 
 include { importfastq } from './modules/importfastq.nf'
+include { deeptrio } from './modules/deeptrio.nf'
 include { fastQC } from './modules/fastQC.nf'
 include { alignment } from './modules/alignment.nf'
 include { readgroups } from './modules/readgroups.nf'
@@ -108,6 +109,7 @@ workflow createindividualvcfs {
 take: bam 
 
 main:
+deeptrio(bam.map{id,bam,bai -> tuple(bam,bai)}.flatten(),params.genome)
 splitbamindividuals(bam,chromosomes_ch)
 
 baserecalibrator(splitbamindividuals.out[0],params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
