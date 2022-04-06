@@ -4,7 +4,7 @@ process deeptrio {
 
         errorStrategy 'retry'
          maxRetries 3
-		       container "docker:// google/deepvariant:deeptrio-1.3.0"
+		       container "docker://google/deepvariant:deeptrio-1.3.0"
 			   containerOptions '-B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw'
 		memory { 180.GB }
 		cpus 36
