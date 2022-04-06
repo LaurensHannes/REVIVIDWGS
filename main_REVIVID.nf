@@ -54,6 +54,7 @@ include { createfilterbedfileCNV } from './modules/createfilterbedfileCNV.nf'
 chromosomes_ch = Channel.of('chr1','chr2','chr3','chr4','chr5','chr6','chr7','chr8','chr9','chr10','chr11','chr12','chr13','chr14','chr15','chr16','chr17','chr18','chr19','chr20','chr21','chr22','chrX','chrY','chrM')
 
 
+
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 donevcfs_ch = channel.fromPath('./results/vcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
@@ -105,11 +106,19 @@ crams = generateCRAM.out[0]
 
 }
 
-workflow createindividualvcfs {
+workflow deepvariant {
 take: bam 
 
 main:
 deeptrio(bam.map{id,bam,bai -> tuple(bam,bai)}.flatten(),params.genome)
+
+}
+
+workflow createindividualvcfs {
+take: bam 
+
+main:
+
 splitbamindividuals(bam,chromosomes_ch)
 
 baserecalibrator(splitbamindividuals.out[0],params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
@@ -177,7 +186,7 @@ download_fastq_to_bam_and_cram(checkbam.out.bamcheck_ch.filter( ~/.*todo.*/ ).du
 download_fastq_to_bam_and_cram.out.mergedbams.concat(bamalldone_ch).set{bammixed}
 
 CNVanalysis(bammixed)
-
+deepvariant(bammixed)
 checkvcf(idfamily_ch)
 checkvcf.out.vcfcheck_ch.dump(tag:"vcfdone").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{vcfdone_ch}
 vcfdone_ch.toSortedList().flatten().collate(1).combine(donevcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{vcfalldone_ch}
