@@ -46,6 +46,7 @@ include { mergeCNV } from './modules/mergeCNV.nf'
 include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 include { splitbamlanes } from './modules/splitbamlanes.nf'
 include { splitbamindividuals } from './modules/splitbamindividuals.nf'
+include { createfilterbedfileCNV } from './modules/createfilterbedfileCNV.nf'
 
 // script parameters
 
@@ -93,14 +94,11 @@ importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getB
 
 fastQC(gzipped_ch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
-splitbamlanes(alignment.out,chromosomes_ch)
-duplicates(splitbamlanes.out)
-mergebams(duplicates.out[0].groupTuple(),params.home)
+mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 emit:
-bams = duplicates.out[0]
 mergedbams = mergebams.out[0]
 crams = generateCRAM.out[0]
 
@@ -143,8 +141,9 @@ take:bam
 
 main:
 parliament2(bam,params.genome,indexes_ch)
-mergeCNV(idfamily_ch.join(parliament2.out[0]).map{ id, family, vcf -> tuple(family,vcf)}.groupTuple())
-
+createfilterbedfileCNV(bam)
+idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ).view()
+mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ))
 
 emit:
 mergeCNV.out[0]

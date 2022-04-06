@@ -5,7 +5,9 @@ process generateCRAM {
 		myDir = file('./results/crams')
 		myDir.mkdirs()
 		publishDir './results/crams', mode: 'copy', overwrite: true
-
+        errorStrategy 'retry'
+         maxRetries 3
+			 time { 2.hours * task.attempt }
 			
 		input:
 		tuple val(id),file(bam),file(bai) 
