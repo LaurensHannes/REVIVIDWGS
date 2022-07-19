@@ -8,7 +8,7 @@ process deeptrio {
 			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel 		 -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
 		memory { 180.GB }
 		cpus 36
-			 time { 5.hour * task.attempt }
+			 time { 12.hour * task.attempt }
 			publishDir "./results/deeptrio/$id/", mode: 'copy', overwrite: true
 
 
