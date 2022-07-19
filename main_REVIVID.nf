@@ -110,7 +110,7 @@ workflow deepvariant {
 take: bam 
 
 main:
-deeptrio(bam.map{id,bam,bai -> tuple(bam,bai)}.flatten().collate( 6 ),params.genome)
+deeptrio(bam.map{id,bam,bai -> tuple(bam,bai)}.flatten().collate( 6 ),params.genome,indexes_ch)
 
 }
 

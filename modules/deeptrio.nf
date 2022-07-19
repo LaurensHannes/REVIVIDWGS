@@ -5,7 +5,7 @@ process deeptrio {
         errorStrategy 'retry'
          maxRetries 3
 		       container "docker://google/deepvariant:deeptrio-1.3.0"
-			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
+			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel 		 -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
 		memory { 180.GB }
 		cpus 36
 			 time { 5.hour * task.attempt }
@@ -17,6 +17,7 @@ process deeptrio {
 
 		tuple file(bam1), file(bai1),file(bam2),file(bai2),file(bam3),file(bai3)
 		path genome
+		path indexes
 		
 
 		output:
