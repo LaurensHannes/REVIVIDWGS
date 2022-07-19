@@ -5,7 +5,7 @@ process deeptrio {
         errorStrategy 'retry'
          maxRetries 3
 		       container "docker://google/deepvariant:deeptrio-1.3.0"
-			   containerOptions '-B /usr/lib/locale/:/usr/lib/locale/ -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw --env TMPDIR=/lustre1/project/stg_00086/tmp_nextflow'
+			   containerOptions '-B /usr/lib/locale/:/usr/lib/locale/ -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B /tmp:/tmp'
 		memory { 180.GB }
 		cpus 36
 			 time { 5.hour * task.attempt }
