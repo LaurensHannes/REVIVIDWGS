@@ -78,10 +78,15 @@ while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
         ids << id
-		father << father
-		mother << mother
+		fathers << father
+		mothers << mother
 }
 myReader.close()
+a =  Channel.fromList(ids)
+b = Channel.fromList(fathers)
+c = Channel.fromList(mothers)
+
+a.first().concat(b.first(),c.first()).view()
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
 Channel.fromList(ids).map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
