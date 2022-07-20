@@ -128,7 +128,7 @@ take: bam
 
 main:
 bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).toSortedList().view()
-deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 )toSortedList(),params.genome,indexes_ch)
+deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).toSortedList(),params.genome,indexes_ch)
 
 }
 
