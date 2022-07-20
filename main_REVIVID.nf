@@ -74,6 +74,8 @@ myReader = myFile.newReader()
 String line
 familymap = [:]
 ids = []
+fathers = []
+mothers = []
 while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
