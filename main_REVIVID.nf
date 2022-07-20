@@ -88,7 +88,7 @@ a =  Channel.fromList(ids)
 b = Channel.fromList(fathers)
 c = Channel.fromList(mothers)
 
-a.first().concat(b.first(),c.first()).set{ shortped_ch }
+a.first().concat(b.first(),c.first())collate( 3 ).set{ shortped_ch }
 
 shortped_ch.combine(chromosomes_ch).set{ crossedped_ch }
 
