@@ -138,7 +138,9 @@ take: bam
 main:
 
 bam.map{id,chr,bam,bai -> tuple(id,chr,tuple(bam,bai))}.join(crossedped_ch,by: [0,1]).view()
+//bam.map{id,chr,bam,bai -> tuple(id,chr,tuple(bam,bai))}.join(crossedped_ch,by: [0,1]).view()
 crossedped_ch.view()
+bam.join(shortped_ch, by:0).view()
 //bam.map{id,chr,bam,bai -> tuple(chr,tuple(id,bam,bai))}.groupTuple().flatten().collate( 10 ).map{chr,id1,bam1,bai1,id2,bam2,bai2,id3,bam3,bai3 -> tuple(chr,tuple(id1,bam1,bai1),tuple(id2,bam2,bai2),tuple(id3,bam3,bai3))}.view()
 //bam.map{id,chr,bam,bai -> tuple(chr,id,tuple(bam,bai))}.groupTuple().flatten().collate( 10 ).join(shortped_ch).flatten().collate( 10 ).view()
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(id,bam,bai))}.groupTuple().flatten().collate( 10 ).join(crossedped_ch, by: [0,1]).flatten().collate( 10 ),params.genome,indexes_ch)
