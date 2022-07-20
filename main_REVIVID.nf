@@ -134,7 +134,7 @@ take: bam
 
 
 main:
-bam.map{id,chr,bam,bai -> tuple(chr,id,tuple(bam,bai))}.groupTuple().view()
+bam.join(shortped_ch).map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().view()
 //bam.map{id,chr,bam,bai -> tuple(chr,id,tuple(bam,bai))}.groupTuple().flatten().collate( 10 ).join(shortped_ch).flatten().collate( 10 ).view()
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(id,bam,bai))}.groupTuple().flatten().collate( 10 ).join(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
 
