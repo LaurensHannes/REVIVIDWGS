@@ -78,6 +78,8 @@ while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
         ids << id
+		father << father
+		mother << mother
 }
 myReader.close()
 
@@ -106,22 +108,39 @@ crams = generateCRAM.out[0]
 
 }
 
+
+
+workflow creatindividualbams {
+take: bam
+
+main: 
+
+splitbamindividuals(bam,chromosomes_ch)
+
+emit:
+individualsplitbam = splitbamindividuals.out[0]
+
+}
+
 workflow deepvariant {
 take: bam 
 
 main:
-deeptrio(bam.map{id,bam,bai -> tuple(bam,bai)}.flatten().collate( 6 ),params.genome,indexes_ch)
+bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.flatten().collate( 7 ).view()
+deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.flatten().collate( 7 ),params.genome,indexes_ch)
 
 }
 
 workflow createindividualvcfs {
-take: bam 
+take: bamperchr
+
+
 
 main:
 
-splitbamindividuals(bam,chromosomes_ch)
 
-baserecalibrator(splitbamindividuals.out[0],params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
+
+baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 combineindividualGVCFs(genotype.out[0].groupTuple(size: 25).flatten().collate ( 26 ),params.genome,indexes_ch,params.genomedict)
@@ -190,7 +209,8 @@ deepvariant(bammixed)
 checkvcf(idfamily_ch)
 checkvcf.out.vcfcheck_ch.dump(tag:"vcfdone").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{vcfdone_ch}
 vcfdone_ch.toSortedList().flatten().collate(1).combine(donevcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{vcfalldone_ch}
-createindividualvcfs(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vcftodo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id)}.join(bammixed))
+creatindividualbams(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vcftodo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id)}.join(bammixed))
+createindividualvcfs(createindividualbams)
 createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
 
 checkfamilyvcf(family_ch.flatten())
