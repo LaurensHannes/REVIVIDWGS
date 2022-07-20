@@ -90,7 +90,7 @@ c = Channel.fromList(mothers)
 
 a.first().concat(b.first(),c.first()).set{ shortped_ch }
 
-shortped_ch.combine(chromosomes_ch).set{ crossedped_ch }
+shortped_ch.combine(chromosomes_ch).groupTuple().set{ crossedped_ch }
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
 Channel.fromList(ids).map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
