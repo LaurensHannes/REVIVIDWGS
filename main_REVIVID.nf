@@ -88,9 +88,9 @@ a =  Channel.fromList(ids)
 b = Channel.fromList(fathers)
 c = Channel.fromList(mothers)
 
-a.first().concat(b.first(),c.first()).view()
+a.first().concat(b.first(),c.first()).set{ shortped_ch }
 
-Channel.fromList(ids).map { it -> [it, familymap[it]] }set{ idfamily_ch }
+Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
 Channel.fromList(ids).map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
 family_ch.view()
 
@@ -134,8 +134,8 @@ take: bam
 
 
 main:
-bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).toSortedList().flatten().collate( 7 ).view()
-deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).toSortedList().flatten().collate( 7 ),params.genome,indexes_ch)
+bam.map{id,chr,bam,bai -> tuple(chr,tuple(id,bam,bai))}.groupTuple().flatten().collate( 10 ).join(shortped_ch).flatten().collate( 10 ).view()
+deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(id,bam,bai))}.groupTuple().flatten().collate( 10 ).join(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
 
 }
 
