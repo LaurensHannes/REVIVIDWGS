@@ -90,7 +90,7 @@ c = Channel.fromList(mothers)
 
 a.first().concat(b.first(),c.first()).set{ shortped_ch }
 
-shortped_ch.combine(chromosomes_ch,order_ch).set{ crossedped_ch }
+shortped_ch.combine(chromosomes_ch).combine(order_ch).set{ crossedped_ch }
 //shortped_ch.combine(chromosomes_ch).map{id,chr -> tuple(chr,tuple(id,chr))}.groupTuple().flatten().collate( 7 ).map{chr,id1,chr1,id2,chr2,id3,chr3 -> tuple(id1,chr1,id2,chr2,id3,chr3)}.set{ crossedped_ch }
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
@@ -138,7 +138,7 @@ take: bam
 
 main:
 
-bam.map{id,chr,bam,bai -> tuple(id,chr,tuple(bam,bai))}.join(crossedped_ch,by: [0,1], remainder: true).join(crossedped_ch,by: [2,3], remainder: true).join(crossedped_ch,by: [4,5], remainder: true).view()
+//bam.map{id,chr,bam,bai -> tuple(id,chr,tuple(bam,bai))}.join(crossedped_ch,by: [0,1], remainder: true).join(crossedped_ch,by: [2,3], remainder: true).join(crossedped_ch,by: [4,5], remainder: true).view()
 //bam.map{id,chr,bam,bai -> tuple(id,chr,tuple(bam,bai))}.join(crossedped_ch,by: [0,1]).view()
 crossedped_ch.view()
 //bam.join(shortped_ch, by:0).view()
