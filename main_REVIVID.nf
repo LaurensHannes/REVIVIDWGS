@@ -127,7 +127,7 @@ take: bam
 
 
 main:
-bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.flatten().collate( 7 ).view()
+bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).view()
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.flatten().collate( 7 ),params.genome,indexes_ch)
 
 }
