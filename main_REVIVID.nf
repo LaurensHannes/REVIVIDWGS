@@ -110,7 +110,7 @@ crams = generateCRAM.out[0]
 
 
 
-workflow creatindividualbams {
+workflow createindividualbams {
 take: bam
 
 main: 
@@ -124,6 +124,7 @@ individualsplitbam = splitbamindividuals.out[0]
 
 workflow deepvariant {
 take: bam 
+
 
 main:
 bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.flatten().collate( 7 ).view()
