@@ -6,7 +6,7 @@ process parliament2 {
 		       container "docker://sameerdcosta/parliament2:latest"
 			   containerOptions '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw'
 		memory { 180.GB * task.attempt }
-		cpus 36
+		cpus 1
 		executor 'PBS'
 			 time { 8.hour * task.attempt }
 
