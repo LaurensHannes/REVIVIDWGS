@@ -8,6 +8,7 @@ process parliament2 {
 		memory { 180.GB * task.attempt }
 		cpus 1
 		executor 'PBS'
+		clusterOptions '-A lp_revivid'
 			 time { 8.hour * task.attempt }
 
 			publishDir "./results/CNV/$id/parliament", mode: 'copy', overwrite: true
