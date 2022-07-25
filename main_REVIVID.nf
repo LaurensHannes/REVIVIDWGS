@@ -137,7 +137,7 @@ main:
 
 //bam.map{id,chr,bam,bai -> tuple(id,chr,tuple(bam,bai))}.join(crossedped_ch,by: [0,1], remainder: true).join(crossedped_ch,by: [2,3], remainder: true).join(crossedped_ch,by: [4,5], remainder: true).view()
 //bam.map{id,chr,bam,bai -> tuple(id,chr,tuple(bam,bai))}.join(crossedped_ch,by: [0,1]).view()
-crossedped_ch.view()
+
 //bam.join(shortped_ch, by:0).view()
 //bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 )
 //bam.map{id,chr,bam,bai -> tuple(chr,id,tuple(bam,bai))}.groupTuple().flatten().collate( 10 ).join(shortped_ch).flatten().collate( 10 ).view()
