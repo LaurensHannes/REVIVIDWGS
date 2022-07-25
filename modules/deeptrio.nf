@@ -6,7 +6,7 @@ process deeptrio {
          maxRetries 3
 		       container "docker://google/deepvariant:deeptrio-1.4.0"
 			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel 		 -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
-		memory { 8.GB * task.attempt }
+			memory { 4.GB * task.attempt }
 		cpus 1
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
