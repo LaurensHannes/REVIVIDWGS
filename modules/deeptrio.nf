@@ -10,7 +10,7 @@ process deeptrio {
 		cpus 36
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
-			 time { 15.minute * task.attempt }
+			 time { 12.hour * task.attempt }
 			publishDir "./results/deeptrio/$id/", mode: 'copy', overwrite: true
 
 
