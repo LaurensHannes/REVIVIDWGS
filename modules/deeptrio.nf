@@ -6,7 +6,7 @@ process deeptrio {
          maxRetries 3
 		       container "docker://google/deepvariant:deeptrio-1.3.0"
 			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel 		 -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
-			memory { 180.GB * task.attempt }
+			memory 180.GB
 		cpus 36
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
@@ -24,11 +24,16 @@ process deeptrio {
 
 		output:
 		
-		file("${index}.vcf.gz")
-		file("${index}.g.vcf.gz")
+		tuple val(${index}),file("${index}.${chr}.vcf.gz")
+		tuple val(${father}),file("${father}.${chr}.vcf.gz")
+		tuple val(${mother}),file("${mother}.${chr}.vcf.gz")
+		tuple val(${index}),file("${index}.${chr}.g.vcf.gz")
+		tuple val(${father}),file("${father}.${chr}.g.vcf.gz")
+		tuple val(${mother}),file("${mother}.${chr}.g.vcf.gz")
+		tuple val("QC"),file("${index}.visual_report.html"),file("${father}.visual_report.html"),file("${mother}.visual_report.html")
 
 		"""
-		/opt/deepvariant/bin/deeptrio/run_deeptrio  --regions $chr  --model_type WGS   --ref $genome   --reads_child ${index}.${chr}.bam   --reads_parent1 ${father}.${chr}.bam    --reads_parent2 ${mother}.${chr}.bam    --sample_name_child '${index}'   --sample_name_parent1 '${father}'   --sample_name_parent2 '${mother}' --output_vcf_child ${index}.vcf.gz   --output_vcf_parent1 ${father}.vcf.gz   --output_vcf_parent2 ${mother}.vcf.gz --output_gvcf_child ${index}.g.vcf.gz   --output_gvcf_parent1 ${father}.g.vcf.gz   --output_gvcf_parent2 ${mother}.g.vcf.gz --num_shards ${task.cpus}  --intermediate_results_dir /output/intermediate_results_dir 
+		/opt/deepvariant/bin/deeptrio/run_deeptrio  --regions $chr  --model_type WGS   --ref $genome   --reads_child ${index}.${chr}.bam   --reads_parent1 ${father}.${chr}.bam    --reads_parent2 ${mother}.${chr}.bam    --sample_name_child '${index}_deeptrio'   --sample_name_parent1 '${father}_deeptrio'   --sample_name_parent2 '${mother}_deeptrio' --output_vcf_child ${index}.${chr}.vcf.gz   --output_vcf_parent1 ${father}.${chr}.vcf.gz   --output_vcf_parent2 ${mother}.${chr}.vcf.gz --output_gvcf_child ${index}.${chr}.g.vcf.gz   --output_gvcf_parent1 ${father}.${chr}.g.vcf.gz   --output_gvcf_parent2 ${mother}.${chr}.g.vcf.gz --num_shards ${task.cpus}  --intermediate_results_dir /output/intermediate_results_dir 
 		"""
 		
 		}

@@ -136,6 +136,7 @@ take: bam
 main:
 
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
+mergevcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple().flatten.collate( 26 ))
 
 }
 
