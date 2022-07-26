@@ -30,7 +30,7 @@ process deeptrio {
 		tuple val("${index}"),file("${index}.${chr}.g.vcf.gz")
 		tuple val("${father}"),file("${father}.${chr}.g.vcf.gz")
 		tuple val("${mother}"),file("${mother}.${chr}.g.vcf.gz")
-		tuple val("QC"),file("${index}.visual_report.html"),file("${father}.visual_report.html"),file("${mother}.visual_report.html")
+		tuple val("QC"),file("${index}.${chr}.visual_report.html"),file("${father}.${chr}.visual_report.html"),file("${mother}.${chr}.visual_report.html")
 
 		"""
 		/opt/deepvariant/bin/deeptrio/run_deeptrio  --regions $chr  --model_type WGS   --ref $genome   --reads_child ${index}.${chr}.bam   --reads_parent1 ${father}.${chr}.bam    --reads_parent2 ${mother}.${chr}.bam    --sample_name_child '${index}_deeptrio'   --sample_name_parent1 '${father}_deeptrio'   --sample_name_parent2 '${mother}_deeptrio' --output_vcf_child ${index}.${chr}.vcf.gz   --output_vcf_parent1 ${father}.${chr}.vcf.gz   --output_vcf_parent2 ${mother}.${chr}.vcf.gz --output_gvcf_child ${index}.${chr}.g.vcf.gz   --output_gvcf_parent1 ${father}.${chr}.g.vcf.gz   --output_gvcf_parent2 ${mother}.${chr}.g.vcf.gz --num_shards ${task.cpus}  --intermediate_results_dir /output/intermediate_results_dir 
