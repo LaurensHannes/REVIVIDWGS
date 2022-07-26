@@ -6,7 +6,7 @@ process deeptrio {
          maxRetries 3
 		       container "docker://google/deepvariant:deeptrio-1.3.0"
 			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel 		 -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
-			memory { 4.GB * task.attempt }
+			memory { 16.GB * task.attempt }
 		cpus 1
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
@@ -17,7 +17,7 @@ process deeptrio {
 
 		input:
 
-		tuple val(chr), file(bam1), file(bai1),file(bam2),file(bai2),file(bam3),file(bai3)
+		each tuple val(chr), file(bam1), file(bai1),file(bam2),file(bai2),file(bam3),file(bai3)
 		tuple val(index),val(father),val(mother)
 		path genome
 		path indexes
