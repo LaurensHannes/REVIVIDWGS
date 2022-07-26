@@ -1,6 +1,6 @@
 process deeptrio { 
 
-        tag "${bam1}"
+        tag "${index}"
 
         errorStrategy 'retry'
          maxRetries 3
@@ -10,7 +10,7 @@ process deeptrio {
 		cpus 1
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
-			 time { 8.hour * task.attempt }
+			 time { 15.minute * task.attempt }
 			publishDir "./results/deeptrio/$id/", mode: 'copy', overwrite: true
 
 
