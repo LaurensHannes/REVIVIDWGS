@@ -7,7 +7,7 @@ process mergevcf {
 		maxRetries 3
 
 	input:
-	tuple val(id), tuple(vcf)
+	tuple val(id), file(vcf)
 
 	output:
 	tuple val(id), path("${id}.vcf.gz"), path("${id}.vcf.gz.tbi")
