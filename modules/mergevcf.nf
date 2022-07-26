@@ -10,11 +10,11 @@ process mergevcf {
 	tuple val(id), tuple(vcf)
 
 	output:
-	tuple val(family), path("${family}.vcf.gz"), path("${family}.vcf.gz.tbi")
+	tuple val(id), path("${id}.vcf.gz"), path("${id}.vcf.gz.tbi")
 	
 """
-	bcftools merge -o ${family}.vcf.gz -O z --threads ${task.cpus} $vcf 
-	tabix ${family}.vcf.gz
+	bcftools merge -o $id.vcf.gz -O z --threads ${task.cpus} $vcf 
+	tabix $id.vcf.gz
 """
 
 }
