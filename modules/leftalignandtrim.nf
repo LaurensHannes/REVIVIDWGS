@@ -17,7 +17,7 @@ publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 		path dict
 		
         output:
-        tuple val(family), ${family}.${caller}.alignedandtrimmed.vcf.gz
+        tuple val(family), file("${family}.${caller}.alignedandtrimmed.vcf.gz")
         
 		
 		"""
