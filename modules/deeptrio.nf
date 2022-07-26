@@ -1,6 +1,6 @@
 process deeptrio { 
 
-        tag "${index}"
+        tag "$chr from index $index"
 
         errorStrategy 'retry'
          maxRetries 3
