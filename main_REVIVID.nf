@@ -143,7 +143,7 @@ glnexusprocessing(glnexusdt.out[0])
 normalizeindelsdeepvariant(glnexusprocessing.out[0],params.genome)
 
 emit:
-deepvariantvcf = leftalignandtrimdeepvariant.out[0]
+deepvariantvcf = normalizeindelsdeepvariant.out[0]
 
 }
 
@@ -180,7 +180,7 @@ vcftoolshardfilter(variantrecalibration.out[0])
 normalizeindelsgatk(vcftoolshardfilter.out[0],params.genome)
 
 emit:
-triovcf = leftalignandtrimgatk.out
+triovcf = normalizeindelsgatk.out
 }
 
 workflow CNVanalysis {
