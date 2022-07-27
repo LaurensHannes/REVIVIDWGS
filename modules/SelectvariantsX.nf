@@ -9,7 +9,7 @@ process SelectVariantsX {
 		container "docker://broadinstitute/gatk"
 		
         input:
-        tuple val(family), file(vcfgz)
+        tuple val(family), val(mode), file(vcfgz)
 		path genome
 		path dict 
 		path indexes
