@@ -24,9 +24,9 @@ process deeptrio {
 
 		output:
 		
-		tuple val("${index}"),file("${index}.${chr}.vcf.gz")
-		tuple val("${father}"),file("${father}.${chr}.vcf.gz")
-		tuple val("${mother}"),file("${mother}.${chr}.vcf.gz")
+		tuple val("${index}"),file("${index}.${chr}.vcf.gz",file("${index}.${chr}.vcf.gz.tbi")
+		tuple val("${father}"),file("${father}.${chr}.vcf.gz"),file("${father}.${chr}.vcf.gz.tbi")
+		tuple val("${mother}"),file("${mother}.${chr}.vcf.gz"),file("${mother}.${chr}.vcf.gz.tbi")
 		tuple val("${index}"),file("${index}.${chr}.g.vcf.gz")
 		tuple val("${father}"),file("${father}.${chr}.g.vcf.gz")
 		tuple val("${mother}"),file("${mother}.${chr}.g.vcf.gz")
