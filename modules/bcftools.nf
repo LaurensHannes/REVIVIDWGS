@@ -45,9 +45,9 @@ process intersectvcf {
 
 	tag "consensus vcf for ${fam}"
 	cpus 4
-	time { 30 minute  * task.attempt }
-	errorStrategy 'retry'
-	maxRetries 3
+	time { 30.minute * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
 	
 	input: 
 	tuple val(fam),file(vcf1),file(vcftbi1)
@@ -66,9 +66,9 @@ process normalizeindels {
 
 	tag "normalizing vcf for caller:${caller} from family:${fam}"
 	cpus 4
-	time { 30 minute  * task.attempt }
-	errorStrategy 'retry'
-	maxRetries 3
+	time { 30.minute * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
 	
 	input: 
 	tuple val(fam),val(caller), file(vcfgz), file(vcfgztbi)
