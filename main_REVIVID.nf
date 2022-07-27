@@ -29,10 +29,10 @@ include { checkvcf } from './modules/checkvcf.nf'
 include { checkfamilyvcf } from './modules/checkfamilyvcfnew.nf'
 include { applyBQSR } from './modules/applyBQSR.nf'
 include { genotype } from './modules/genotype.nf'
-include { leftalignandtrim } from './modules/leftalignandtrim.nf'
+include { leftalignandtrim as  leftalignandtrimgatk;  leftalignandtrim as  leftalignandtrimdeepvariant} from './modules/leftalignandtrim.nf'
 include { variantrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
-include { mergevcf } from './modules/mergevcf.nf'
+include { concatvcf; mergevcf } from './modules/bcftools.nf'
 include { combineindividualGVCFs } from './modules/combineindividualGVCFs.nf'
 include { combineGVCFs } from './modules/combineGVCFs.nf'
 include { genotypeGVCFs } from './modules/genotypeGVCFs.nf'
@@ -137,8 +137,9 @@ main:
 
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
 deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple().flatten().collate( 51 ).view()
-mergevcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(sort:true).flatten().collate( 51 ))
-
+concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(sort:true).flatten().collate( 51 ))
+mergevcf(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ))
+leftalignandtrimdeepvariant(mergevcf.out[0],params.genome,indexes_ch,params.genomedict)
 }
 
 workflow createindividualvcfs {
@@ -169,7 +170,7 @@ genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 vcftoolshardfilter(variantrecalibration.out[0])
-leftalignandtrim(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
+leftalignandtrimgatk(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
 
 
 emit:
