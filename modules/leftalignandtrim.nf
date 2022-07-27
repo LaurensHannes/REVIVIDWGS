@@ -15,13 +15,14 @@ publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
         path genome 
 		path indexes
 		path dict
+		path broadinterval
 		
         output:
         tuple val(family), file("${family}.${caller}.alignedandtrimmed.vcf.gz")
         
 		
 		"""
-		gatk LeftAlignAndTrimVariants -R $genome -V $vcfgz -O ${family}.${caller}.alignedandtrimmed.vcf.gz
+		gatk LeftAlignAndTrimVariants -R $genome -V $vcfgz -O ${family}.${caller}.alignedandtrimmed.vcf.gz -L $broadinterval
  
 		"""		
 		

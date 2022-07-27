@@ -24,7 +24,7 @@ process mergevcf {
 
 	tag "${fam}_deeptrio"
 	cpus 4
-	time { 30.minutes * task.attempt }
+	time { 30.minute * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 
@@ -40,3 +40,26 @@ process mergevcf {
 """
 
 }
+
+process intersectvcf {
+
+	tag "consensus vcf for ${fam}"
+	cpus 4
+	time { 30 minute  * task.attempt }
+	errorStrategy 'retry'
+	maxRetries 3
+	
+	input: 
+	tuple val(fam),file(vcf1)
+	tuple val(fam),file(vcf2)
+	
+	output:
+	tuple val(fam),file("output/0002.vcf")
+	
+	"""
+	bcftools -p "output" isec $vcf1 $vcf2
+	"""
+	
+}
+
+	

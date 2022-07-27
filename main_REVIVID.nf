@@ -138,10 +138,16 @@ main:
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
 deeptrio.out[3].concat( deeptrio.out[4], deeptrio.out[5]).groupTuple().flatten().collate( 51 ).view()
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(sort:true).flatten().collate( 51 ))
-glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.broadintervalbed)
+glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ))
 glnexusprocessing(glnexusdt.out[0])
-leftalignandtrimdeepvariant(glnexusprocessing.out[0],params.genome,indexes_ch,params.genomedict)
+leftalignandtrimdeepvariant(glnexusprocessing.out[0],params.genome,indexes_ch,params.genomedict,params.broadinterval)
+
+emit:
+deepvariantvcf = leftalignandtrimdeepvariant.out[0]
+
 }
+
+
 
 workflow createindividualvcfs {
 take: bamperchr
@@ -171,8 +177,7 @@ genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 vcftoolshardfilter(variantrecalibration.out[0])
-leftalignandtrimgatk(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict)
-
+leftalignandtrimgatk(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict,params.broadinterval)
 
 emit:
 triovcf = leftalignandtrimgatk.out
@@ -190,6 +195,18 @@ mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])
 emit:
 mergeCNV.out[0]
 }
+
+workflow consensus {
+
+take:
+vcf1
+vcf2
+
+main:
+intersectvcf(vcf1,vcf2)
+
+emit:
+intersectvcf.out[0]
 
 workflow triovcfanalysis {
 take:
@@ -237,8 +254,9 @@ createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed}
 //right-one testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),download_fastq_to_bam_and_cram.out.testgarbage.flatten())
 //testwf(download_fastq_to_bam_and_cram.out.testgarbage.flatten(),createfamilyvcfs.out.vcfgarbage.flatten())
 
+consensus(deepvariant.out.deepvariantvcf,familyvcfmixed)
 
-triovcfanalysis(familyvcfmixed,CNVanalysis.out[0])
+triovcfanalysis(consensus.out,CNVanalysis.out[0])
 
 
 }
