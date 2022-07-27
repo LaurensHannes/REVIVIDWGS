@@ -136,8 +136,8 @@ take: bam
 main:
 
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
-deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple().flatten().collate( 26 ).view()
-mergevcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple().flatten().collate( 26 ))
+deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple().flatten().collate( 51 ).view()
+mergevcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple().flatten().collate( 51 ))
 
 }
 
@@ -153,7 +153,7 @@ main:
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-combineindividualGVCFs(genotype.out[0].groupTuple(size: 25).flatten().collate ( 51 ),params.genome,indexes_ch,params.genomedict)
+combineindividualGVCFs(genotype.out[0].groupTuple(size: 25).flatten().collate ( 26 ),params.genome,indexes_ch,params.genomedict)
 
 emit:
 individualvcf = combineindividualGVCFs.out[0]
