@@ -71,15 +71,15 @@ process normalizeindels {
 	maxRetries 3
 	
 	input: 
-	tuple val(family),val(caller), file(vcfgz), file(vcfgztbi)
+	tuple val(fam),val(caller), file(vcfgz), file(vcfgztbi)
 	path genome 
 	
 	output:
-	tuple val(fam),val(caller),file("${family}.normalized.vcf.gz"),file("${family}.normalized.vcf.gz.tbi")
+	tuple val(fam),val(caller),file("${fam}.normalized.vcf.gz"),file("${fam}.normalized.vcf.gz.tbi")
 	
 	"""
-	bcftools norm -m- -f $genome $vcfgz -O z -o ${family}.normalized.vcf.gz
-	tabix ${family}.normalized.vcf.gz
+	bcftools norm -m- -f $genome $vcfgz -O z -o ${fam}.normalized.vcf.gz
+	tabix ${fam}.normalized.vcf.gz
 	"""
 	
 	

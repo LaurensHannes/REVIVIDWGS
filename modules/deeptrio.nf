@@ -51,7 +51,7 @@ process deeptrio {
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
 			 time { 30.minute * task.attempt }
-			publishDir "./results/deeptrio/$id/", mode: 'copy', overwrite: true
+			
 
 
 
@@ -78,6 +78,7 @@ process glnexusprocessing {
 	time { 30.minutes * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
+	publishDir "./results/deeptrio/$fam/", mode: 'copy', overwrite: true
 
 	input:
 	tuple val(fam),file(vcfgz)
