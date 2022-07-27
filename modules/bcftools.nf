@@ -75,7 +75,7 @@ process normalizeindels {
 	path genome 
 	
 	output:
-	tuple val(fam),vam(caller),file("${family}.normalized.vcf.gz"),file("${family}.normalized.vcf.gz.tbi")
+	tuple val(fam),val(caller),file("${family}.normalized.vcf.gz"),file("${family}.normalized.vcf.gz.tbi")
 	
 	"""
 	bcftools norm -m- -f $genome $vcfgz -O z -o ${family}.normalized.vcf.gz
