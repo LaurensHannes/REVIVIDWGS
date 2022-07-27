@@ -32,7 +32,7 @@ include { genotype } from './modules/genotype.nf'
 include { leftalignandtrim as  leftalignandtrimgatk;  leftalignandtrim as  leftalignandtrimdeepvariant} from './modules/leftalignandtrim.nf'
 include { variantrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
-include { concatvcf; mergevcf;intersectvcf } from './modules/bcftools.nf'
+include { concatvcf; mergevcf;intersectvcf;normalizeindels as normalizeindelsdeepvariant;normalizeindels as normalizeindelsgatk } from './modules/bcftools.nf'
 include { combineindividualGVCFs } from './modules/combineindividualGVCFs.nf'
 include { combineGVCFs } from './modules/combineGVCFs.nf'
 include { genotypeGVCFs } from './modules/genotypeGVCFs.nf'
@@ -140,7 +140,7 @@ deeptrio.out[3].concat( deeptrio.out[4], deeptrio.out[5]).groupTuple().flatten()
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(sort:true).flatten().collate( 51 ))
 glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ))
 glnexusprocessing(glnexusdt.out[0])
-leftalignandtrimdeepvariant(glnexusprocessing.out[0],params.genome,indexes_ch,params.genomedict,params.broadinterval)
+normalizeindelsdeepvariant(glnexusprocessing.out[0],params.genome)
 
 emit:
 deepvariantvcf = leftalignandtrimdeepvariant.out[0]
@@ -177,7 +177,7 @@ genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
 vcftoolshardfilter(variantrecalibration.out[0])
-leftalignandtrimgatk(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.genomedict,params.broadinterval)
+normalizeindelsgatk(vcftoolshardfilter.out[0],params.genome)
 
 emit:
 triovcf = leftalignandtrimgatk.out

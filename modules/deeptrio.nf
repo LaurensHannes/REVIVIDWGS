@@ -47,7 +47,7 @@ process deeptrio {
 		       container "docker://quay.io/mlin/glnexus:v1.3.1"
 			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel 		 -B `pwd`:/data  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
 			memory 4.GB
-		cpus 36
+		cpus 18
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
 			 time { 30.minute * task.attempt }

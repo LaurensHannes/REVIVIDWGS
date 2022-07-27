@@ -50,8 +50,8 @@ process intersectvcf {
 	maxRetries 3
 	
 	input: 
-	tuple val(fam),file(vcf1)
-	tuple val(fam),file(vcf2)
+	tuple val(fam),file(vcf1),file(vcftbi1)
+	tuple val(fam),file(vcf2),file(vcftbi2)
 	
 	output:
 	tuple val(fam),file("output/0002.vcf")
@@ -59,6 +59,29 @@ process intersectvcf {
 	"""
 	bcftools -p "output" isec $vcf1 $vcf2
 	"""
+	
+}
+
+process normalizeindels {
+
+	tag "normalizing vcf for caller:${caller} from family:${fam}"
+	cpus 4
+	time { 30 minute  * task.attempt }
+	errorStrategy 'retry'
+	maxRetries 3
+	
+	input: 
+	tuple val(family),val(caller), file(vcfgz), file(vcfgztbi)
+	path genome 
+	
+	output:
+	tuple val(fam),vam(caller),file("${family}.normalized.vcf.gz"),file("${family}.normalized.vcf.gz.tbi")
+	
+	"""
+	bcftools norm -m- -f $genome $vcfgz -O z -o ${family}.normalized.vcf.gz
+	tabix ${family}.normalized.vcf.gz
+	"""
+	
 	
 }
 
