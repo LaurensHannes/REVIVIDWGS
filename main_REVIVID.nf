@@ -174,7 +174,7 @@ leftalignandtrimgatk(vcftoolshardfilter.out[0],params.genome,indexes_ch,params.g
 
 
 emit:
-triovcf = leftalignandtrim.out
+triovcf = leftalignandtrimgatk.out
 }
 
 workflow CNVanalysis {
