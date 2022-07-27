@@ -42,6 +42,7 @@ process deeptrio {
 
         tag "family $fam"
 
+		beforeScript 'tail -n 357 $broadinterval > interval.bed'
         errorStrategy 'retry'
          maxRetries 3
 		       container "docker://quay.io/mlin/glnexus:v1.3.1"
@@ -65,9 +66,9 @@ process deeptrio {
 		tuple val(fam),file("${fam}.unprocessed.vcf.gz")
 
 		"""
-		tail -n 357 $broadinterval > data/interval.bed
-/usr/local/bin/glnexus_cli --config DeepVariantWGS --bed /data/interval.bed /data/${index}.g.vcf.gz /data/${father}.g.vcf.gz /data/${mother}.g.vcf.gz > /data/${fam}.unprocessed.vcf.gz
-  """
+		
+		/usr/local/bin/glnexus_cli --config DeepVariantWGS --bed /data/interval.bed /data/${index}.g.vcf.gz /data/${father}.g.vcf.gz /data/${mother}.g.vcf.gz > /data/${fam}.unprocessed.vcf.gz
+		"""
 		
 		}
 		
