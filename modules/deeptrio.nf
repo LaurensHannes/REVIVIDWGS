@@ -40,7 +40,7 @@ process deeptrio {
 		
 		process glnexusdt { 
 
-        tag "$chr for family $family"
+        tag "family $fam"
 
         errorStrategy 'retry'
          maxRetries 3
@@ -58,14 +58,15 @@ process deeptrio {
 		input:
 
 		tuple val(fam), file(vcf1), file(vcf2), file(vcf3), file(vcftbi1), file(vcftbi2), file(vcftbi3),val(index),val(father),val(mother)
-		file broadinterval
+		path broadinterval
 
 		output:
 		
 		tuple val(fam),file("${fam}.unprocessed.vcf.gz")
 
 		"""
-/usr/local/bin/glnexus_cli --config DeepVariantWGS --bed /data/${broadinterval}/data/${index}.g.vcf.gz /data/${father}.g.vcf.gz /data/${mother}.g.vcf.gz > /data/${fam}.unprocessed.vcf.gz
+		tail -n 357 $broadinterval > data/interval.bed
+/usr/local/bin/glnexus_cli --config DeepVariantWGS --bed /data/interval.bed /data/${index}.g.vcf.gz /data/${father}.g.vcf.gz /data/${mother}.g.vcf.gz > /data/${fam}.unprocessed.vcf.gz
   """
 		
 		}
