@@ -13,7 +13,7 @@ process mergevcf {
 	tuple val(id), file("${id}.vcf.gz"), file("${id}.vcf.gz.tbi")
 	
 """
-	bcftools merge -o ${id}.vcf.gz -O z --threads ${task.cpus} $vcf1 $vcf2 $vcf3 $vcf4 $vcf5 $vcf6 $vcf7 $vcf8 $vcf9 $vcf10 $vcf11 $vcf12 $vcf13 $vcf14 $vcf15 $vcf16 $vcf17 $vcf18 $vcf19 $vcf20 $vcf21 $vcf22 $vcf23 $vcf24 $vcf25
+	bcftools concat -o ${id}.vcf.gz -O z --threads ${task.cpus} $vcf1 $vcf2 $vcf3 $vcf4 $vcf5 $vcf6 $vcf7 $vcf8 $vcf9 $vcf10 $vcf11 $vcf12 $vcf13 $vcf14 $vcf15 $vcf16 $vcf17 $vcf18 $vcf19 $vcf20 $vcf21 $vcf22 $vcf23 $vcf24 $vcf25
 	tabix ${id}.vcf.gz
 """
 
