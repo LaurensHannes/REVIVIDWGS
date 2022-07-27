@@ -15,14 +15,14 @@ process AnnotSV{
 
 		input:
 
-		tuple val(fam),  file(snvvcf),file(cnvvcf)
+		tuple val(fam), file(snvvcf),val(mode),file(cnvvcf)
 
 		output:
 		
-		tuple val(fam), file("**/${fam}.annotated.CNV.tsv")
+		tuple val(fam), file("**/${fam}.${mode}.annotated.CNV.tsv")
 
 		"""
-         /AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf -outputFile ${fam}.annotated.CNV.tsv
+         /AnnotSV/bin/AnnotSV -bedtools /usr/bin/bedtools -bcftools /usr/bin/bcftools -SVinputfile $cnvvcf -candidateSnvIndelFiles $snvvcf -outputFile ${fam}.${mode}.annotated.CNV.tsv
 		"""
 		
 		}
