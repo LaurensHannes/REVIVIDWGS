@@ -17,10 +17,10 @@ process SelectVariantsX {
         path mask 
 		
         output:
-        tuple val(family), val("X"), file("${family}.X.vcf.gz"), file("${family}.X.vcf.gz.tbi")
+        tuple val(family), val("X"), val(mode), file("${family}.${mode}.X.vcf.gz"), file("${family}.${mode}.X.vcf.gz.tbi")
 
         """
 		gatk IndexFeatureFile -I $vcfgz
-        gatk SelectVariants -V $vcfgz -ped $ped -R $genome -XL $mask -L chrX --exclude-filtered true --remove-unused-alternates true  --restrict-alleles-to BIALLELIC -O ${family}.X.vcf.gz 
+        gatk SelectVariants -V $vcfgz -ped $ped -R $genome -XL $mask -L chrX --exclude-filtered true --remove-unused-alternates true  --restrict-alleles-to BIALLELIC -O ${family}.${mode}.X.vcf.gz 
         """
 }

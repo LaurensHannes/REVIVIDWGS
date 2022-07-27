@@ -54,7 +54,7 @@ process intersectvcf {
 	tuple val(fam),file(vcf2),file(vcftbi2)
 	
 	output:
-	tuple val(fam),file("output/0002.vcf")
+	tuple val(fam),val("consensus"),file("output/0002.vcf")
 	
 	"""
 	bcftools -p "output" isec $vcf1 $vcf2
@@ -69,17 +69,18 @@ process normalizeindels {
 	time { 30.minute * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
+		publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 	
 	input: 
 	tuple val(fam),val(caller), file(vcfgz), file(vcfgztbi)
 	path genome 
 	
 	output:
-	tuple val(fam),val(caller),file("${fam}.normalized.vcf.gz"),file("${fam}.normalized.vcf.gz.tbi")
+	tuple val(fam),val(caller),file("${fam}.${caller}.normalized.vcf.gz"),file("${fam}.${caller}.normalized.vcf.gz.tbi")
 	
 	"""
-	bcftools norm -m- -f $genome $vcfgz -O z -o ${fam}.normalized.vcf.gz
-	tabix ${fam}.normalized.vcf.gz
+	bcftools norm -m- -f $genome $vcfgz -O z -o ${fam}.${caller}.normalized.vcf.gz
+	tabix ${fam}.${caller}.normalized.vcf.gz
 	"""
 	
 	
