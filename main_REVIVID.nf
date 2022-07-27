@@ -138,7 +138,7 @@ main:
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
 deeptrio.out[3].concat( deeptrio.out[4], deeptrio.out[5]).groupTuple().flatten().collate( 51 ).view()
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(sort:true).flatten().collate( 51 ))
-glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.broadinterval)
+glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.broadintervalbed)
 glnexusprocessing(glnexusdt.out[0])
 leftalignandtrimdeepvariant(glnexusprocessing.out[0],params.genome,indexes_ch,params.genomedict)
 }

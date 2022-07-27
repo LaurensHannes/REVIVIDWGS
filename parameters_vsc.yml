@@ -6,6 +6,7 @@ indexes: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Ho
 genome: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.fasta' 
 genomedict: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/Homo_sapiens_assembly38.dict'
 broadinterval: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/wgs_calling_regions.hg38.interval_list'
+broadintervalbed: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/interval.bed'
 mask: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/mask.bed'
 maskrepeats: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/repeats.bed'
 snps: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v0/1000G_phase1.snps.high_confidence.hg38.vcf.gz'
