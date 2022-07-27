@@ -14,7 +14,7 @@ log.info """\
  """
 
 include { importfastq } from './modules/importfastq.nf'
-include { deeptrio; glnexusdt } from './modules/deeptrio.nf'
+include { deeptrio; glnexusdt; glnexusprocessing} from './modules/deeptrio.nf'
 include { fastQC } from './modules/fastQC.nf'
 include { alignment } from './modules/alignment.nf'
 include { readgroups } from './modules/readgroups.nf'
