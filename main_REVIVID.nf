@@ -263,8 +263,8 @@ workflow consensusentry {
 tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(),tbi)}
 short_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
 callers = Channel.from('deepvariant','GATK')
-combined = short_ch.unique().combine(callers).view()
-tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.set{finishedconsensusentry_ch}
+combined = short_ch.unique().combine(callers)
+tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
 
 main:
 intersectvcf(finishedconsensusentry_ch.first(),finishedconsensusentry_ch.last())
