@@ -43,7 +43,7 @@ process mergevcf {
 
 process intersectvcf {
 
-	tag "consensus vcf for ${fam}"
+	tag "intersecting vcf for family:${fam}"
 	cpus 1
 	time { 15.minute * task.attempt }
 		 errorStrategy 'retry' 
