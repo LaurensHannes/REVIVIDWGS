@@ -15,7 +15,7 @@ process checkfamilyvcf {
 	tuple val(family), env(status), emit: familyvcfcheck_ch
 	
 	"""
-	if [ -f $launchDir/results/familyvcfs/"$family".alignedandtrimmed.vcf.gz ]
+	if [ -f $launchDir/results/familyvcfs/"$family"*.vcf.gz ]
 	then 
 	status="done"
 	else
