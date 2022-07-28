@@ -9,7 +9,7 @@ process parliament2 {
 		cpus 36
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
-			 time { 8.hour * task.attempt }
+			 time { 12.hour * task.attempt }
 
 			publishDir "./results/CNV/$id/parliament", mode: 'copy', overwrite: true
 
