@@ -54,7 +54,7 @@ process intersectvcf {
 	tuple val(fam),val(caller2),file(vcf2),file(vcftbi2)
 	
 	output:
-	tuple val(fam),val("consensus"),file("output/0002.vcf")
+	tuple val(fam),val("consensus"),file("output/0003.vcf")
 	tuple val(fam),val(caller1),file("output/0000.vcf")
 	tuple val(fam),val(caller2),file("output/0001.vcf")
 	
