@@ -44,8 +44,8 @@ process mergevcf {
 process intersectvcf {
 
 	tag "consensus vcf for ${fam}"
-	cpus 4
-	time { 30.minute * task.attempt }
+	cpus 1
+	time { 15.minute * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 	
