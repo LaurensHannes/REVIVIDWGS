@@ -265,7 +265,7 @@ tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBas
 
 
 main:
-intersectvcf(vcf1,vcf2)
+intersectvcf(tbi_ch.first(),tbi_ch.last())
 intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2])
 SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
