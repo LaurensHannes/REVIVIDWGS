@@ -268,8 +268,8 @@ workflow consensusentry {
 
 dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ )
 gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ )
-dv_complete = dv_ch.map{tbi.simpleName,"deepvariant",tbi.getParent()+"/"+tbi.getBaseName(),tbi)}
-gatk_complete = gatk_ch.map{tbi.simpleName,"deepvariant",tbi.getParent()+"/"+tbi.getBaseName(),tbi)}
+dv_complete = dv_ch.map{tbi.simpleName,"deepvariant",tbi.getParent()+"/"+tbi.getBaseName(),tbi}
+gatk_complete = gatk_ch.map{tbi.simpleName,"deepvariant",tbi.getParent()+"/"+tbi.getBaseName(),tbi}
 
 main:
 intersectvcf(dv_complete,gatk_complete)
