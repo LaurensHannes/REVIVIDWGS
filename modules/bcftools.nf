@@ -50,14 +50,16 @@ process intersectvcf {
 		maxRetries 3
 	
 	input: 
-	tuple val(fam),file(vcf1),file(vcftbi1)
-	tuple val(fam),file(vcf2),file(vcftbi2)
+	tuple val(fam),val(caller1),file(vcf1),file(vcftbi1)
+	tuple val(fam),val(caller2),file(vcf2),file(vcftbi2)
 	
 	output:
 	tuple val(fam),val("consensus"),file("output/0002.vcf")
+	tuple val(fam),val(caller1),file("output/0000.vcf")
+	tuple val(fam),val(caller2),file("output/0002.vcf")
 	
 	"""
-	bcftools -p "output" isec $vcf1 $vcf2
+	bcftools isec -p "output"  $vcf1 $vcf2
 	"""
 	
 }
