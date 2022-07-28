@@ -262,9 +262,9 @@ triovcfanalysis(consensus.out,CNVanalysis.out[0])
 workflow consensusentry {
 
 tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(),tbi)}
-short = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
+short_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
 callers = Channel.from('deepvariant','GATK')
-combined = short.combine(callers)
+combined = short_ch.combine(callers)
 tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.set{finishedconsensusentry_ch}
 
 main:
