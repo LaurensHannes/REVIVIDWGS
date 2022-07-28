@@ -14,7 +14,7 @@ process annotate {
 		val(annovardbs)
 		
         output:
-        tuple val(family), val(analysis), val(mode), file("${family}.${analysis}.hg38_multianno.vcf"),file("${family}.${analysis}.hg38_multianno.txt") 
+        tuple val(family), val(analysis), val(mode), file("${family}.${analysis}.${mode}.hg38_multianno.vcf"),file("${family}.${analysis}.${mode}.hg38_multianno.txt") 
 
         """
         perl ${programpath}/annovar/table_annovar.pl $vcfgz ${humandbpath} -intronhgvs 25 --maxgenethread ${task.cpus} -thread ${task.cpus} -buildver hg38 -out ${family}.${analysis}.${mode} -remove -polish ${annovardbs} -nastring . -polish -vcfinput
