@@ -6,10 +6,11 @@ process SelectVariantsX {
 		time { 15.minute * task.attempt }
 		errorStrategy 'retry'
          maxRetries 9
+		 memory { 16.GB * task.attempt }
 		container "docker://broadinstitute/gatk"
 		
         input:
-        tuple val(family), val(mode), file(vcfgz)
+        tuple val(family), val(mode),file(vcfgz)
 		path genome
 		path dict 
 		path indexes
