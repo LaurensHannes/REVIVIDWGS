@@ -260,11 +260,16 @@ triovcfanalysis(consensus.out,CNVanalysis.out[0])
 
 workflow consensusentry {
 
-tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(),tbi)}
-short_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
-callers = Channel.from('deepvariant','GATK')
-combined = short_ch.unique().combine(callers)
-tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
+//tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(),tbi)}
+//short_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
+//callers = Channel.from('deepvariant','GATK')
+//combined = short_ch.unique().combine(callers)
+//tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
+
+dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ )
+gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ )
+dv_complete = dv_ch.map{tbi.simpleName,"deepvariant",tbi.getParent()+"/"+tbi.getBaseName(),tbi)
+gatk_complete = gatk_ch.map{tbi.simpleName,"deepvariant",tbi.getParent()+"/"+tbi.getBaseName(),tbi)
 
 main:
 intersectvcf(finishedconsensusentry_ch.first(),finishedconsensusentry_ch.last())
