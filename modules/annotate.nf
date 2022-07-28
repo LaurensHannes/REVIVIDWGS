@@ -4,7 +4,7 @@ process annotate {
 			publishDir "./results/annotated/$analysis/$family/$mode", mode: 'copy', overwrite: true
 			containerOptions "-B $programpath -B $humandbpath"
 		time { 1.hour * task.attempt }
-		errorStrategy 'retry'
+		errorStrategy 'ignore'
          maxRetries 9
 		 
         input:
