@@ -265,7 +265,7 @@ tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBas
 short_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
 callers = Channel.from('deepvariant','GATK')
 combined = short_ch.combine(callers)
-tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.set{finishedconsensusentry_ch}
+tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
 
 main:
 intersectvcf(finishedconsensusentry_ch.first(),finishedconsensusentry_ch.last())
