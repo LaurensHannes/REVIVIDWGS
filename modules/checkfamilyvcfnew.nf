@@ -22,6 +22,7 @@ process checkfamilyvcf {
 	else
 	status="todo"
 	fi
+	echo \$status > status.txt
 	"""
 	
 	}
