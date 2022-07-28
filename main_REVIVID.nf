@@ -266,10 +266,10 @@ tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBas
 
 main:
 intersectvcf(tbi_ch.first(),tbi_ch.last())
-intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2])
-SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
-SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
-SelectVariantsX(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2]).set{isec_ch}
+SelectVariantsdenovo(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsAR(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsX(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
