@@ -245,7 +245,6 @@ createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).map{id,vcf -> tuple
 checkfamilyvcf(family_ch.flatten())
 checkfamilyvcf.out.familyvcfcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> family}.set{familyvcfdone_ch}
 familyvcfdone_ch.toSortedList().flatten().collate(1).combine(donefamilyvcfs_ch, by:0).map{family,vcf -> tuple(family,vcf)}.set{familyvcfalldone_ch}
-familyvcfalldone_ch.view()
 createfamilyvcfs(checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> tuple(family)}.join(vcfmixed))
 createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed} 
 
@@ -259,3 +258,18 @@ triovcfanalysis(consensus.out,CNVanalysis.out[0])
 
 
 }
+
+workflow consensusentry {
+
+tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(2).getExtension(),tbi.getBaseName(),tbi).view()
+
+
+main:
+intersectvcf(vcf1,vcf2)
+intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2])
+SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsX(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
+annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
+annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
