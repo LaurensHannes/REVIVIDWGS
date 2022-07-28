@@ -267,7 +267,7 @@ workflow consensusentry {
 //tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
 
 slash = "/"
-dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ ).view()
+dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ ).toSortedList().view()
 gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ )
 dv_complete = dv_ch.map{tbi -> tuple(tbi.simpleName,"deepvariant",tbi.getParent()+ '/' + tbi.getBaseName(),tbi)}.view()
 gatk_complete = gatk_ch.map{tbi -> tuple(tbi.simpleName,"deepvariant",tbi.getParent()+"/"+tbi.getBaseName(),tbi)}
