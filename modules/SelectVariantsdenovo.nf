@@ -1,6 +1,6 @@
 process SelectVariantsdenovo {
 
-        tag "$family"
+        tag "${mode} for family:${family}"
 		cpus 2
 		time { 30.minute * task.attempt }
 		errorStrategy 'retry'

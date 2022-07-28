@@ -56,7 +56,7 @@ process intersectvcf {
 	output:
 	tuple val(fam),val("consensus"),file("output/0002.vcf")
 	tuple val(fam),val(caller1),file("output/0000.vcf")
-	tuple val(fam),val(caller2),file("output/0002.vcf")
+	tuple val(fam),val(caller2),file("output/0001.vcf")
 	
 	"""
 	bcftools isec -p "output"  $vcf1 $vcf2

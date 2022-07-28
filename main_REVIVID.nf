@@ -205,7 +205,7 @@ main:
 intersectvcf(vcf1,vcf2)
 
 emit:
-intersectvcf.out[0]
+intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2])
 }
 workflow triovcfanalysis {
 take:

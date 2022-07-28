@@ -1,7 +1,7 @@
 process SelectVariantsX {
 
 		
-        tag "$family"
+        tag "${mode} for family:${family}"
 		cpus 2
 		time { 15.minute * task.attempt }
 		errorStrategy 'retry'
