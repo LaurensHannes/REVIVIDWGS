@@ -42,7 +42,7 @@ process mergevcf {
 }
 
 process intersectvcf {
-
+//	bcftools merge -o output/0004.vcf /output/0000.vcf /output/0001.vcf /output/0003.vcf 
 	tag "intersecting vcf for family:${fam}"
 	cpus 1
 	time { 15.minute * task.attempt }
@@ -60,7 +60,7 @@ process intersectvcf {
 	
 	"""
 	bcftools isec -p "output"  $vcf1 $vcf2
-//	bcftools merge -o output/0004.vcf /output/0000.vcf /output/0001.vcf /output/0003.vcf 
+
 	"""
 	
 }
