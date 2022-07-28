@@ -261,11 +261,14 @@ triovcfanalysis(consensus.out,CNVanalysis.out[0])
 
 workflow consensusentry {
 
-tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getName().filter( ~/.*deepvariant.*/ ).getExtension(),tbi.getBaseName(),tbi)}.view()
-
+tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(),tbi)}
+short = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
+callers = Channel.from('deepvariant','GATK')
+combined = short.combine(callers)
+tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.set{finishedconsensusentry_ch}
 
 main:
-intersectvcf(tbi_ch.first(),tbi_ch.last())
+intersectvcf(finishedconsensusentry_ch.first(),finishedconsensusentry_ch.last())
 intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2]).set{isec_ch}
 SelectVariantsdenovo(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsAR(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
