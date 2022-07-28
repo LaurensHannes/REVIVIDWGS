@@ -261,7 +261,7 @@ triovcfanalysis(consensus.out,CNVanalysis.out[0])
 
 workflow consensusentry {
 
-tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(2),tbi.getBaseName(),tbi)}.view()
+tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,(tbi.getBaseName(4))getExtension(),tbi.getBaseName(),tbi)}.view()
 
 
 main:
