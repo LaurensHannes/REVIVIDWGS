@@ -266,10 +266,10 @@ workflow consensusentry {
 //combined = short_ch.unique().combine(callers)
 //tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
 
-slash = "/"
+
 dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ ).toSortedList().flatten().collate( 2 )
 gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ ).toSortedList().flatten().collate( 2 )
-dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}.view()
+dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}
 gatk_complete = gatk_ch.map{vcf,tbi -> tuple(tbi.simpleName,"GATK",vcf,tbi)}
 
 main:

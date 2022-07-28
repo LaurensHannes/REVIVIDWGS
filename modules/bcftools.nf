@@ -46,7 +46,7 @@ process intersectvcf {
 	tag "intersecting vcf for family:${fam}"
 	cpus 1
 	time { 15.minute * task.attempt }
-		 errorStrategy 'retry' 
+		 errorStrategy 'ignore' 
 		maxRetries 3
 	
 	input: 
