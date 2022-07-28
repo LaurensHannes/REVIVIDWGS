@@ -12,7 +12,7 @@ process parliament2 {
 			 time { 12.hour * task.attempt }
 
 			publishDir "./results/CNV/$id/parliament", mode: 'copy', overwrite: true
-
+			storeDir "./results/CNV/$id/parliament"
 
 
 		input:
