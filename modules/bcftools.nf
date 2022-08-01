@@ -35,7 +35,7 @@ process mergevcf {
 	tuple val(fam),val("deeptrio"),file("${fam}.${analysis}.merged.vcf.gz"), file("${fam}.${analysis}.merged.vcf.gz.tbi")
 	
 """
-	bcftools concat -o ${fam}.${analysis}.merged.vcf.gz -O z --threads ${task.cpus} $vcf1 $vcf2 $vcf3
+	bcftools concat -a -o ${fam}.${analysis}.merged.vcf.gz -O z --threads ${task.cpus} $vcf1 $vcf2 $vcf3
 	tabix ${fam}.${analysis}.merged.vcf.gz
 """
 
