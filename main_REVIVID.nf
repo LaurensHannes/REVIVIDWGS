@@ -281,7 +281,7 @@ SelectVariantsdenovo(isec_ch,params.genome,params.genomedict,indexes_ch,params.p
 SelectVariantsAR(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsX(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ).view()
-mergvcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
+mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
