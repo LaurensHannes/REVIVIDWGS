@@ -16,7 +16,7 @@ process checkfamilyvcf {
 	
 	"""
 	number_of_files=\$(ls $launchDir/results/familyvcfs/"$family"*.vcf.gz | wc -l)
-	if [  \$number_of_files > 1 ]
+	if [  \$number_of_files -gt 1 ]
 	then 
 	status="done"
 	else
