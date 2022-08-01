@@ -23,6 +23,7 @@ process checkfamilyvcf {
 	status="todo"
 	fi
 	echo \$status > status.txt
+	echo \$numer_of_files >> status.txt
 	"""
 	
 	}
