@@ -294,23 +294,6 @@ annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardb
 
 workflow createbams {
 
-myFile = file(params.ped)
-myReader = myFile.newReader()
-String line
-familymap = [:]
-ids = []
-fathers = []
-mothers = []
-while( line = myReader.readLine() ) {
-(empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
-        familymap[id]=family
-        ids << id
-		fathers << father
-		mothers << mother
-}
-
-Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
-
 checkbam(idfamily_ch)
 checkbam.out.bamcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{bamdone_ch}
 bamdone_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{bamalldone_ch}
