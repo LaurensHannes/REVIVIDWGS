@@ -258,7 +258,11 @@ consensus(deepvariant.out.deepvariantvcf,familyvcfmixed)
 triovcfanalysis(consensus.out,CNVanalysis.out[0])
 
 
+
+
 }
+
+// CUSTOM WORKFLOWS for RANDOM ENTRY 
 
 workflow consensusentry {
 
@@ -285,5 +289,40 @@ mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,an
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
+
+}
+
+workflow createbams {
+
+myFile = file(params.ped)
+myReader = myFile.newReader()
+String line
+familymap = [:]
+ids = []
+fathers = []
+mothers = []
+while( line = myReader.readLine() ) {
+(empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
+        familymap[id]=family
+        ids << id
+		fathers << father
+		mothers << mother
+}
+
+Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
+
+checkbam(idfamily_ch)
+checkbam.out.bamcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{bamdone_ch}
+bamdone_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{bamalldone_ch}
+
+main:
+importfastq(checkbam.out.bamcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)}, params.home,params.arch,params.download)
+importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
+
+fastQC(gzipped_ch)
+alignment(gzipped_ch, params.genome,indexes_ch, params.home)
+mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
+generateCRAM(mergebams.out[0],params.genome,indexes_ch)
+CollectWgsMetrics(mergebams.out[0],params.genome)
 
 }
