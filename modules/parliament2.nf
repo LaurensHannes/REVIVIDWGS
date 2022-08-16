@@ -11,7 +11,6 @@ process parliament2 {
 		clusterOptions '-A lp_revivid'
 			 time { 8.hour * task.attempt }
 
-			publishDir "./results/CNV/$id/parliament", mode: 'copy', overwrite: true
 			storeDir "./results/CNV/$id/parliament"
 
 
