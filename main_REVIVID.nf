@@ -317,7 +317,7 @@ workflow annotatewithcnventry {
 
 dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ ).toSortedList().flatten().collate( 2 )
 gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ ).toSortedList().flatten().collate( 2 )
-cnv_ch = params.cnv.map{cnv -> tuple(cnv.getSimpleName(),cnv)}
+cnv_ch = Channel.fromPath(params.cnv).map{cnv -> tuple(cnv.getSimpleName(),cnv)}
 dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}
 gatk_complete = gatk_ch.map{vcf,tbi -> tuple(tbi.simpleName,"GATK",vcf,tbi)}
 
