@@ -216,11 +216,14 @@ SelectVariantsdenovo(vcf,params.genome,params.genomedict,indexes_ch,params.ped,p
 SelectVariantsAR(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsX(vcf,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().view()
-//mergvcf(SelectVariantsAR.out[0].groupTuple(by:1). 
+mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
-annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
+annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
-AnnotSV(vcf.join(cnvvcf).groupTuple().flatten().collate( 4 ))
+AnnotSV(mergevcf.out[0].join(cnvvcf).groupTuple().flatten().collate( 6 ).map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
+
+
+
 }
 
 
