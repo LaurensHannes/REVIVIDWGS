@@ -317,6 +317,7 @@ workflow annotatewithcnventry {
 
 dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ ).toSortedList().flatten().collate( 2 )
 gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ ).toSortedList().flatten().collate( 2 )
+cnv_ch = param.cnv.map{cnv -> tuple(cnv.getSimpleName(),cnv)}
 dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}
 gatk_complete = gatk_ch.map{vcf,tbi -> tuple(tbi.simpleName,"GATK",vcf,tbi)}
 
@@ -331,6 +332,6 @@ mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,an
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
-AnnotSV(isec_ch[0].join(param.cnv.map{cnv -> tuple(cnv.getSimpleName(),cnv)}).groupTuple().flatten().collate( 4 ))
+AnnotSV(isec_ch[0].join(cnv_ch).groupTuple().flatten().collate( 4 ))
 
 }
