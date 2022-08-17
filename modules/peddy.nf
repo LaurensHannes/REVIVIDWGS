@@ -10,13 +10,13 @@ process peddy {
 		
 	input:
 	tuple val(fam), val(caller), file(vcf), file(tbi)
-	file ped
+	path ped
 	
 	output:
 	tuple val(family), val(caller), file("${fam}.${caller}.html")
 	
 """
-	peddy -p ${task.cpu} --plot --prefix ${fam}.${caller} $vcf $ped
+	peddy -p ${task.cpus} --plot --prefix ${fam}.${caller} $vcf $ped
 """
 
 }
