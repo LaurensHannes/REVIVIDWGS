@@ -311,3 +311,32 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 }
+
+workflow annotatewithcnventry {
+
+//tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(),tbi)}
+//short_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
+//callers = Channel.from('deepvariant','GATK')
+//combined = short_ch.unique().combine(callers)
+//tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
+
+
+dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ ).toSortedList().flatten().collate( 2 )
+gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ ).toSortedList().flatten().collate( 2 )
+dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}
+gatk_complete = gatk_ch.map{vcf,tbi -> tuple(tbi.simpleName,"GATK",vcf,tbi)}
+
+main:
+intersectvcf(dv_complete,gatk_complete)
+intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2]).set{isec_ch}
+SelectVariantsdenovo(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsAR(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsX(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ).view()
+mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
+annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
+annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
+annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
+AnnotSV(isec_ch[0].join(param.cnv.map{cnv -> tuple(cnv.simpleName,cnv)}).groupTuple().flatten().collate( 4 ))
+
+}
