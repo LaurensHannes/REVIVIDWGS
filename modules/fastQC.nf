@@ -7,7 +7,7 @@ process fastQC {
 		maxRetries 3
 		container "biocontainers/fastqc:v0.11.9_cv8"
 	     memory { 2.GB * task.attempt }
-		publishDir "./QC/$id", mode: 'copy', overwrite: false
+		publishDir "./QC/$id", mode: 'copy', overwrite: true
 	
 	input: 
 	        tuple val(id), val(lane),file(R1), file(R2)

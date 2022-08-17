@@ -42,6 +42,7 @@ include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
 include { SelectVariantsX } from './modules/SelectVariantsX.nf'
 include { annotate as annotatedenovo; annotate as annotateAR; annotate as annotateX } from './modules/annotate.nf'
 include { parliament2 } from './modules/parliament2.nf'
+include { peddy } from '.modules/peddy.nf'
 include { AnnotSV } from './modules/AnnotSV.nf'
 include { mergeCNV } from './modules/mergeCNV.nf'
 include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
@@ -262,9 +263,15 @@ consensus(deepvariant.out.deepvariantvcf,familyvcfmixed)
 triovcfanalysis(consensus.out,CNVanalysis.out[0])
 
 
-
-
 }
+
+
+
+
+
+
+
+
 
 // CUSTOM WORKFLOWS for RANDOM ENTRY 
 
@@ -324,7 +331,8 @@ cnv_ch = Channel.fromPath(params.cnv).map{cnv -> tuple(cnv.getSimpleName(),cnv)}
 dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}
 gatk_complete = gatk_ch.map{vcf,tbi -> tuple(tbi.simpleName,"GATK",vcf,tbi)}
 
-main:
+main:	
+peddy(dv_complete.concat(gatk_complete))
 intersectvcf(dv_complete,gatk_complete)
 intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2]).set{isec_ch}
 SelectVariantsdenovo(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
