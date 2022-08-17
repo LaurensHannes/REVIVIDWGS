@@ -333,7 +333,7 @@ annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
 mergevcf.out[0].join(cnv_ch).groupTuple().flatten().map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)}.view()
-AnnotSV(mergevcf.out[0].join(cnv_ch).groupTuple().flatten().map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
-//map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
+//AnnotSV(mergevcf.out[0].join(cnv_ch).groupTuple().flatten().map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
+
 
 }
