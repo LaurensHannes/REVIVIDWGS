@@ -203,7 +203,7 @@ vcf2
 
 main:
 intersectvcf(vcf1,vcf2)
-
+peddy(vcf1.concat(vcf2),params.ped)
 emit:
 intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2])
 }
@@ -290,7 +290,7 @@ dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}
 gatk_complete = gatk_ch.map{vcf,tbi -> tuple(tbi.simpleName,"GATK",vcf,tbi)}
 
 main:
-peddy(dv_complete.concat(gatk_complete))
+peddy(dv_complete.concat(gatk_complete),params.ped)
 intersectvcf(dv_complete,gatk_complete)
 intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2]).set{isec_ch}
 SelectVariantsdenovo(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
@@ -333,7 +333,7 @@ dv_complete = dv_ch.map{vcf,tbi -> tuple(tbi.simpleName,"deepvariant",vcf,tbi)}
 gatk_complete = gatk_ch.map{vcf,tbi -> tuple(tbi.simpleName,"GATK",vcf,tbi)}
 
 main:	
-peddy(dv_complete.concat(gatk_complete))
+peddy(dv_complete.concat(gatk_complete),params.ped)
 intersectvcf(dv_complete,gatk_complete)
 intersectvcf.out[0].concat(intersectvcf.out[1],intersectvcf.out[2]).set{isec_ch}
 SelectVariantsdenovo(isec_ch,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
