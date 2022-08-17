@@ -314,12 +314,6 @@ CollectWgsMetrics(mergebams.out[0],params.genome)
 
 workflow annotatewithcnventry {
 
-//tbi_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName,tbi.getBaseName(),tbi)}
-//short_ch = Channel.fromPath(params.tbi).map{tbi -> tuple(tbi.simpleName)}
-//callers = Channel.from('deepvariant','GATK')
-//combined = short_ch.unique().combine(callers)
-//tbi_ch.combine(combined, by:0).map{fam,vcf,vcftbi,caller -> tuple(fam,caller,vcf,vcftbi)}.view().set{finishedconsensusentry_ch}
-
 
 dv_ch = Channel.fromPath(params.tbi).filter( ~/.*deeptrio.*/ ).toSortedList().flatten().collate( 2 )
 gatk_ch = Channel.fromPath(params.tbi).filter( ~/.*GATK.*/ ).toSortedList().flatten().collate( 2 )
