@@ -331,6 +331,6 @@ mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,an
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
-AnnotSV(isec_ch[0].join(param.cnv.map{cnv -> tuple(cnv.simpleName,cnv)}).groupTuple().flatten().collate( 4 ))
+AnnotSV(isec_ch[0].join(param.cnv.map{cnv -> tuple(cnv.getSimpleName(),cnv)}).groupTuple().flatten().collate( 4 ))
 
 }
