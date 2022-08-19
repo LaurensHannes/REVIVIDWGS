@@ -16,8 +16,7 @@ process peddy {
 	tuple val(family), val(caller), file("${fam}.${caller}.html")
 	
 """
-	gunzip -fk ${vcf}
-	peddy -p ${task.cpus} --plot --prefix ${fam}.${caller} ${fam}.${caller}.normalized.vcf $ped
+	peddy -p ${task.cpus} --plot --prefix ${fam}.${caller}.normalized ${fam}.${caller}.normalized.vcf.gz $ped
 """
 
 }
