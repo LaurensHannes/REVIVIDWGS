@@ -13,7 +13,7 @@ process peddy {
 	path ped
 	
 	output:
-	tuple val(family), val(caller), file("${fam}.${caller}.normalized.html")
+	tuple val(fam), val(caller), file("${fam}.${caller}.normalized.html")
 	
 """
 	peddy -p ${task.cpus} --plot --prefix ${fam}.${caller}.normalized ${fam}.${caller}.normalized.vcf.gz $ped
