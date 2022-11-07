@@ -17,7 +17,7 @@ process variantrecalibration {
 	path snpsindex 
 	path indels 
 	path indelsindex 
-	path mask
+
 
 
 	output:

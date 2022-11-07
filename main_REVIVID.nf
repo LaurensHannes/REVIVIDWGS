@@ -174,7 +174,7 @@ main:
 combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
 genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 
-variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.mask)
+variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex)
 vcftoolshardfilter(variantrecalibration.out[0])
 normalizeindelsgatk(vcftoolshardfilter.out[0],params.genome)
 
