@@ -40,7 +40,7 @@ process VEP {
 
         """
 		vep -i $vcfgz --cache --dir ${VEPpath} --fork ${task.cpus} -o ${family}.${analysis}.${mode}.hg38_VEP.vcf --af_gnomadg --hgvs --symbol --canonical --check_frequency --freq_pop 1KG_EUR  --freq_freq 0.01 --freq_filter include --plugin NMD,pLI,REVEL --vcf
-		vep -i $vcfgz --cache --dir ${VEPpath} --fork ${task.cpus} -o ${family}.${analysis}.${mode}.hg38_VEP.vcf --af_gnomadg --hgvs --symbol --canonical --check_frequency --freq_pop 1KG_EUR  --freq_freq 0.01 --freq_filter include --plugin NMD,pLI,REVEL --vcf
+		vep -i $vcfgz --cache --dir ${VEPpath} --fork ${task.cpus} -o ${family}.${analysis}.${mode}.hg38_VEP.txt --af_gnomadg --hgvs --symbol --canonical --check_frequency --freq_pop 1KG_EUR  --freq_freq 0.01 --freq_filter include --plugin NMD,pLI,REVEL --tab
 
 		"""
 }
