@@ -39,7 +39,7 @@ process VEP {
         tuple val(family), val(analysis), val(mode) ,file("${family}.${analysis}.${mode}.hg38_VEP.txt") 
 
         """
-		vep -i $vcfgz --cache --dir ${VEPpath} --fork ${task.cpus} -o ${family}.${analysis}.${mode}.hg38_VEP.txt --af_gnomadg --hgvs --show_ref_allele --symbol --pick --regulatory --no_intergenic --individual all --variant_class --plugin NearestExonJB --canonical --gene_phenotype --pubmed --plugin NMD --plugin pLI,${VEPpath}/pLI_values.txt --plugin REVEL,${VEPpath}/new_tabbed_revel_grch38.tsv.gz --tab
+		vep -i $vcfgz --cache --dir ${VEPpath} --fork ${task.cpus} -o ${family}.${analysis}.${mode}.hg38_VEP.txt --af_gnomadg --hgvs --show_ref_allele --symbol --pick --regulatory --no_intergenic --canonical --gene_phenotype --pubmed --plugin NMD --plugin pLI,${VEPpath}/pLI_values.txt --plugin REVEL,${VEPpath}/new_tabbed_revel_grch38.tsv.gz --tab
 
 		"""
 }
