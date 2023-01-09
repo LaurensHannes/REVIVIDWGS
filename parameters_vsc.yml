@@ -16,3 +16,4 @@ indelsindex: '/staging/leuven/stg_00086/resources/reference_genomes/broad/hg38/v
 programs: '/staging/leuven/stg_00086/resources/programs'
 humandb: '/staging/leuven/stg_00086/resources/humandb'
 annovardbs: '-protocol refgene,avsnp150,gnomad30_genome,clinvar_20210123,regsnpintron,dbnsfp41a -operation g,f,f,f,f,f'
+VEP: '/staging/leuven/stg_00086/resources/VEP'

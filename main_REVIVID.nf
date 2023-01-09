@@ -40,7 +40,8 @@ include { test } from './testmodules/test.nf'
 include { SelectVariantsdenovo } from './modules/SelectVariantsdenovo.nf'
 include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
 include { SelectVariantsX } from './modules/SelectVariantsX.nf'
-include { annotate as annotatedenovo; annotate as annotateAR; annotate as annotateX } from './modules/annotate.nf'
+include { annovar as annotatedenovo; annovar as annotateAR; annovar as annotateX } from './modules/annotate.nf'
+include { VEP as VEPdenovo; VEP as VEPAR; VEP as VEPX } from './modules/annotate.nf'
 include { parliament2 } from './modules/parliament2.nf'
 include { peddy } from './modules/peddy.nf'
 include { AnnotSV } from './modules/AnnotSV.nf'
@@ -222,7 +223,9 @@ annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
 AnnotSV(mergevcf.out[0].join(cnvvcf).groupTuple().flatten().collate( 6 ).map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
-
+VEPdenovo(SelectVariantsdenovo.out[0],params.VEP)
+VEPAR(mergevcf.out[0],params.VEP)
+VEPX(SelectVariantsX.out[0],params.VEP)
 
 
 }
@@ -301,7 +304,9 @@ mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,an
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
-
+VEPdenovo(SelectVariantsdenovo.out[0],params.VEP)
+VEPAR(mergevcf.out[0],params.VEP)
+VEPX(SelectVariantsX.out[0],params.VEP)
 }
 
 workflow createbams {
@@ -345,6 +350,8 @@ annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
 AnnotSV(mergevcf.out[0].join(cnv_ch).groupTuple().flatten().collate( 6 ).map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
-
+VEPdenovo(SelectVariantsdenovo.out[0],params.VEP)
+VEPAR(mergevcf.out[0],params.VEP)
+VEPX(SelectVariantsX.out[0],params.VEP)
 
 }
