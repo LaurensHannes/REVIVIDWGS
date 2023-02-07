@@ -348,3 +348,36 @@ VEPAR(mergevcf.out[0],params.VEP)
 VEPX(SelectVariantsX.out[0],params.VEP)
 
 }
+
+workflow createbamsandcallvariants {
+
+//checkbam(idfamily_ch)
+//checkbam.out.bamcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{bamdone_ch}
+//bamdone_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{bamalldone_ch}
+
+main:
+//importfastq(checkbam.out.bamcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)}, params.home,params.arch,params.download)
+importfastq(idfamily_ch, params.home,params.arch,params.download)
+importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
+
+fastQC(gzipped_ch)
+alignment(gzipped_ch, params.genome,indexes_ch, params.home)
+mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
+generateCRAM(mergebams.out[0],params.genome,indexes_ch)
+CollectWgsMetrics(mergebams.out[0],params.genome)
+
+checkvcf(idfamily_ch)
+checkvcf.out.vcfcheck_ch.dump(tag:"vcfdone").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{vcfdone_ch}
+vcfdone_ch.toSortedList().flatten().collate(1).combine(donevcfs_ch, by:0).map{id,vcf -> tuple(id,vcf)}.set{vcfalldone_ch}
+createindividualbams(checkvcf.out.vcfcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"vcftodo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id)}.join(bammixed))
+deepvariant(createindividualbams.out)
+CNVanalysis(bammixed)
+createindividualvcfs(createindividualbams.out)
+createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+
+checkfamilyvcf(family_ch.flatten())
+checkfamilyvcf.out.familyvcfcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> family}.set{familyvcfdone_ch}
+familyvcfdone_ch.toSortedList().flatten().collate(1).combine(donefamilyvcfs_ch, by:0).map{family,vcf -> tuple(family,vcf)}.set{familyvcfalldone_ch}
+createfamilyvcfs(checkfamilyvcf.out.familyvcfcheck_ch.filter( ~/.*todo.*/ ).groupTuple().flatten().collate( 2 ).map{family,status -> tuple(family)}.join(vcfmixed))
+createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed} 
+}
