@@ -175,7 +175,7 @@ main:
 combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
 genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 
-variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex)
+variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.cohort)
 vcftoolshardfilter(variantrecalibration.out[0])
 normalizeindelsgatk(vcftoolshardfilter.out[0],params.genome)
 
@@ -368,6 +368,7 @@ deepvariant(createindividualbams.out)
 CNVanalysis(bammixed)
 createindividualvcfs(createindividualbams.out)
 createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+vcfmixed.map{family,vcf1,vcf2,vcf3 -> tuple(family,list(vcf1,vcf2,vcf3))}.view()
 createfamilyvcfs(vcfmixed)
-createfamilyvcfs.out.triovcf.concat(familyvcfalldone_ch).set{familyvcfmixed} 
+
 }
