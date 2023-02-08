@@ -367,7 +367,7 @@ createindividualbams(mergebams.out[0])
 deepvariant(createindividualbams.out)
 CNVanalysis(mergebams.out[0])
 createindividualvcfs(createindividualbams.out)
-createindividualvcfs.out.individualvcf.concat(vcfalldone_ch).map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
 vcfmixed.map{family,vcf1,vcf2,vcf3 -> tuple(family,list(vcf1,vcf2,vcf3))}.view()
 createfamilyvcfs(vcfmixed)
 
