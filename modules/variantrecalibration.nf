@@ -32,4 +32,5 @@ process variantrecalibration {
 	"""
 	gatk VariantRecalibrator -V $vcf -R $genome --resource $snps --resource $indels -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode BOTH -O output.recal --tranches-file output.tranches 
 	gatk ApplyVQSR  -V $vcf -R $genome -O ${family}.filtered.vcf.gz --truth-sensitivity-filter-level 99.0 --tranches-file output.tranches --recal-file output.recal -mode BOTH
+	"""
 }
