@@ -93,5 +93,5 @@ d =  Channel.fromList(ids1)
 e = Channel.fromList(fathers1)
 f = Channel.fromList(mothers1)
 
-d.merge(e).merge(f).view()
+test.view()
 
