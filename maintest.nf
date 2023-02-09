@@ -91,3 +91,7 @@ c = Channel.fromList(mothers)
 
 a.first().concat(b.first(),c.first()).flatten().collate( 3 ).set{ shortped_ch }
 a.view()
+b.view()
+c.view()
+
+shortped_ch.view()
