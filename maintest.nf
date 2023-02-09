@@ -94,6 +94,6 @@ myReader.close()
 testch = Channel.fromList(test)
 testch.view()
 testch.flatten().set{ ids }
-Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
-Channel.fromList(ids).map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
+ids.map { it -> [it, familymap[it]] }.set{ idfamily_ch }
+ids.map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
 family_ch.view()
