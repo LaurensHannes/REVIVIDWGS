@@ -86,13 +86,18 @@ while( line = myReader.readLine() ) {
 		ids1 << id1
 		fathers1 << father1
 		mothers1 << mother1
+		if(father1=0) {
+		println("The value is less than 100");		
+		}
+		else {
 		test << tuple(id1,father1,mother1)
+		}
 }
 myReader.close()
 d =  Channel.fromList(ids1)
 e = Channel.fromList(fathers1)
 f = Channel.fromList(mothers1)
-testch = Channel.fromList(test)
+testch = Channel.fromList(test).filter( ~/^a.*/
 
 testch.view()
 
