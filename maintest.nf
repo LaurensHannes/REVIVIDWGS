@@ -77,6 +77,9 @@ familymap = [:]
 ids = []
 fathers = []
 mothers = []
+ids1 = []
+fathers1 = []
+mothers1 = []
 while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
