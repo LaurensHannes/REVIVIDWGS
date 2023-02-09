@@ -92,6 +92,7 @@ myReader.close()
 d =  Channel.fromList(ids1)
 e = Channel.fromList(fathers1)
 f = Channel.fromList(mothers1)
+testch = Channel.fromList(test)
 
-test.view()
+testch.view()
 
