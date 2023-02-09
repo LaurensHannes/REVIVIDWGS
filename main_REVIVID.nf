@@ -79,7 +79,7 @@ trios = []
 while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
-        if(father1="0") {
+        if(father="0") {
 		trios << tuple(id,father,mother)
 		}
 }
