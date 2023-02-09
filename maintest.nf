@@ -98,3 +98,5 @@ testch.flatten().set{ ids }
 ids.map { it -> [it, familymap[it]] }.set{ idfamily_ch }
 ids.map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
 family_ch.view()
+
+idfamily_ch.view()
