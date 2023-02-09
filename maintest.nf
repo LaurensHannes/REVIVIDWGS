@@ -86,10 +86,7 @@ while( line = myReader.readLine() ) {
 		ids1 << id1
 		fathers1 << father1
 		mothers1 << mother1
-		if(father1=="0") {
-		println("The value is less than 100");		
-		}
-		else {
+		if(father1!="0") {
 		test << tuple(id1,father1,mother1)
 		}
 }
