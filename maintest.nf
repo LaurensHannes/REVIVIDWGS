@@ -91,9 +91,9 @@ while( line = myReader.readLine() ) {
 		}
 }
 myReader.close()
-d =  Channel.fromList(ids1)
-e = Channel.fromList(fathers1)
-f = Channel.fromList(mothers1)
 testch = Channel.fromList(test)
 testch.view()
-
+testch.flatten().set{ ids }
+Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
+Channel.fromList(ids).map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
+family_ch.view()

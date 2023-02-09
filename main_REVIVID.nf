@@ -74,22 +74,18 @@ myFile = file(params.ped)
 myReader = myFile.newReader()
 String line
 familymap = [:]
-ids = []
-fathers = []
-mothers = []
+trios = []
+
 while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
-        ids << id
-		fathers << father
-		mothers << mother
+        if(father1="0") {
+		trios << tuple(id,father,mother)
+		}
 }
 myReader.close()
-a =  Channel.fromList(ids)
-b = Channel.fromList(fathers)
-c = Channel.fromList(mothers)
-
-a.first().concat(b.first(),c.first()).flatten().collate( 3 ).set{ shortped_ch }
+shortped_ch = Channel.fromList(trios)
+shortped_ch.flatten().set{ ids }
 
 Channel.fromList(ids).map { it -> [it, familymap[it]] }.set{ idfamily_ch }
 Channel.fromList(ids).map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
