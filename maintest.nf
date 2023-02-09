@@ -80,11 +80,13 @@ mothers = []
 ids1 = []
 fathers1 = []
 mothers1 = []
+test = []
 while( line = myReader.readLine() ) {
-(empty1, family1, id1, father1, mother1, sex1, phenotype1) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(GC\d+)\t(GC\d+)\t(\d+)\t(\d+)/)[0]
+(empty1, family1, id1, father1, mother1, sex1, phenotype1) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
 		ids1 << id1
 		fathers1 << father1
 		mothers1 << mother1
+		test << tuple(id1,father1,mother1)
 }
 myReader.close()
 d =  Channel.fromList(ids1)
