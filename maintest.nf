@@ -83,15 +83,22 @@ while( line = myReader.readLine() ) {
         ids << id
 		fathers << father
 		mothers << mother
+(empty1, family1, id1, father1, mother1, sex1, phenotype1) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(GC\d+)\t(GC\d+)\t(\d+)\t(\d+)/)[0]
+		ids1 << id1
+		fathers1 << father1
+		mothers1 << mother1
 }
 myReader.close()
 a =  Channel.fromList(ids)
 b = Channel.fromList(fathers)
 c = Channel.fromList(mothers)
 
-a.first().concat(b.first(),c.first()).flatten().collate( 3 ).set{ shortped_ch }
-a.view()
-b.view()
-c.view()
+d =  Channel.fromList(ids1)
+e = Channel.fromList(fathers1)
+f = Channel.fromList(mothers1)
 
-shortped_ch.view()
+
+a.first().concat(b.first(),c.first()).flatten().collate( 3 ).set{ shortped_ch }
+
+d.merge(e).merge(f).view()
+
