@@ -83,6 +83,7 @@ mothers1 = []
 test = []
 while( line = myReader.readLine() ) {
 (empty1, family1, id1, father1, mother1, sex1, phenotype1) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
+	familymap[id1]=family1
 		ids1 << id1
 		fathers1 << father1
 		mothers1 << mother1
