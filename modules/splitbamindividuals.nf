@@ -4,7 +4,7 @@ process splitbamindividuals {
 
 		memory { 2.GB * task.attempt }
 		tag "$id $chr"
-			 time { 15.minute * task.attempt }
+			 time { 30.minute * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		
