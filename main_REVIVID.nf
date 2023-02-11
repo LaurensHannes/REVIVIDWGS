@@ -132,6 +132,7 @@ take: bam
 
 main:
 
+bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ).view()
 deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(sort:true).flatten().collate( 51 ))
 glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ))
@@ -360,6 +361,8 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 createindividualbams(mergebams.out[0])
+createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ).view()
+
 deepvariant(createindividualbams.out)
 CNVanalysis(mergebams.out[0])
 createindividualvcfs(createindividualbams.out)
