@@ -364,7 +364,7 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 createindividualbams(mergebams.out[0])
-testerino_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(fam,chr),tuple(index,father,mother)}.view()
+testerino_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(tuple(fam,chr),tuple(index,father,mother))}.view()
 //createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().view()
 
 //createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(fam,tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3))}.join(familytrio_ch).flatten().collate(11).view()
