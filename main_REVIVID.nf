@@ -88,7 +88,7 @@ while( line = myReader.readLine() ) {
 myReader.close()
 shortped_ch = Channel.fromList(trios)
 shortped_ch.flatten().set{ ids }
-family_ch = Channel.fromList(families)
+familytrio_ch = Channel.fromList(families)
 
 ids.map { it -> [it, familymap[it]] }.set{ idfamily_ch }
 ids.map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
@@ -364,7 +364,7 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 createindividualbams(mergebams.out[0])
-createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> fam,tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3)}.join(family_ch).flatten().collate(11).view()
+createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> fam,tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3)}.join(familytrio_ch).flatten().collate(11).view()
 //createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
 
 //deepvariant(createindividualbams.out)
