@@ -361,7 +361,8 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 createindividualbams(mergebams.out[0])
-createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
+createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().view()
+//createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
 
 //deepvariant(createindividualbams.out)
 //CNVanalysis(mergebams.out[0])
