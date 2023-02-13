@@ -369,11 +369,11 @@ testerino_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mo
 createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(familytrio_ch).flatten().collate(11).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother -> tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother)}.view()
 //createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
 
-deepvariant(createindividualbams.out)
-CNVanalysis(mergebams.out[0])
-createindividualvcfs(createindividualbams.out)
-createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
-vcfmixed.map{family,vcf1,vcf2,vcf3 -> tuple(family,list(vcf1,vcf2,vcf3))}.view()
-createfamilyvcfs(vcfmixed)
+//deepvariant(createindividualbams.out)
+//CNVanalysis(mergebams.out[0])
+//createindividualvcfs(createindividualbams.out)
+//createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+//vcfmixed.map{family,vcf1,vcf2,vcf3 -> tuple(family,list(vcf1,vcf2,vcf3))}.view()
+//createfamilyvcfs(vcfmixed)
 
 }
