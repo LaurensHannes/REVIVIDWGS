@@ -357,7 +357,7 @@ main:
 importfastq(idfamily_ch, params.home,params.arch,params.download)
 importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
-fastQC(gzipped_ch)
+//fastQC(gzipped_ch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
 mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
 //generateCRAM(mergebams.out[0],params.genome,indexes_ch)
@@ -367,7 +367,7 @@ createindividualbams(mergebams.out[0])
 testerino_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(tuple(fam,chr),tuple(index,father,mother))}
 
 createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(familytrio_ch).flatten().collate(11).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother -> tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother)}.view()
-//createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
+createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
 
 //deepvariant(createindividualbams.out)
 //CNVanalysis(mergebams.out[0])
