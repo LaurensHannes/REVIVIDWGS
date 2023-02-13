@@ -89,6 +89,7 @@ myReader.close()
 shortped_ch = Channel.fromList(trios)
 shortped_ch.flatten().set{ ids }
 familytrio_ch = Channel.fromList(families)
+triofamilywithchr_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(tuple(fam,chr),tuple(index,father,mother))}
 
 ids.map { it -> [it, familymap[it]] }.set{ idfamily_ch }
 ids.map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
@@ -135,8 +136,8 @@ take: bam
 
 main:
 
-bam.map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(familytrio_ch).flatten().collate(11).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother -> tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother)}
-deeptrio(bam.map{id,chr,bam,bai -> tuple(chr,tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ),params.genome,indexes_ch)
+deeptrio(bam.map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(triofamilywithchr_ch).flatten().collate(11).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother -> tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother)}.view()
+,params.genome,indexes_ch)
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(sort:true).flatten().collate( 51 ))
 glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ))
 glnexusprocessing(glnexusdt.out[0])
@@ -366,9 +367,8 @@ mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),pa
 createindividualbams(mergebams.out[0])
 testerino_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(tuple(fam,chr),tuple(index,father,mother))}
 
-createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(testerino_ch).flatten().collate(11).view()
-//.map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}
-familytrio_ch.view()
+createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(triofamilywithchr_ch).flatten().collate(11).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother -> tuple(chr,bam1,bai1,bam2,bai2,bam3,bai3,index,father,mother)}.view()
+
 
 
 //createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
