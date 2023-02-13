@@ -366,7 +366,11 @@ mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),pa
 createindividualbams(mergebams.out[0])
 testerino_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(tuple(fam,chr),tuple(index,father,mother))}
 
-createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(familytrio_ch).flatten().collate(11).view()
+createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).view()
+//.map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(familytrio_ch).flatten().collate(11).view()
+
+
+
 //createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
 
 //deepvariant(createindividualbams.out)
