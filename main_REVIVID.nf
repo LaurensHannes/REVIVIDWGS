@@ -373,7 +373,7 @@ createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr)
 
 //createindividualbams.out[0].map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).view()
 
-//deepvariant(createindividualbams.out)
+deepvariant(createindividualbams.out)
 //CNVanalysis(mergebams.out[0])
 //createindividualvcfs(createindividualbams.out)
 //createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
