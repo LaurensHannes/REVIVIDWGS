@@ -139,7 +139,7 @@ main:
 deeptrio(bam.map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).map{fam,chr,bam1,bai1,bam2,bai2,bam3,bai3 -> tuple(tuple(fam,chr),tuple(bam1,bai1,bam2,bai2,bam3,bai3))}.join(triofamilywithchr_ch).flatten().collate(11)
 ,params.genome,indexes_ch)
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 51 ))
-glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ id, family, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).combine(shortped_ch).flatten().collate( 10 ))
+glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ family, id, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).join(familytrio_ch).flatten().collate( 10 ))
 glnexusprocessing(glnexusdt.out[0])
 normalizeindelsdeepvariant(glnexusprocessing.out[0],params.genome)
 
