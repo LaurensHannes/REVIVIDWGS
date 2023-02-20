@@ -10,8 +10,8 @@ process deeptrio {
 		cpus 36
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
-			 time { 3.hour * task.attempt }
-			storeDir "./results/deeptrio/"
+		time { 3.hour * task.attempt }
+		storeDir './results/deeptrio/'
 
 
 
