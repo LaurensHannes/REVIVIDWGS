@@ -22,9 +22,10 @@ process combineindividualGVCFs {
 """
 find \$PWD -name "*.vcf.gz" > input.list
 lines=\$(cat input.list)
+N=${task.cpus}
 for line in \$lines
 do
-	((i=i%${task.cpus})); ((i++==0)) && wait
+	((i=i%N)); ((i++==0)) && wait
 	gatk IndexFeatureFile -I \$line & 
 done
 	gatk CombineGVCFs -R $genome -V input.list -O ${id}.g.vcf.gz
