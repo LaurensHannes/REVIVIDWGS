@@ -135,7 +135,7 @@ take: bam
 
 
 main:
-bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch).view()
+bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch,by:[0,1]).view()
 deeptrio(bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch,by:[0,1]),params.genome,indexes_ch)
 deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 51 ).view()
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 52 ))
