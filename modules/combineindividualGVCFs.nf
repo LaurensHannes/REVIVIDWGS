@@ -21,7 +21,7 @@ process combineindividualGVCFs {
 	
 """
 find $PWD -type f -name "*.vcf.gz" > input.list
-for line in $(cat input.list)
+for line in /$(cat input.list)
 do
 	gatk IndexFeatureFile -I /$line
 done
