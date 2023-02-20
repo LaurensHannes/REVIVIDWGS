@@ -15,7 +15,7 @@ process deeptrio {
 
 		input:
 
-		tuple val(fam), val(chr), file(bam1), file(bai1),file(bam2),file(bai2),file(bam3),file(bai3),val(index),val(father),val(mother)
+		tuple(tuple( val(fam), val(chr)), tuple(file(bam1), file(bai1),file(bam2),file(bai2),file(bam3),file(bai3)),tuple(val(index),val(father),val(mother)))
 		path genome
 		path indexes
 		
