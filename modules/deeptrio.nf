@@ -9,7 +9,7 @@ process deeptrio {
 			memory 180.GB
 		cpus 36
 		time { 3.hour * task.attempt }
-		storeDir 'results/deeptrio/$fam/$chr/'
+		publishDir 'results/deeptrio/$fam/$chr/'
 		cache 'lenient'
 
 
