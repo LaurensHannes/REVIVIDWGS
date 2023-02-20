@@ -8,10 +8,8 @@ process deeptrio {
 			   containerOptions '--cleanenv -H $PWD -B /usr/lib/locale/:/usr/lib/locale/,/usr/bin/parallel 		 -B `pwd`:/input:rw -B `pwd`:/output:rw -B `pwd`:/reference:rw  -B ${VSC_SCRATCH},${TMPDIR},${VSC_SCRATCH}/tmp:/tmp'
 			memory 180.GB
 		cpus 36
-		executor 'PBS'
-		clusterOptions '-A lp_revivid'
 		time { 3.hour * task.attempt }
-		storeDir './results/deeptrio/$fam/$chr/'
+		storeDir 'results/deeptrio/$fam/$chr/'
 
 
 
