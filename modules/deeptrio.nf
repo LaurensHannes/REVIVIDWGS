@@ -25,11 +25,11 @@ process deeptrio {
 		output:
 		
 		tuple tuple(val(fam),val("${index}")),tuple(file("${index}.${chr}.vcf.gz"),file("${index}.${chr}.vcf.gz.tbi"))
-		tuple val("${father}"),file("${father}.${chr}.vcf.gz"),file("${father}.${chr}.vcf.gz.tbi")
-		tuple val("${mother}"),file("${mother}.${chr}.vcf.gz"),file("${mother}.${chr}.vcf.gz.tbi")
-		tuple val("${index}"),file("${index}.${chr}.g.vcf.gz"),file("${index}.${chr}.g.vcf.gz.tbi")
-		tuple val("${father}"),file("${father}.${chr}.g.vcf.gz"),file("${father}.${chr}.g.vcf.gz.tbi")
-		tuple val("${mother}"),file("${mother}.${chr}.g.vcf.gz"),file("${mother}.${chr}.g.vcf.gz.tbi")
+		tuple tuple(val(fam),val("${father}")),file("${father}.${chr}.vcf.gz"),file("${father}.${chr}.vcf.gz.tbi")
+		tuple tuple(val(fam),val("${mother}")),file("${mother}.${chr}.vcf.gz"),file("${mother}.${chr}.vcf.gz.tbi")
+		tuple tuple(val(fam),val("${index}")),file("${index}.${chr}.g.vcf.gz"),file("${index}.${chr}.g.vcf.gz.tbi")
+		tuple tuple(val(fam),val("${father}")),file("${father}.${chr}.g.vcf.gz"),file("${father}.${chr}.g.vcf.gz.tbi")
+		tuple tuple(val(fam),val("${mother}")),file("${mother}.${chr}.g.vcf.gz"),file("${mother}.${chr}.g.vcf.gz.tbi")
 		tuple val("QC"),file("${index}.${chr}.visual_report.html"),file("${father}.${chr}.visual_report.html"),file("${mother}.${chr}.visual_report.html")
 
 		"""
