@@ -11,7 +11,7 @@ process deeptrio {
 		executor 'PBS'
 		clusterOptions '-A lp_revivid'
 		time { 3.hour * task.attempt }
-		storeDir './results/deeptrio/'
+		storeDir './results/deeptrio/${fam}/'
 
 
 
