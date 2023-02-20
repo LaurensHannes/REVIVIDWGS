@@ -1,8 +1,8 @@
 process combineindividualGVCFs {
 
 	tag "$id"
-	cpus 4
-	time { 2.hour * task.attempt }
+	cpus 36
+	time { 1.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
