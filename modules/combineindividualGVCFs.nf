@@ -20,32 +20,12 @@ process combineindividualGVCFs {
 	tuple val(id), path("${id}.g.vcf.gz")
 	
 """
-	gatk IndexFeatureFile -I $vcf1
-	gatk IndexFeatureFile -I $vcf2
-	gatk IndexFeatureFile -I $vcf3
-	gatk IndexFeatureFile -I $vcf4
-	gatk IndexFeatureFile -I $vcf5
-	gatk IndexFeatureFile -I $vcf6
-	gatk IndexFeatureFile -I $vcf7
-	gatk IndexFeatureFile -I $vcf8
-	gatk IndexFeatureFile -I $vcf9
-	gatk IndexFeatureFile -I $vcf10
-	gatk IndexFeatureFile -I $vcf11
-	gatk IndexFeatureFile -I $vcf12
-	gatk IndexFeatureFile -I $vcf13
-	gatk IndexFeatureFile -I $vcf14
-	gatk IndexFeatureFile -I $vcf15
-	gatk IndexFeatureFile -I $vcf16
-	gatk IndexFeatureFile -I $vcf17
-	gatk IndexFeatureFile -I $vcf18
-	gatk IndexFeatureFile -I $vcf19
-	gatk IndexFeatureFile -I $vcf20
-	gatk IndexFeatureFile -I $vcf21
-	gatk IndexFeatureFile -I $vcf22
-	gatk IndexFeatureFile -I $vcf23
-	gatk IndexFeatureFile -I $vcf24
-	gatk IndexFeatureFile -I $vcf25
-	gatk CombineGVCFs -R $genome -V $vcf1 -V $vcf2 -V $vcf3 -V $vcf4 -V $vcf5 -V $vcf6 -V $vcf7 -V $vcf8 -V $vcf9 -V $vcf10 -V $vcf11 -V $vcf12 -V $vcf13 -V $vcf14 -V $vcf15 -V $vcf16 -V $vcf17 -V $vcf18 -V $vcf19 -V $vcf20 -V $vcf21 -V $vcf22 -V $vcf23 -V $vcf24 -V $vcf25 -O ${id}.g.vcf.gz
+find $PWD -type f -name "*.vcf.gz" > input.list
+for line in $(cat input.list)
+do
+	gatk IndexFeatureFile -I /$line
+done
+	gatk CombineGVCFs -R $genome -V input.list -O ${id}.g.vcf.gz
 """
 
 }
