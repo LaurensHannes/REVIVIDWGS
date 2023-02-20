@@ -135,9 +135,8 @@ take: bam
 
 
 main:
-bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch,by:[0,1]).flatten().collate(11).view()
 deeptrio(bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch,by:[0,1]).flatten().collate(11),params.genome,indexes_ch)
-deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 51 ).view()
+deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 52 ).view()
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 52 ))
 glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ family, id, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).join(familytrio_ch).flatten().collate( 10 ))
 glnexusprocessing(glnexusdt.out[0])
