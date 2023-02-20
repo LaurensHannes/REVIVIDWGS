@@ -20,7 +20,7 @@ process combineindividualGVCFs {
 	tuple val(id), path("${id}.g.vcf.gz")
 	
 """
-find $PWD -type f -name "*.vcf.gz" > input.list
+find $PWD -name "*.vcf.gz" > input.list
 lines=\$(cat input.list)
 for line in \$lines
 do
