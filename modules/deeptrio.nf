@@ -17,14 +17,14 @@ process deeptrio {
 
 		input:
 
-		tuple val(chr), file(bam1), file(bai1),file(bam2),file(bai2),file(bam3),file(bai3),val(index),val(father),val(mother)
+		tuple val(fam), val(chr), file(bam1), file(bai1),file(bam2),file(bai2),file(bam3),file(bai3),val(index),val(father),val(mother)
 		path genome
 		path indexes
 		
 
 		output:
 		
-		tuple val("${index}"),file("${index}.${chr}.vcf.gz"),file("${index}.${chr}.vcf.gz.tbi")
+		tuple tuple(val(fam),val("${index}")),tuple(file("${index}.${chr}.vcf.gz"),file("${index}.${chr}.vcf.gz.tbi"))
 		tuple val("${father}"),file("${father}.${chr}.vcf.gz"),file("${father}.${chr}.vcf.gz.tbi")
 		tuple val("${mother}"),file("${mother}.${chr}.vcf.gz"),file("${mother}.${chr}.vcf.gz.tbi")
 		tuple val("${index}"),file("${index}.${chr}.g.vcf.gz"),file("${index}.${chr}.g.vcf.gz.tbi")
