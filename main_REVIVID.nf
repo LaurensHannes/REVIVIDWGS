@@ -89,7 +89,7 @@ myReader.close()
 shortped_ch = Channel.fromList(trios)
 shortped_ch.flatten().set{ ids }
 familytrio_ch = Channel.fromList(families)
-triofamilywithchr_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> fam,chr,index,father,mother}
+triofamilywithchr_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(fam,chr,index,father,mother)}
 
 ids.map { it -> [it, familymap[it]] }.set{ idfamily_ch }
 ids.map { it -> familymap[it] }.unique().collate( 1 ).dump(tag:"family").set{ family_ch }
@@ -135,8 +135,8 @@ take: bam
 
 
 main:
-bam.map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).join(triofamilywithchr_ch).view()
-deeptrio(bam.map{id,chr,bam,bai -> tuple(tuple(familymap[id],chr),tuple(bam,bai))}.groupTuple().flatten().collate(8).join(triofamilywithchr_ch),params.genome,indexes_ch)
+bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch).view()
+deeptrio(bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch),params.genome,indexes_ch)
 deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 51 ).view()
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 52 ))
 glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ family, id, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).join(familytrio_ch).flatten().collate( 10 ))
