@@ -24,7 +24,7 @@ find $PWD -type f -name "*.vcf.gz" > input.list
 lines=\$(cat input.list)
 for line in \$lines
 do
-	gatk IndexFeatureFile -I /$line
+	gatk IndexFeatureFile -I \$line
 done
 	gatk CombineGVCFs -R $genome -V input.list -O ${id}.g.vcf.gz
 """
