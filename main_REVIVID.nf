@@ -223,11 +223,11 @@ annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
 AnnotSV(mergevcf.out[0].join(cnvvcf).groupTuple().flatten().collate( 6 ).map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
-if ( params.VEPCALL == 'true' )
+if ( params.VEPCALL == 'true' ) {
 VEPdenovo(SelectVariantsdenovo.out[0],params.VEP)
 VEPAR(mergevcf.out[0],params.VEP)
 VEPX(SelectVariantsX.out[0],params.VEP)
-
+}
 
 }
 
