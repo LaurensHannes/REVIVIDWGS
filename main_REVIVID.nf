@@ -78,7 +78,7 @@ trios = []
 families = []
 
 while( line = myReader.readLine() ) {
-(empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(GC\d+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
+(empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(\w+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
         if(father!="0") {
 		trios << tuple(id,father,mother)
@@ -223,6 +223,7 @@ annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params
 annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
 AnnotSV(mergevcf.out[0].join(cnvvcf).groupTuple().flatten().collate( 6 ).map{fam,analysis,mode,snvvcf,snvvcftbi,cnvvcf -> tuple(fam,snvvcf,mode,cnvvcf)})
+if ( params.VEPCALL == (true )
 VEPdenovo(SelectVariantsdenovo.out[0],params.VEP)
 VEPAR(mergevcf.out[0],params.VEP)
 VEPX(SelectVariantsX.out[0],params.VEP)
