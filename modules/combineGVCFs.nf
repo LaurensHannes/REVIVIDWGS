@@ -6,7 +6,7 @@ process combineGVCFs {
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
-
+		memory { 48.GB * task.attempt }
 		
 	input:
 	tuple val(family), path(vcf1), path(vcf2), path(vcf3)
