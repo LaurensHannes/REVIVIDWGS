@@ -138,7 +138,7 @@ main:
 deeptrio(bam.map{id,chr,bam,bai -> tuple(familymap[id],chr,bam,bai)}.groupTuple(by:[0,1]).join(triofamilywithchr_ch,by:[0,1]).flatten().collate(11),params.genome,indexes_ch)
 deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 52 ).view()
 concatvcf(deeptrio.out[0].concat( deeptrio.out[1], deeptrio.out[2]).groupTuple(by:[0,1],sort:true).flatten().collate( 52 ))
-glnexusdt(idfamily_ch.join(concatvcf.out[0]).map{ family, id, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).join(familytrio_ch).flatten().collate( 10 ))
+glnexusdt(concatvcf.out[0].map{ family, id, vcf ,vcftbi -> tuple(family,vcf,vcftbi)}.groupTuple().flatten().collate( 7 ).join(familytrio_ch).flatten().collate( 10 ))
 glnexusprocessing(glnexusdt.out[0])
 normalizeindelsdeepvariant(glnexusprocessing.out[0],params.genome)
 
@@ -304,12 +304,8 @@ VEPX(SelectVariantsX.out[0],params.VEP)
 
 workflow createbams {
 
-//checkbam(idfamily_ch)
-//checkbam.out.bamcheck_ch.dump(tag:"done").filter( ~/.*done.*/ ).groupTuple().flatten().collate( 3 ).map{id,family,status -> id}.set{bamdone_ch}
-//bamdone_ch.toSortedList().flatten().collate(1).combine(donebams_ch, by:0).map{id,bam,bai -> tuple(id,bam,bai)}.set{bamalldone_ch}
 
 main:
-//importfastq(checkbam.out.bamcheck_ch.filter( ~/.*todo.*/ ).dump(tag:"todo").groupTuple().flatten().collate( 3 ).map{id,family,status -> tuple(id,family)}, params.home,params.arch,params.download)
 importfastq(idfamily_ch, params.home,params.arch,params.download)
 importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
