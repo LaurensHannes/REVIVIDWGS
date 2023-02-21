@@ -101,7 +101,7 @@ workflow download_fastq_to_bam_and_cram {
 take: idfam
 main:
 
-importfastq(idfam, params.home,params.arch,params.download)
+importfastq(idfam, params.home,params.arch,params.download,params.bucket)
 importfastq.out.flatten().filter(~/.*R\d+.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
 fastQC(gzipped_ch)
@@ -307,7 +307,7 @@ workflow createbams {
 
 
 main:
-importfastq(idfamily_ch, params.home,params.arch,params.download)
+importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket)
 importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
 fastQC(gzipped_ch)
@@ -351,7 +351,7 @@ workflow createbamsandcallvariants {
 
 main:
 
-importfastq(idfamily_ch, params.home,params.arch,params.download)
+importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket)
 importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
 fastQC(gzipped_ch)
