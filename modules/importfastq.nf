@@ -17,6 +17,7 @@ process importfastq {
         path home
 		path arch
 		val download
+		val bucket
 	
         output:
          path "$id*.fastq.gz"
@@ -26,7 +27,7 @@ process importfastq {
 		if( download == "true")
         """
  
-        gsutil cp -prn gs://gcpi-rkjbr/**/$id*R[12]*.fastq.gz ./
+        gsutil cp -prn gs://${bucket}/**/$id*R[12]*.fastq.gz ./
 
         """
 		
