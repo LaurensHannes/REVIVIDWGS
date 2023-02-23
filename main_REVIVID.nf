@@ -172,7 +172,12 @@ workflow createfamilyvcfs {
 take: vcf
 
 main: 
+if ( params.cohort == 'true' ) {
+combinecohortGVCFs(vcf.map{family, vcf1, vcf2, vcf3 -> tuple(vcf1,vcf2,vcf3)}.flatten().toList(),params.genome,indexes_ch,params.genomedict)
+}
+else if ( params.cohort == 'true' ) {
 combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
+}
 genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.cohort)
