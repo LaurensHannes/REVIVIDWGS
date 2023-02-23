@@ -7,7 +7,6 @@ process parliament2 {
 			   containerOptions '-B `pwd`:/home/dnanexus/in:rw -B `pwd`:/home/dnanexus/out:rw'
 		memory { 180.GB * task.attempt }
 		cpus 26
-		executor 'PBS'
 		clusterOptions '-A lp_revivid'
 			 time { 8.hour * task.attempt }
 
