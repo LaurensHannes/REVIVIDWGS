@@ -174,11 +174,13 @@ take: vcf
 main: 
 if ( params.cohort == 'true' ) {
 combinecohortGVCFs(vcf.map{family, vcf1, vcf2, vcf3 -> tuple(vcf1,vcf2,vcf3)}.flatten().toList(),params.genome,indexes_ch,params.genomedict)
+combinecohortGVCFs.out[0].set{cGVCFs.ch}
 }
 else if ( params.cohort == 'true' ) {
 combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
+combineGVCFs.out[0].set{cGVCFs.ch}
 }
-genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+genotypeGVCFs(cGVCFs.ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.cohort)
 vcftoolshardfilter(variantrecalibration.out[0])
