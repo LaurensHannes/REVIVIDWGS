@@ -61,7 +61,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 wait
-	gatk CombineGVCFs -R $genome  -O cohort.g.vcf.gz -V $vcf
+	gatk CombineGVCFs -R $genome  -O cohort.g.vcf.gz -V input.list
 """
 
 }
