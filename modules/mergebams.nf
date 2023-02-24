@@ -7,7 +7,6 @@ process mergebams {
 	maxRetries 3
 	myDir = file('./results/bams')
 	myDir.mkdirs()
-	storeDir './results/bams'
 	publishDir 'vsc-hard-mounts/leuven-archive/arc_00086/results/bams', mode: 'copy', overwrite: true
 	input:
 	tuple val(id),file(bams)
