@@ -172,19 +172,18 @@ take: vcf
 main: 
 if ( params.cohort == 'true' ) {
 combinecohortGVCFs(vcf.map{family, vcf1, vcf2, vcf3 -> tuple(vcf1,vcf2,vcf3)}.flatten().toList(),params.genome,indexes_ch,params.genomedict)
-combinecohortGVCFs.out[0].set{cGVCFs_ch}
-genotypeGVCFs(cGVCFs_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+genotypeGVCFs(combinecohortGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 variantcohortrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex)
-
+variantcohortrecalibration.out[0].set{vrecal_ch}
 
 }
-else if ( params.cohort == 'true' ) {
+else if ( params.cohort == 'false' ) {
 combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
-combineGVCFs.out[0].set{cGVCFs_ch}
-genotypeGVCFs(cGVCFs_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex)
+variantrecalibration.out[0].set{vrecal_ch}
 }
-vcftoolshardfilter(variantrecalibration.out[0])
+vcftoolshardfilter(vrecal_ch)
 normalizeindelsgatk(vcftoolshardfilter.out[0],params.genome)
 
 emit:
