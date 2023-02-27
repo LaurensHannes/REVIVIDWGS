@@ -24,13 +24,13 @@ process variantrecalibration {
 	tuple val(family), file("${family}.filtered.vcf.gz"), file("${family}.filtered.vcf.gz.tbi")
 
 	script:
-	if( cohort == 'false' )
+	if( $cohort == 'false' )
 	"""
 	gatk CNNScoreVariants -V $vcf -R $genome -O ${family}.pretranched.vcf.gz
 	gatk FilterVariantTranches -V ${family}.pretranched.vcf.gz --resource $snps --resource $indels -O ${family}.filtered.vcf.gz --info-key CNN_1D --snp-tranche 99.95 --indel-tranche 99.4 
 	"""
 	
-	else if( cohort == 'true' )
+	else if( $cohort == 'true' )
 	"""
 	gatk VariantRecalibrator -V $vcf -R $genome --resource $snps --resource $indels -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode BOTH -O output.recal --tranches-file output.tranches 
 	gatk ApplyVQSR  -V $vcf -R $genome -O ${family}.filtered.vcf.gz --truth-sensitivity-filter-level 99.0 --tranches-file output.tranches --recal-file output.recal -mode BOTH
