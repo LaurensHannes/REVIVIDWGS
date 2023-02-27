@@ -30,7 +30,7 @@ include { checkfamilyvcf } from './modules/checkfamilyvcfnew.nf'
 include { applyBQSR } from './modules/applyBQSR.nf'
 include { genotype } from './modules/genotype.nf'
 include { leftalignandtrim as  leftalignandtrimgatk;  leftalignandtrim as  leftalignandtrimdeepvariant} from './modules/leftalignandtrim.nf'
-include { variantrecalibration } from './modules/variantrecalibration.nf'
+include { variantrecalibration;variantcohortrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
 include { concatvcf; mergevcf;intersectvcf; normalizeindels as normalizeindelsdeepvariant;normalizeindels as normalizeindelsgatk } from './modules/bcftools.nf'
 include { combineindividualGVCFs } from './modules/combineindividualGVCFs.nf'
@@ -54,8 +54,6 @@ include { createfilterbedfileCNV } from './modules/createfilterbedfileCNV.nf'
 // script parameters
 
 chromosomes_ch = Channel.of('chr1','chr2','chr3','chr4','chr5','chr6','chr7','chr8','chr9','chr10','chr11','chr12','chr13','chr14','chr15','chr16','chr17','chr18','chr19','chr20','chr21','chr22','chrX','chrY','chrM')
-
-
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
@@ -175,14 +173,17 @@ main:
 if ( params.cohort == 'true' ) {
 combinecohortGVCFs(vcf.map{family, vcf1, vcf2, vcf3 -> tuple(vcf1,vcf2,vcf3)}.flatten().toList(),params.genome,indexes_ch,params.genomedict)
 combinecohortGVCFs.out[0].set{cGVCFs_ch}
+genotypeGVCFs(cGVCFs_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+variantcohortrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex)
+
+
 }
 else if ( params.cohort == 'true' ) {
 combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
 combineGVCFs.out[0].set{cGVCFs_ch}
-}
 genotypeGVCFs(cGVCFs_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-genotypeGVCFs.out[0].view()
-variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.cohort)
+variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex)
+}
 vcftoolshardfilter(variantrecalibration.out[0])
 normalizeindelsgatk(vcftoolshardfilter.out[0],params.genome)
 
