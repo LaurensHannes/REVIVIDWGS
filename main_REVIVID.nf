@@ -181,7 +181,7 @@ combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
 combineGVCFs.out[0].set{cGVCFs_ch}
 }
 genotypeGVCFs(cGVCFs_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-
+genotypeGVCFs.out[0].view()
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps, params.snpsindex,params.indels,params.indelsindex,params.cohort)
 vcftoolshardfilter(variantrecalibration.out[0])
 normalizeindelsgatk(vcftoolshardfilter.out[0],params.genome)
