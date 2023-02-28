@@ -5,7 +5,8 @@ process variantrecalibration {
 	cpus 6
 		 errorStrategy 'retry' 
 		maxRetries 6
-
+	cache 'deep'
+	
 	container "docker://broadinstitute/gatk"
 
 	input:
