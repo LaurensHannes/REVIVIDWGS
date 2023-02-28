@@ -7,7 +7,7 @@ process combineindividualGVCFs {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 	publishDir './results/vcfs', mode: 'copy', overwrite: false
-	cache 'lenient'
+	cache 'deep'
 	memory { 32.GB * task.attempt }
 	
 	input:
