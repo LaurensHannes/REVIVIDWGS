@@ -1,7 +1,7 @@
 process variantrecalibration {
 
 	tag "$family"
-	time { 4 hours * task.attempt }
+	time { 4 hour * task.attempt }
 	cpus 6
 		 errorStrategy 'retry' 
 		maxRetries 6
@@ -34,7 +34,7 @@ process variantrecalibration {
 process variantcohortrecalibration {
 
 	tag "$family"
-	time { 4 hours * task.attempt }
+	time { 4 hour * task.attempt }
 	cpus 6
 		 errorStrategy 'retry' 
 		maxRetries 6
