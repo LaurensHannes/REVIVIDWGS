@@ -7,7 +7,7 @@ process genotypeGVCFs {
 		container "docker://broadinstitute/gatk"
 	memory { 8.GB * task.attempt }
 	cpus 4
-
+	cache 'deep'
 	
 	input:
 	tuple val(family), path(vcf), path(vcftbi)

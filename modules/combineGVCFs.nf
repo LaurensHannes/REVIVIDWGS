@@ -7,7 +7,9 @@ process combineGVCFs {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 		memory { 48.GB * task.attempt }
-		
+		cache 'deep'
+
+	
 	input:
 	tuple val(family), path(vcf1), path(vcf2), path(vcf3)
 	path genome 
@@ -41,6 +43,7 @@ process combinecohortGVCFs {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 		memory { 46.GB * task.attempt }
+		cache 'deep'
 		
 	input:
 	path(vcf)
