@@ -10,7 +10,7 @@ process deeptrio {
 		cpus 36
 		time { 3.hour * task.attempt }
 		publishDir 'results/deeptrio/$fam/'
-		cache 'lenient'
+		cache 'deep'
 
 
 		input:
