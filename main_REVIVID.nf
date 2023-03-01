@@ -174,8 +174,8 @@ if ( params.cohort == 'true' ) {
 combinecohortGVCFs(vcf.map{family, vcf1, vcf2, vcf3 -> tuple(vcf1,vcf2,vcf3)}.flatten().toList(),params.genome,indexes_ch,params.genomedict)
 genotypeGVCFs(combinecohortGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 genotypeGVCFs.out[0].view()
-variantcohortrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
-variantcohortrecalibration.out[0].set{vrecal_ch}
+variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
+variantrecalibration.out[0].set{vrecal_ch}
 
 }
 else if ( params.cohort == 'false' ) {
