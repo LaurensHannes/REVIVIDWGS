@@ -7,7 +7,7 @@ process combineGVCFs {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 		memory { 48.GB * task.attempt }
-		cache 'deep'
+			cache 'lenient'
 
 	
 	input:
@@ -43,7 +43,7 @@ process combinecohortGVCFs {
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 		memory { 46.GB * task.attempt }
-		cache 'deep'
+			cache 'lenient'
 		
 	input:
 	path(vcf)
