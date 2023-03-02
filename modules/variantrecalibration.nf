@@ -1,7 +1,7 @@
 process variantrecalibration {
 
 	tag "$family"
-	time 1 hour
+	time '1h'
 	cpus 6
 	cache 'lenient'
 	
