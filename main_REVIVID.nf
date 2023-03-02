@@ -371,8 +371,8 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 createindividualbams(mergebams.out[0])
-deepvariant(createindividualbams.out)
-CNVanalysis(mergebams.out[0])
+//deepvariant(createindividualbams.out)
+//CNVanalysis(mergebams.out[0])
 createindividualvcfs(createindividualbams.out)
 createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
 createfamilyvcfs(vcfmixed)
