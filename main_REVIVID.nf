@@ -159,7 +159,8 @@ main:
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-combineindividualGVCFs(genotype.out[0].groupTuple(size: 25).flatten().collate ( 26 ),params.genome,indexes_ch,params.genomedict)
+genotype.out[0].groupTuple(size: 25).flatten().collate ( 26 ).set{ collatedgenotypes_ch }
+combineindividualGVCFs(collatedgenotypes_ch,params.genome,indexes_ch,params.genomedict)
 
 emit:
 individualvcf = combineindividualGVCFs.out[0]
