@@ -1,7 +1,9 @@
 process variantrecalibration {
 
 	tag "$family"
-	time '1h'
+	time { 30.minute * task.attempt }
+	errorStrategy 'retry' 
+	maxRetries 3
 	cpus 6
 	cache 'lenient'
 	
@@ -33,7 +35,9 @@ process variantrecalibration {
 process variantcohortrecalibration {
 
 	tag "$family"
-	time '1h'
+	time { 30.minute * task.attempt }
+	errorStrategy 'retry' 
+	maxRetries 3
 	cpus 6
 	cache 'lenient'
 	
