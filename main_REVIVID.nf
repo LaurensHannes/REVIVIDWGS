@@ -74,10 +74,12 @@ String line
 familymap = [:]
 trios = []
 families = []
+individuals = []
 
 while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(\w+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
+		individuals = id
         if(father!="0") {
 		trios << tuple(id,father,mother)
 		families << tuple(family,id,father,mother)
@@ -177,8 +179,8 @@ if ( params.cohort == 'true' ) {
 combinecohortGVCFs(vcf.map{family, vcf1, vcf2, vcf3 -> tuple(vcf1,vcf2,vcf3)}.flatten().toList(),params.genome,indexes_ch,params.genomedict)
 genotypeGVCFs(combinecohortGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 genotypeGVCFs.out[0].view()
-variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
-variantrecalibration.out[0].set{vrecal_ch}
+variantcohortrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
+variantcohortrecalibration.out[0].set{vrecal_ch}
 
 }
 else if ( params.cohort == 'false' ) {
@@ -372,10 +374,19 @@ generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
 createindividualbams(mergebams.out[0])
-deepvariant(createindividualbams.out)
 if ( params.CNV == 'true' ) {
 CNVanalysis(bammixed)
 }
+if (params.caller == 'both' ) {
+deepvariant(createindividualbams.out)
+createindividualvcfs(createindividualbams.out)
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+createfamilyvcfs(vcfmixed)
+}
+else if (params.caller == 'deepvariant' ) {
+deepvariant(createindividualbams.out)
+}
+else if (params.caller == 'gatk' ) {
 createindividualvcfs(createindividualbams.out)
 createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
 createfamilyvcfs(vcfmixed)
