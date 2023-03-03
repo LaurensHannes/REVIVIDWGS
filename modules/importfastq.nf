@@ -6,7 +6,8 @@ process importfastq {
 	  
    
 		cpus 4
-        errorStrategy 'retry'
+        errorStrategy 'ignore'
+		time { 30.minute * task.attempt }
          maxErrors 3
 		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
