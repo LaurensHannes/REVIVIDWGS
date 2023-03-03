@@ -33,11 +33,10 @@ process variantrecalibration {
 process variantcohortrecalibration {
 
 	tag "$family"
-	time { 4 hour * task.attempt }
+	time '1h'
 	cpus 6
-		 errorStrategy 'retry' 
-		maxRetries 6
-
+	cache 'lenient'
+	
 	container "docker://broadinstitute/gatk"
 
 	input:
