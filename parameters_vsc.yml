@@ -20,5 +20,5 @@ VEP: '/staging/leuven/stg_00086/resources/VEP'
 cohort: 'true'
 bucket: ''
 CNV: 'true' 
-### both, GATK, DEEPVARIANT
+### both, gatk, deepvariant
 caller: 'both' 
