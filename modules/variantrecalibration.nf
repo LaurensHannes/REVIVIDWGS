@@ -58,7 +58,9 @@ process variantcohortrecalibration {
 	tuple val(family), file("${family}.filtered.vcf.gz"), file("${family}.filtered.vcf.gz.tbi")
 
 	"""
-	gatk VariantRecalibrator -V $vcf -R $genome --resource $snps --resource $indels -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode BOTH -O output.recal --tranches-file output.tranches 
-	gatk ApplyVQSR  -V $vcf -R $genome -O ${family}.filtered.vcf.gz --truth-sensitivity-filter-level 99.0 --tranches-file output.tranches --recal-file output.recal -mode BOTH
+	gatk VariantRecalibrator -V $vcf -R $genome -tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.6 -tranche 99.5 -tranche 99.4 -tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0 --resource:1000G,known=false,training=true,truth=false,prior=10.0:$snps --resource $indels -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode SNP -O output_snps.recal --tranches-file output.tranches 
+	gatk VariantRecalibrator -V $vcf -R $genome -tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.5 -tranche 99.0 -tranche 97.0 -tranche 96.0 -tranche 95.0 -tranche 94.0 -tranche 93.5 -tranche 93.0 -tranche 92.0 -tranche 91.0 -tranche 90.0 --resource:mills,known=false,training=true,truth=true,prior=12:$indels -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode INDEL -O output_indels.recal --tranches-file output.tranches 
+	gatk ApplyVQSR  -V $vcf -R $genome -O snp.filtered.vcf.gz --truth-sensitivity-filter-level 99.7 --tranches-file output.tranches --recal-file output_snps.recal -mode SNP
+	gatk ApplyVQSR  -V snp.filtered.vcf.gz -R $genome -O ${family}.filtered.vcf.gz --truth-sensitivity-filter-level 99.7 --tranches-file output.tranches --recal-file output_indels.recal -mode INDEL
 	"""
 }
