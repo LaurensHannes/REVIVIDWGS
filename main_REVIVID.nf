@@ -77,7 +77,7 @@ families = []
 individuals = []
 
 while( line = myReader.readLine() ) {
-(empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2})\t(\w+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
+(empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,2,3,4})\t(\w+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
 		individuals = id
         if(father!="0") {
