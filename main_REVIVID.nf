@@ -326,8 +326,8 @@ importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.ge
 fastQC(gzipped_ch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
 stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
-generateCRAM(mergebams.out[0],params.genome,indexes_ch)
-CollectWgsMetrics(mergebams.out[0],params.genome)
+generateCRAM(stmergebams.out[0],params.genome,indexes_ch)
+CollectWgsMetrics(stmergebams.out[0],params.genome)
 
 }
 
