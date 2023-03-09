@@ -7,11 +7,12 @@ process importfastq {
    
 		cpus 4
         errorStrategy 'ignore'
-		time { 2.hour * task.attempt }
+		time { 4.hour * task.attempt }
          maxErrors 3
 		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
 		storeDir "/vsc-hard-mounts/leuven-archive/arc_00086/FASTQ/$family/$id"
+		maxForks 25
 		
         input:
         tuple val(id),val(family) 
