@@ -19,7 +19,7 @@ include { fastQC } from './modules/fastQC.nf'
 include { alignment } from './modules/alignment.nf'
 include { readgroups } from './modules/readgroups.nf'
 include { duplicates } from './modules/duplicates.nf'
-include { mergebams } from './modules/mergebams.nf'
+include { stmergebams;mergebams } from './modules/mergebams.nf'
 include { generateCRAM } from './modules/generateCRAM.nf'
 include { CollectWgsMetrics } from './modules/CollectWgsMetrics.nf'
 include { baserecalibrator } from './modules/baserecalibrator.nf'
@@ -325,7 +325,7 @@ importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.ge
 
 fastQC(gzipped_ch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
-mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
+stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch)
 CollectWgsMetrics(mergebams.out[0],params.genome)
 
