@@ -316,6 +316,15 @@ VEPAR(mergevcf.out[0],params.VEP)
 VEPX(SelectVariantsX.out[0],params.VEP)
 }
 
+workflow download {
+
+
+main:
+importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket)
+
+}
+
+
 workflow createbams {
 
 
