@@ -5,7 +5,7 @@
 
 		memory { 128.GB * task.attempt }
 		tag "$lane"
-			 time { 8.hour * task.attempt }
+			 time { 11.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		
