@@ -22,3 +22,5 @@ bucket: ''
 CNV: 'true' 
 ### both, gatk, deepvariant
 caller: 'both' 
+### wgs, wes, simS
+flow: 'wgs'

@@ -1,8 +1,8 @@
 process mergebams {
 
 	tag "$id"
-    cpus 18
-	 time { 2.hour * task.attempt }
+    cpus 1
+	 time { 4.hour * task.attempt }
 	 errorStrategy 'retry' 
 	maxRetries 3
 	myDir = file('./results/bams')
@@ -27,8 +27,8 @@ process mergebams {
 process stmergebams {
 
 	tag "$id"
-    cpus 18
-	 time { 2.hour * task.attempt }
+    cpus 1
+	 time { 4.hour * task.attempt }
 	 errorStrategy 'retry' 
 	maxRetries 3
 	myDir = file('./results/bams')
