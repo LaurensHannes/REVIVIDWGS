@@ -11,7 +11,7 @@ process importfastq {
          maxErrors 3
 		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
-		storeDir "/vsc-hard-mounts/leuven-archive/arc_00086/FASTQ/$family/$id"
+		storeDir "${arch}/FASTQ/$family/$id"
 		maxForks 25
 		
         input:
