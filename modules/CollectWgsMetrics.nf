@@ -7,11 +7,12 @@ process CollectWgsMetrics {
 	maxRetries 3
 	container "docker://broadinstitute/gatk"
 	memory { 4.GB * task.attempt }
-	publishDir "./QC/$id", mode: 'copy', overwrite: false
+	publishDir "$arch/QC/$id", mode: 'copy', overwrite: false
 
         input:
         tuple val(id), file(merged), file(bai) 
         path genome 
+        val arch
 
         output:
         tuple val(id), file("${id}_wgs_metrics.txt") 

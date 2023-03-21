@@ -2,8 +2,8 @@ process mergebams {
 
 	tag "$id"
     cpus 1
-	 time { 4.hour * task.attempt }
-	 errorStrategy 'retry' 
+	time { 4.hour * task.attempt }
+	errorStrategy 'retry' 
 	maxRetries 3
 	myDir = file('./results/bams')
 	myDir.mkdirs()
@@ -11,7 +11,7 @@ process mergebams {
 	input:
 	tuple val(id),file(bams)
 	path home
-
+	
 	
 	output:
 	tuple val(id),file("${id}.bam"),file("${id}.bam.bai")
@@ -29,15 +29,16 @@ process stmergebams {
 	tag "$id"
     cpus 1
 	 time { 4.hour * task.attempt }
-	 errorStrategy 'retry' 
+	errorStrategy 'retry' 
 	maxRetries 3
 	myDir = file('./results/bams')
 	myDir.mkdirs()
-	storeDir './results/bams'
+	storeDir "$arch/results/bams/$id"
+
 	input:
 	tuple val(id),file(bams)
 	path home
-
+	val arch
 	
 	output:
 	file("${id}.bam")
