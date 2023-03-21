@@ -17,7 +17,7 @@ process importfastq {
         input:
         tuple val(id),val(family) 
         path home
-		path arch
+		val arch
 		val download
 		val bucket
 	
