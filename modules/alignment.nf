@@ -1,9 +1,6 @@
  process alignment {
 
 
-		cpus { 72 }
-
-		memory { 128.GB * task.attempt }
 		tag "$lane"
 			 time { 11.hour * task.attempt }
 		 errorStrategy 'retry' 
