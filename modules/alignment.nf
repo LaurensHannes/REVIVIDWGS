@@ -2,7 +2,7 @@
 
 
 		tag "$lane"
-			 time { 2.hour * task.attempt }
+			 time { 12.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		
