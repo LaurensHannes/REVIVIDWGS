@@ -6,7 +6,7 @@ process CollectWgsMetrics {
 	errorStrategy 'retry' 
 	maxRetries 3
 	container "docker://broadinstitute/gatk"
-	memory { 4.GB * task.attempt }
+	memory { 16.GB * task.attempt }
 	publishDir "$arch/QC/$id", mode: 'copy', overwrite: false
 
         input:
