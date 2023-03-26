@@ -28,7 +28,7 @@ process stmergebams {
 
 	tag "$id"
     cpus 1
-	 time { 4.hour * task.attempt }
+	 time { 12.hour * task.attempt }
 	errorStrategy 'retry' 
 	maxRetries 3
 	myDir = file('./results/bams')
