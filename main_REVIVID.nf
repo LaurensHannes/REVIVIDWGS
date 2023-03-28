@@ -390,7 +390,8 @@ workflow createbamsandcallvariants {
 main:
 
 importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket)
-importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.splitFastq(by: 10_000_000, pe: true, file:true).set{gzipped_ch}
+importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
+//importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
 
 fastQC(gzipped_ch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home)
@@ -400,6 +401,7 @@ stmergebams.out[0].map{file -> tuple(file.simpleName,file)}.groupTuple().view().
 stmergebams.out[1].map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp2_ch}
 mergedbamstemp1_ch.join(mergedbamstemp2_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
 CollectWgsMetrics(mergedbamstemp_ch,params.genome,params.arch)
+generateCRAM(mergedbamstemp_ch,params.genome,indexes_ch,params.arch)
 
 createindividualbams(mergedbamstemp_ch)
 if ( params.CNV == 'true' ) {
