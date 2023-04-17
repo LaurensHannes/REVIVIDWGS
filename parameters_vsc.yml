@@ -24,3 +24,4 @@ CNV: 'true'
 caller: 'both' 
 ### wgs, wes, simS
 flow: 'wgs'
+exomes: 'false'
