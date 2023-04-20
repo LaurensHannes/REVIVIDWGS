@@ -33,7 +33,7 @@ process importfastq {
 		if( exome == "true") 
 		
 		"""
-		for line in $lsbucket ; do
+		for line in ${lsbucket} ; do
 		grep $id \$line > temp.txt
 		done
 		for line in temp.txt ; do
