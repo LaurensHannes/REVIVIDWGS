@@ -28,7 +28,7 @@ process importfastq {
          path "$id*.fastq.gz"
 		
 		script:
-		if( $download == "true" && $exome == "true") 
+		if( params.download == "true" && params.exome == "true") 
 		
 		"""
 		for line in $lsbucket ; do
