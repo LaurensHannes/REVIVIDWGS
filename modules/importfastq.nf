@@ -32,7 +32,10 @@ process importfastq {
 		
 		"""
 		for line in $lsbucket ; do
-		gsutil cp -prn $(grep "$id" \$line) ./
+		grep $id \$line > temp.txt
+		done
+		for line in temp.txt ; do
+		gsutil cp -prn \$line ./
 		done
 		"""
 		
