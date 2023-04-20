@@ -21,7 +21,7 @@ process importfastq {
 		val download
 		val bucket
 		val exome
-		val lsbucket
+		path lsbucket
 
 
         output:
