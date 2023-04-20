@@ -24,4 +24,5 @@ CNV: 'true'
 caller: 'both' 
 ### wgs, wes, simS
 flow: 'wgs'
-exomes: 'false'
+exome: 'false'
+lsbucket: '/staging/leuven/stg_00086/Laurens/exomes/exomesamplestotal.txt'

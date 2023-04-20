@@ -20,22 +20,37 @@ process importfastq {
 		val arch
 		val download
 		val bucket
-	
+		val exome
+		val lsbucket
+
+
         output:
          path "$id*.fastq.gz"
 		
 		script:
-				
-		if( download == "true")
-        """
+		if( download == true && exome == "true") {
+		
+		"""
+		for line in $lsbucket ; do
+		gsutil cp -prn \$line ./
+		done
+		"""
+		}
+
+
  
+		if( download == "true" && exome == "false") {
+
+        """
+
         gsutil cp -prn gs://${bucket}/**/$id*R[12]*.fastq.gz ./
 
         """
-		
-		else if( download == "false")
+}
+		else if( download == "false") {
 		
 		"""
 		ln -s /vsc-hard-mounts/leuven-archive/arc_00086/FASTQ/$family/$id/$id.*R[12].fastq.gz ./
 		"""
 }
+
