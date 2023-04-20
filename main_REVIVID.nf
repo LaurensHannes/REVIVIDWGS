@@ -422,7 +422,8 @@ createindividualvcfs(createindividualbams.out)
 createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
 createfamilyvcfs(vcfmixed)
 }
-}µµworkflow createbamsandcallvariants {
+}
+workflow createbamsandcallvariants {
 
 
 main:
