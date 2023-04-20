@@ -69,10 +69,10 @@ process importexomefastq {
         errorStrategy 'ignore'
 		time { 4.hour * task.attempt }
          maxErrors 3
-		disk { 50.GB * task.attempt }
+
 		memory { 8.GB * task.attempt }
 		storeDir "${arch}/FASTQ/$family/$id"
-		maxForks 25
+		maxForks 100
 		
         input:
         tuple val(id),val(family) 
@@ -95,7 +95,7 @@ process importexomefastq {
 		for line in $lsbucket ; do
 		grep $id \$line > temp.txt;
 		done 
-		for fastq in $(cat temp.txt) ; do
+		for fastq in \$(cat temp.txt) ; do
 		gsutil cp -prn \$fastq ./;
 		done
 		"""
