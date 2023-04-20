@@ -93,10 +93,10 @@ process importexomefastq {
 		
 		"""
 		for line in $lsbucket ; do
-		grep $id \$line > temp.txt
-		done ; 
+		grep $id \$line > temp.txt;
+		done 
 		for fastq in $(cat temp.txt) ; do
-		gsutil cp -prn \$fastq ./
+		gsutil cp -prn \$fastq ./;
 		done
 		"""
 
