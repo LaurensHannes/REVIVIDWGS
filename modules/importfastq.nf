@@ -28,7 +28,7 @@ process importfastq {
          path "$id*.fastq.gz"
 		
 		script:
-		if( download == "true" && exome == "true") 
+		if( $download == "true" && $exome == "true") 
 		
 		"""
 		for line in $lsbucket ; do
@@ -42,7 +42,7 @@ process importfastq {
 
 
 
-		if( download == "true" && exome == "false") 
+		if( $download == "true" && $exome == "false") 
 
         """
 
@@ -50,7 +50,7 @@ process importfastq {
 
         """
 
-		else if( download == "false") 
+		else if( $download == "false") 
 		
 		"""
 		ln -s /vsc-hard-mounts/leuven-archive/arc_00086/FASTQ/$family/$id/$id.*R[12].fastq.gz ./
