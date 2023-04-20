@@ -65,7 +65,7 @@ chromosomes_ch = Channel.of('chr1','chr2','chr3','chr4','chr5','chr6','chr7','ch
 
 }
 
-bams_ch = channel.fromPath('')
+// bams_ch = channel.fromPath('')
 
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
