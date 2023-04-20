@@ -13,7 +13,7 @@ log.info """\
  =======================================
  """
 
-include { importfastq } from './modules/importfastq.nf'
+include { importfastq;importexomefastq} from './modules/importfastq.nf'
 include { deeptrio; glnexusdt; glnexusprocessing} from './modules/deeptrio.nf'
 include { fastQC } from './modules/fastQC.nf'
 include { alignment } from './modules/alignment.nf'
@@ -390,8 +390,7 @@ workflow createbamsandcallvariants {
 
 main:
 
-		download = "true"
-		exome = "true"
+
 importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket,params.exome,params.lsbucket)
 importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 //importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
@@ -426,6 +425,45 @@ createfamilyvcfs(vcfmixed)
 }
 }
 
+workflow createbamsandcallvariantsexome {
+
+
+main:
+
+
+importexomefastq(idfamily_ch, params.home,params.arch,params.download,params.bucket,params.exome,params.lsbucket)
+importexomefastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
+//importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
+
+fastQC(gzipped_ch)
+alignment(gzipped_ch, params.genome,indexes_ch, params.home)
+stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home,params.arch)
+
+stmergebams.out[0].map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp1_ch}
+stmergebams.out[1].map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp2_ch}
+mergedbamstemp1_ch.join(mergedbamstemp2_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
+CollectWgsMetrics(mergedbamstemp_ch,params.genome,params.arch)
+generateCRAM(mergedbamstemp_ch,params.genome,indexes_ch,params.arch)
+
+createindividualbams(mergedbamstemp_ch)
+if ( params.CNV == 'true' ) {
+CNVanalysis(bammixed)
+}
+if (params.caller == 'both' ) {
+deepvariant(createindividualbams.out)
+createindividualvcfs(createindividualbams.out)
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+createfamilyvcfs(vcfmixed)
+}
+else if (params.caller == 'deepvariant' ) {
+deepvariant(createindividualbams.out)
+}
+else if (params.caller == 'gatk' ) {
+createindividualvcfs(createindividualbams.out)
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+createfamilyvcfs(vcfmixed)
+}
+}
 
 workflow callvariantsfrombams {
 
