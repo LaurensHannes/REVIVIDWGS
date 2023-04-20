@@ -23,12 +23,14 @@ process importfastq {
 		val exome
 		path lsbucket
 
+		download = params.download
+		exome = params.exome
 
         output:
          path "$id*.fastq.gz"
 		
 		script:
-		if( ${download} == "true" && params.exome == "true") 
+		if( download == "true" && exome == "true") 
 		
 		"""
 		for line in $lsbucket ; do
