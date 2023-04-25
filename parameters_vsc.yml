@@ -21,7 +21,7 @@ cohort: 'true'
 bucket: ''
 CNV: 'true' 
 ### both, gatk, deepvariant
-caller: 'both' 
+caller: 'gatk' 
 ### wgs, wes, simS
 flow: 'wes'
 exome: 'false'
