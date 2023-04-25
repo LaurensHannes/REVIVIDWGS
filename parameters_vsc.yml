@@ -23,6 +23,6 @@ CNV: 'true'
 ### both, gatk, deepvariant
 caller: 'both' 
 ### wgs, wes, simS
-flow: 'wgs'
+flow: 'wes'
 exome: 'false'
 lsbucket: '/staging/leuven/stg_00086/Laurens/exomes/exomesamplestotal.txt'
