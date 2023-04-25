@@ -98,15 +98,16 @@ individuals = []
 while( line = myReader.readLine() ) {
 (empty, family, id, father, mother, sex, phenotype) = (line =~ /(^.*F\d{1,5})\t(\w+)\t(\w+)\t(\w+)\t(\d+)\t(\d+)/)[0]
         familymap[id]=family
-		individuals = id
+		individuals << id
         if(father!="0") {
 		trios << tuple(id,father,mother)
 		families << tuple(family,id,father,mother)
 		}
 }
 myReader.close()
-shortped_ch = Channel.fromList(trios)
-shortped_ch.flatten().set{ ids }
+//shortped_ch = Channel.fromList(trios)
+//shortped_ch.flatten().set{ ids }
+ids = Channel.fromList(individuals)
 familytrio_ch = Channel.fromList(families)
 triofamilywithchr_ch = chromosomes_ch.combine(familytrio_ch).map{chr,fam,index,father,mother -> tuple(fam,chr,index,father,mother)}
 
