@@ -29,7 +29,7 @@ do
 
 	gatk IndexFeatureFile -I \$line & 
 done
-sleep 120
+sleep 180
 	gatk CombineGVCFs -R $genome -V input.list -O ${id}.g.vcf.gz
 """
 
