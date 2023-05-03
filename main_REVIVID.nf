@@ -183,7 +183,7 @@ main:
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-genotype.out[0].groupTuple(size: 25).flatten().collate ( 26 ).set{ collatedgenotypes_ch }
+genotype.out[0].groupTuple(size: 24).flatten().collate ( 25 ).set{ collatedgenotypes_ch }
 combineindividualGVCFs(collatedgenotypes_ch,params.genome,indexes_ch,params.genomedict)
 
 emit:
@@ -428,7 +428,7 @@ deepvariant(createindividualbams.out)
 }
 else if (params.caller == 'gatk' ) {
 createindividualvcfs(createindividualbams.out)
-createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().toList().set{vcfmixed}
 createfamilyvcfs(vcfmixed)
 }
 }
