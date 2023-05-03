@@ -8,7 +8,7 @@ process combineGVCFs {
 		container "docker://broadinstitute/gatk"
 		memory { 48.GB * task.attempt }
 			cache 'lenient'
-
+	publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 	
 	input:
 	tuple val(family), path(vcf1), path(vcf2), path(vcf3)
@@ -44,7 +44,7 @@ process combinecohortGVCFs {
 		container "docker://broadinstitute/gatk"
 		memory { 46.GB * task.attempt }
 			cache 'lenient'
-		
+		publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 	input:
 	path(vcf)
 	path genome 
