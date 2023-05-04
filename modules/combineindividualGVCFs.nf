@@ -37,7 +37,7 @@ sleep 300
 
 process combinechrGVCFs {
 
-	tag "$id"
+	tag "$chr"
 	cpus 8
 	time { 4.hour * task.attempt }
 		 errorStrategy 'retry' 
@@ -58,7 +58,7 @@ process combinechrGVCFs {
 	path("${chr}.g.vcf.gz")
 	
 """
-find \$PWD -name "${chr}.*.vcf.gz" > input.list
+find \$PWD -name "*.${chr}.*.vcf.gz" > input.list
 lines=\$(cat input.list)
 
 for line in \$lines
