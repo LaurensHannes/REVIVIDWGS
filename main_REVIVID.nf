@@ -183,9 +183,9 @@ main:
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-if ( params.cohort ) {
-
-	combinechrGVCFs(genotype.out[0].map{ id, vcf -> ,vcf }.collect(),chromosomes_ch,params.genome,indexes_ch,params.genomedict)
+if( params.cohort ) {
+	genotype.out[0].map{ id, vcf -> ,vcf }.toList().set{cohortgenotypeoutput}
+	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict)
 	combinechrGVCFs.out[0].set{ individualgvcfsoutput_ch }
 }
 else {
@@ -202,7 +202,7 @@ workflow createfamilyvcfs {
 take: vcf
 
 main: 
-if ( params.cohort) {
+if( params.cohort) {
 genotypechrGVCFs(vcf.flatten().toList(),chromosomes_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 combinechrVCFs(genotypechrGVCFs.out[0],params.genome,indexes_ch,params.genomedict)
 combinechrVCFs.out[0].view()
