@@ -68,3 +68,38 @@ wait
 """
 
 }
+
+process combinechrVCFs {
+
+	tag "cohort"
+	cpus { 4 * task.attempt }
+	time { 6.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
+		container "docker://broadinstitute/gatk"
+		memory { 46.GB * task.attempt }
+			cache 'lenient'
+		publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
+	input:
+	path(vcf)
+	path genome 
+	path indexes
+	path dict
+	
+	output:
+	tuple val("cohort"), path("cohort.g.vcf.gz"), path("cohort.g.vcf.gz.tbi")
+	
+"""
+find \$PWD -name "*.vcf.gz" > input.list
+lines=\$(cat input.list)
+
+for line in \$lines
+do
+
+	gatk IndexFeatureFile -I \$line & 
+done
+wait
+	gatk MergeVcfs -R $genome  -O cohort.g.vcf.gz -I input.list -D $dict
+"""
+
+}
