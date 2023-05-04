@@ -67,7 +67,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 sleep 300
-	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz
+	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}
 """
 
 }

@@ -52,7 +52,7 @@ process genotypechrGVCFs {
 	path("${chr}.vcf.gz.tbi")
 	
 """
-	gatk GenotypeGVCFs -R $genome -V $vcf -O ${chr}.vcf.gz --sequence-dictionary $dict
+	gatk GenotypeGVCFs -R $genome -V $vcf -O ${chr}.vcf.gz --sequence-dictionary $dict -L ${chr}
 """
 
 }
