@@ -58,7 +58,7 @@ process combinechrGVCFs {
 	path("${chr}.g.vcf.gz")
 	
 """
-export mem=\$(echo ${task.memory} | egrep -o "[1234567890]+")
+mem=\$(echo \$(echo ${task.memory} | egrep -o "[1234567890]+")G)
 find \$PWD -name "*.${chr}.*.vcf.gz" > input.list
 lines=\$(cat input.list)
 
@@ -68,7 +68,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 sleep 180
-	gatk --java-options "-Xmx\$memG" CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}
+	gatk --java-options "-Xmx\$mem" CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}
 """
 
 }
