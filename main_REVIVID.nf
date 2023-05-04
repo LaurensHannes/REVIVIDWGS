@@ -428,7 +428,7 @@ deepvariant(createindividualbams.out)
 }
 else if (params.caller == 'gatk' ) {
 createindividualvcfs(createindividualbams.out)
-createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 8 ).set{vcfmixed}
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().collect().set{vcfmixed}
 createfamilyvcfs(vcfmixed)
 }
 }
