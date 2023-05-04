@@ -183,11 +183,18 @@ main:
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+if ( params.cohort ) {
+
+	combinechrGVCFs(genotype.out[0].map{ id, vcf -> ,vcf}.collect(),chromosomes_ch,params.genome,indexes_ch,params.genomedict)
+	combinechrGVCFs.out[0].set{ individualgvcfsoutput_ch }
+}
+else {
 genotype.out[0].groupTuple(size: 24).flatten().collate ( 25 ).view().set{ collatedgenotypes_ch }
 combineindividualGVCFs(collatedgenotypes_ch,params.genome,indexes_ch,params.genomedict)
-
+combineindividualGVCFs.out[0].set{ individualgvcfsoutput_ch }
+}
 emit:
-individualvcf = combineindividualGVCFs.out[0]
+individualvcf = individualgvcfsoutput_ch
 
 }
 
@@ -195,15 +202,15 @@ workflow createfamilyvcfs {
 take: vcf
 
 main: 
-if ( params.cohort == 'true' ) {
-combinecohortGVCFs(vcf.flatten().toList(),params.genome,indexes_ch,params.genomedict)
-genotypeGVCFs(combinecohortGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-genotypeGVCFs.out[0].view()
-variantcohortrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
+if ( params.cohort) {
+genotypechrGVCFs(vcf.flatten().toList(),chromosomes_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+combinechrVCFs(genotypechrGVCFs.out[0],params.genome,indexes_ch,params.genomedict)
+combinechrVCFs.out[0].view()
+variantcohortrecalibration(combinechrVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
 variantcohortrecalibration.out[0].set{vrecal_ch}
 
 }
-else if ( params.cohort == 'false' ) {
+else {
 combineGVCFs(vcf,params.genome,indexes_ch,params.genomedict)
 genotypeGVCFs(combineGVCFs.out[0],params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 variantrecalibration(genotypeGVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
