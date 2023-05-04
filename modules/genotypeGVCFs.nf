@@ -25,3 +25,34 @@ process genotypeGVCFs {
 """
 
 }
+
+process genotypechrGVCFs {
+
+	tag "$chr"
+		 time { 10.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
+		container "docker://broadinstitute/gatk"
+		storeDir './results/vcfs'
+	memory { 8.GB * task.attempt }
+	cpus 4
+		cache 'lenient'
+	
+	input:
+		path vcf
+		val chr
+        path genome 
+        path indexes
+		path broadinterval
+		path dict		
+		path mask 
+	
+	output:
+	path("${chr}.vcf.gz")
+	path("${chr}.vcf.gz.tbi")
+	
+"""
+	gatk GenotypeGVCFs -R $genome -V $vcf -O ${chr}.vcf.gz --sequence-dictionary $dict
+"""
+
+}

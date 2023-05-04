@@ -49,3 +49,40 @@ process combineindividualGVCFs {
 """
 
 }
+
+process combinechrGVCFs {
+
+	tag "$id"
+	cpus 8
+	time { 4.hour * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
+		container "docker://broadinstitute/gatk"
+	storeDir './results/gvcfs'
+	memory { 32.GB * task.attempt }
+	
+	input:
+	
+	path vcf
+	val chr
+	path genome 
+	path indexes
+	path dict
+	
+	output:
+	path("${chr}.g.vcf.gz")
+	
+"""
+find \$PWD -name "${chr}.*.vcf.gz" > input.list
+lines=\$(cat input.list)
+
+for line in \$lines
+do
+
+	gatk IndexFeatureFile -I \$line & 
+done
+sleep 300
+	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz
+"""
+
+}
