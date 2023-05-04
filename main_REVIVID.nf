@@ -178,21 +178,20 @@ take: bamperchr
 
 main:
 
-
-
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 if( params.cohort ) {
 	genotype.out[0].flatMap{ id, vcf -> ,vcf }.toList().set{cohortgenotypeoutput}
 	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict)
-	combinechrGVCFs.out[0].set{ individualgvcfsoutput_ch }
+	combinechrGVCFs.out[0].set{individualgvcfsoutput_ch}
 }
 else {
-genotype.out[0].groupTuple(size: 24).flatten().collate ( 25 ).view().set{ collatedgenotypes_ch }
+genotype.out[0].groupTuple(size: 24).flatten().collate ( 25 ).view().set{collatedgenotypes_ch}
 combineindividualGVCFs(collatedgenotypes_ch,params.genome,indexes_ch,params.genomedict)
-combineindividualGVCFs.out[0].set{ individualgvcfsoutput_ch }
+combineindividualGVCFs.out[0].set{individualgvcfsoutput_ch}
 }
+
 emit:
 individualvcf = individualgvcfsoutput_ch
 
