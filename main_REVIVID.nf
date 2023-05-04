@@ -436,7 +436,7 @@ else if (params.caller == 'gatk' ) {
 createindividualvcfs(createindividualbams.out)
 
 if (params.cohort) {
-	createindividualvcfs.out.map{id,vcf -> vcf}.set{vcfmixed}
+	createindividualvcfs.out.set{vcfmixed}
 }
 		else {
 createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
