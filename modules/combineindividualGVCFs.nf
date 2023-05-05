@@ -39,7 +39,7 @@ process combinechrGVCFs {
 
 	tag "$chr"
 	cpus 8
-	time { 4.hour * task.attempt }
+	time { 16.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
@@ -58,7 +58,6 @@ process combinechrGVCFs {
 	path("${chr}.g.vcf.gz")
 	
 """
-mem=\$(echo \$(echo ${task.memory} | egrep -o "[1234567890]+")G)
 find \$PWD -name "*.${chr}.*.vcf.gz" > input.list
 lines=\$(cat input.list)
 
@@ -68,7 +67,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 sleep 180
-	gatk --java-options "-Xmx\$mem" CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}
+	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}
 """
 
 }
