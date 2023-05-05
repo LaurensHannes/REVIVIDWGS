@@ -53,11 +53,13 @@ process combinechrGVCFs {
 	path genome 
 	path indexes
 	path dict
-	
+	path broadinterval
+
 	output:
 	path("${chr}.g.vcf.gz")
 	
 """
+egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
 find \$PWD -name "*.${chr}.*.vcf.gz" > input.list
 lines=\$(cat input.list)
 
@@ -67,7 +69,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 sleep 180
-	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}
+	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}.bed
 """
 
 }

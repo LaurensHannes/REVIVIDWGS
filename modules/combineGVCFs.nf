@@ -81,15 +81,17 @@ process combinechrVCFs {
 			cache 'lenient'
 		publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 	input:
-	path(vcf)
+	path vcf
 	path genome 
 	path indexes
 	path dict
-	
+
+
 	output:
 	tuple val("cohort"), path("cohort.g.vcf.gz"), path("cohort.g.vcf.gz.tbi")
 	
 """
+egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
 find \$PWD -name "*.vcf.gz" > input.list
 lines=\$(cat input.list)
 
