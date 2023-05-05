@@ -183,7 +183,7 @@ applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 if( params.cohort ) {
 	genotype.out[0].flatMap{ id, vcf -> vcf }.toList().set{cohortgenotypeoutput}
-	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict)
+	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict,params.broadinterval)
 	combinechrGVCFs.out[0].set{individualgvcfsoutput_ch}
 }
 else {
