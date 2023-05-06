@@ -58,6 +58,8 @@ process combinechrGVCFs {
 	output:
 	path("${chr}.g.vcf.gz")
 	
+script:
+
 if ( task.executor == "slurm")
 
 """
