@@ -38,7 +38,7 @@ sleep 300
 process combinechrGVCFs {
 
 	tag "$chr"
-	cpus 8
+	cpus 2
 	time { 16.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
@@ -78,6 +78,7 @@ do
 done
 sleep 180
 	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}.bed
+	rm -r temp
 """
 
 }
