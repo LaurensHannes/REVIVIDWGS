@@ -79,7 +79,7 @@ do
 done
 sleep 180
 	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}.bed
-	rm -r temp
+	rm -r \$SLURM_TMPDIR/*.${chr}.*.vcf.g*
 """
 else 
 """
