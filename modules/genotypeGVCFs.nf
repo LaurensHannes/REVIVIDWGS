@@ -52,6 +52,7 @@ process genotypechrGVCFs {
 	path("${chr}.vcf.gz.tbi")
 	
 """
+gatk IndexFeatureFile -I ${chr}.g.vcf.gz
 egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
 	gatk GenotypeGVCFs -R $genome -V ${chr}.g.vcf.gz -O ${chr}.vcf.gz --sequence-dictionary $dict -L ${chr}.bed
 """
