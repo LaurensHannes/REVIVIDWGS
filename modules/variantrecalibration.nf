@@ -40,6 +40,7 @@ process variantcohortrecalibration {
 	maxRetries 3
 	cpus 6
 	cache 'lenient'
+	memory { 16.GB * task.attempt }
 	
 	container "docker://broadinstitute/gatk"
 
