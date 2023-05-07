@@ -46,8 +46,14 @@ process stmergebams {
 
 
 	"""
+temp=\$(ls *.bam | wc -l)
+if [ \$temp == "1" ] ; then
 	samtools merge -@ ${task.cpus} ${id}.bam $bams
 	samtools index -@ ${task.cpus} ${id}.bam
+else
+	move $bams ${id}.bam
+	samtools index -@ ${task.cpus} ${id}.bam
+	fi
 	"""
 
 }
