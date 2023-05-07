@@ -48,7 +48,7 @@ process stmergebams {
 	"""
 temp=\$(ls *.bam | wc -l)
 if [ \$temp == "1" ] ; then
-	move $bams ${id}.bam	
+	cp $bams ${id}.bam	
 	samtools index -@ ${task.cpus} ${id}.bam
 	
 else
