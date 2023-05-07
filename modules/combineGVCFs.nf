@@ -88,7 +88,7 @@ process combinechrVCFs {
 
 
 	output:
-	tuple val("cohort"), path("cohort.g.vcf.gz"), path("cohort.g.vcf.gz.tbi")
+	tuple val("cohort"), path("cohort.vcf.gz"), path("cohort.vcf.gz.tbi")
 	
 """
 
@@ -101,7 +101,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 wait
-	gatk MergeVcfs -R $genome  -O cohort.g.vcf.gz -I input.list -D $dict
+	gatk MergeVcfs -R $genome  -O cohort.vcf.gz -I input.list -D $dict
 """
 
 }

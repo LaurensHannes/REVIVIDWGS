@@ -6,7 +6,7 @@ process variantrecalibration {
 	maxRetries 3
 	cpus 6
 	cache 'lenient'
-	
+	publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 	container "docker://broadinstitute/gatk"
 
 	input:
