@@ -73,7 +73,6 @@ process variantchrrecalibration {
 	maxRetries 3
 	cpus 6
 	cache 'lenient'
-	publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 	container "docker://broadinstitute/gatk"
 
 	input:
@@ -94,7 +93,7 @@ process variantchrrecalibration {
 
 	script:
 	"""
-	gatk CNNScoreVariants -V $vcf -R $genome -O ${chr}.pretranched.vcf.gz
+	gatk CNNScoreVariants -V ${chr}.vcf.gz -R $genome -O ${chr}.pretranched.vcf.gz
 	gatk FilterVariantTranches -V ${chr}.pretranched.vcf.gz --resource $snps --resource $indels -O ${chr}.filtered.vcf.gz --info-key CNN_1D --snp-tranche 99.95 --indel-tranche 99.4 
 	"""
 	
