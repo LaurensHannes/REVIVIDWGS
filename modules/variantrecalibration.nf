@@ -64,3 +64,39 @@ process variantcohortrecalibration {
 	gatk ApplyVQSR  -V snp.filtered.vcf.gz -R $genome -O ${family}.filtered.vcf.gz --truth-sensitivity-filter-level 99.7 --tranches-file output_indels.tranches --recal-file output_indels.recal -mode INDEL
 	"""
 }
+
+process variantchrrecalibration {
+
+	tag "$family"
+	time { 30.minute * task.attempt }
+	errorStrategy 'retry' 
+	maxRetries 3
+	cpus 6
+	cache 'lenient'
+	publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
+	container "docker://broadinstitute/gatk"
+
+	input:
+	path vcf
+	path vcftbi
+	path genome
+    path dict 
+	path indexes
+	path snps 
+	path snpsindex 
+	path indels 
+	path indelsindex 
+	val chr
+
+
+	output:
+	file("${chr}.filtered.vcf.gz")
+
+	script:
+	"""
+	gatk CNNScoreVariants -V $vcf -R $genome -O ${chr}.pretranched.vcf.gz
+	gatk FilterVariantTranches -V ${chr}.pretranched.vcf.gz --resource $snps --resource $indels -O ${chr}.filtered.vcf.gz --info-key CNN_1D --snp-tranche 99.95 --indel-tranche 99.4 
+	"""
+	
+
+}
