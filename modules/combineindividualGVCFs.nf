@@ -60,30 +60,7 @@ process combinechrGVCFs {
 	
 script:
 
-if ( task.executor == "slurm")
 
-"""
-egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
-
-find \$PWD -name "*.${chr}.*.vcf.gz" > initial.list
-initials=\$(cat initial.list)
-
-for ini in \$initials
-do
-	cp \$ini \$SLURM_TMPDIR/  
-done
-find \$SLURM_TMPDIR -name "*.${chr}.*.vcf.gz" > input.list
-lines=\$(cat input.list)
-
-for line in \$lines
-do
-	gatk IndexFeatureFile -I \$line & 
-done
-sleep 180
-	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}.bed
-	rm -r \$SLURM_TMPDIR/*.${chr}.*.vcf.g*
-"""
-else 
 """
 mkdir temp
 egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
