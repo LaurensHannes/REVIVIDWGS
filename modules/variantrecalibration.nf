@@ -98,7 +98,7 @@ process variantchrrecalibration {
 	if( chr == "chrY")
 
 	"""
-	mv $vcf ${chr}.filtered.vcf.gz
+	cp ${chr}.vcf.gz ${chr}.filtered.vcf.gz
 	"""
 	else
 	"""
