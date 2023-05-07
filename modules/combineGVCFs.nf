@@ -80,6 +80,7 @@ process combinechrVCFs {
 		memory { 46.GB * task.attempt }
 			cache 'lenient'
 		publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
+		maxForks 3
 	input:
 	path vcf
 	path genome 
