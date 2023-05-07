@@ -30,7 +30,7 @@ include { checkfamilyvcf } from './modules/checkfamilyvcfnew.nf'
 include { applyBQSR } from './modules/applyBQSR.nf'
 include { genotype } from './modules/genotype.nf'
 include { leftalignandtrim as  leftalignandtrimgatk;  leftalignandtrim as  leftalignandtrimdeepvariant} from './modules/leftalignandtrim.nf'
-include { variantrecalibration;variantcohortrecalibration } from './modules/variantrecalibration.nf'
+include { variantrecalibration;variantcohortrecalibration;variantchrrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
 include { concatvcf; mergevcf;intersectvcf; normalizeindels as normalizeindelsdeepvariant;normalizeindels as normalizeindelsgatk } from './modules/bcftools.nf'
 include { combineindividualGVCFs;combinechrGVCFs } from './modules/combineindividualGVCFs.nf'
@@ -204,10 +204,9 @@ take: vcf
 main: 
 if( params.cohort) {
 genotypechrGVCFs(vcf.flatten().toList(),chromosomes_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-combinechrVCFs(genotypechrGVCFs.out[0].toSortedList(),params.genome,indexes_ch,params.genomedict)
-combinechrVCFs.out[0].view()
-variantrecalibration(combinechrVCFs.out[0],params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex)
-variantrecalibration.out[0].set{vrecal_ch}
+variantchrrecalibration(genotypechrGVCFs.out[0].toSortedList(),genotypechrGVCFs.out[1].toSortedList(),params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.indels,params.indelsindex,chromosomes_ch)
+combinechrVCFs(variantchrrecalibration.out[0].toSortedList(),params.genome,indexes_ch,params.genomedict)
+combinechrVCFs.out[0].set{vrecal_ch}
 
 }
 else {
