@@ -40,8 +40,8 @@ process variantcohortrecalibration {
 	maxRetries 3
 	cpus 6
 	cache 'lenient'
-	memory { 16.GB * task.attempt }
 	
+
 	container "docker://broadinstitute/gatk"
 
 	input:
@@ -75,7 +75,8 @@ process variantchrrecalibration {
 	cpus 6
 	cache 'lenient'
 	container "docker://broadinstitute/gatk"
-
+	memory { 16.GB * task.attempt }
+	
 	input:
 	path vcf
 	path vcftbi
