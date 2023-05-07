@@ -94,6 +94,13 @@ process variantchrrecalibration {
 	file("${chr}.filtered.vcf.gz")
 
 	script:
+
+	if( chr == "chrY")
+
+	"""
+	mv $vcf ${chr}.filtered.vcf.gz
+	"""
+	else
 	"""
 	gatk CNNScoreVariants -V ${chr}.vcf.gz -R $genome -O ${chr}.pretranched.vcf.gz
 	gatk FilterVariantTranches -V ${chr}.pretranched.vcf.gz --resource $snps --resource $indels -O ${chr}.filtered.vcf.gz --info-key CNN_1D --snp-tranche 99.95 --indel-tranche 99.4 
