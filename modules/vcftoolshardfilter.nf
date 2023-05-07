@@ -8,7 +8,7 @@ process vcftoolshardfilter {
         tuple val(family), file(vcfgz), file(vcfgztbi)
 		
 		output:
-        tuple val(family),val("GATK"), file("${family}.filtered.vcf.gz"), file("${family}.filtered.vcf.gz.tbi")
+        tuple val(family),val("GATK"), file("${family}.hardfiltered.vcf.gz"), file("${family}.hardfiltered.vcf.gz.tbi")
 
 		"""
 		vcftools --gzvcf $vcfgz --out ${family}.hardfiltered --remove-filtered-all --minGQ 20 --minDP 10 --max-missing 1 --recode
