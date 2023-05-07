@@ -74,7 +74,7 @@ do
 done
 find \$PWD/temp -name "*.${chr}.*.vcf.gz" > input.list
 lines=\$(cat input.list)
-
+for line in \$lines
 do
 	gatk IndexFeatureFile -I \$line & 
 done
