@@ -45,7 +45,6 @@ process combinechrGVCFs {
 		container "docker://broadinstitute/gatk"
 	storeDir './results/gvcfs'
 	memory { 32.GB * task.attempt }
-	maxForks 3
 	scratch true
 	input:
 	
