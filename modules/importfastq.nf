@@ -40,7 +40,7 @@ process importfastq {
 		"""
 		
 
-		if( download == "true" && exome == "false") 
+		else if( download == "true" && exome == "false") 
 
         """
 
