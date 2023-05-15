@@ -40,7 +40,7 @@ process importfastq {
 		"""
 		
 
-		if( params.download == "true" && params.exome == "false") 
+		if( download == "true" && exome == "false") 
 
         """
 
@@ -48,7 +48,7 @@ process importfastq {
 
         """
 
-		else if( params.download == "false") 
+		else if( download == "false") 
 		
 		"""
 		ln -s /vsc-hard-mounts/leuven-archive/arc_00086/FASTQ/$family/$id/$id.*R[12].fastq.gz ./
