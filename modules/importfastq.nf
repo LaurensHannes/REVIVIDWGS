@@ -9,7 +9,6 @@ process importfastq {
         errorStrategy 'ignore'
 		time { 4.hour * task.attempt }
          maxErrors 3
-		disk { 50.GB * task.attempt }
 		memory { 8.GB * task.attempt }
 		storeDir "${arch}/FASTQ/$family/$id"
 		maxForks 25
