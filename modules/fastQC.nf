@@ -28,6 +28,5 @@ process fastQC {
 	"""
 	ln -s ${arch}/results/QC/${id}/${lane}.R1_fastqc.html
 	ln -s ${arch}/results/QC/${id}/${lane}.R2_fastqc.html
-	} 
-	
-	
+	"""
+	}
