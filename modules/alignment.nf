@@ -28,7 +28,7 @@
 		"""
         else 
         """
-        ln -s params.arch/results/bams/${id}/${id}.bam 
+        ln -s ${arch}/results/bams/${id}/${id}.bam 
         samtools index -@ ${task.cpus} ${id}.bam
         """
 }
