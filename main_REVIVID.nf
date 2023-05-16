@@ -125,7 +125,7 @@ main:
 importfastq(idfam, params.home,params.arch,params.download,params.bucket)
 importfastq.out.flatten().filter(~/.*R[12]\.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 
-fastQC(gzipped_ch)
+fastQC(gzipped_ch,params.arch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home,params.arch)
 mergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home)
 generateCRAM(mergebams.out[0],params.genome,indexes_ch,params.arch)
@@ -360,7 +360,7 @@ importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket)
 importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 //importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
 
-fastQC(gzipped_ch)
+fastQC(gzipped_ch,params.arch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home,params.arch)
 stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home,params.arch)
 
@@ -409,7 +409,7 @@ importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket,p
 importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").view().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 //importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
 
-fastQC(gzipped_ch)
+fastQC(gzipped_ch,params.arch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home,params.arch)
 stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home,params.arch)
 
@@ -455,7 +455,7 @@ importexomefastq(idfamily_ch, params.home,params.arch,params.download,params.buc
 importexomefastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
 //importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
 
-fastQC(gzipped_ch)
+fastQC(gzipped_ch,params.arch)
 alignment(gzipped_ch, params.genome,indexes_ch, params.home,params.arch)
 stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home,params.arch)
 
