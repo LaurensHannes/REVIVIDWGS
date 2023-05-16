@@ -28,7 +28,7 @@
 		"""
         else 
         """
-        ln -s ${arch}/results/bams/${id}/${id}.bam 
-        samtools index -@ ${task.cpus} ${id}.bam
+        touch ${lane}.indexed.bam
+        touch ${lane}.indexed.bam.bai
         """
 }
