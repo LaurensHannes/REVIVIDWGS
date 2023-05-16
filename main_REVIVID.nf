@@ -361,7 +361,7 @@ importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.ge
 //importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
 
 fastQC(gzipped_ch)
-alignment(gzipped_ch, params.genome,indexes_ch, params.home)
+alignment(gzipped_ch, params.genome,indexes_ch, params.home,params.arch)
 stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home,params.arch)
 
 stmergebams.out[0].map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp1_ch}
