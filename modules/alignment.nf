@@ -13,6 +13,7 @@
         path genome
         path indexes
         path home
+        val arch
 
         output:
         tuple val(id), val(lane), file("${lane}.indexed.bam"),file("${lane}.indexed.bam.bai")
@@ -20,7 +21,7 @@
         
         
         script:
-        if (!"params.arch/results/bams/${id}/${id}.bam")
+        if (!"${arch}/results/bams/${id}/${id}.bam")
         """
         bwa-mem2 mem -t ${task.cpus} -R "@RG\\tID:${id}\\tSM:${id}\\tLB:REVIVID\\tPL:ILLUMINA\\tPU:${lane}" $genome $R1 $R2 | samtools sort -@ ${task.cpus} -o ${lane}.indexed.bam
         samtools index -@ ${task.cpus} ${lane}.indexed.bam
