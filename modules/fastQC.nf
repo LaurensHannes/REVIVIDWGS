@@ -18,7 +18,7 @@ process fastQC {
 	
 	script:
 
-	if (!"${arch}/results/QC/${id}/${lane}.R1_fastqc.html" && !"${arch}/results/QC/${id}/${lane}.R2_fastqc.html") 
+	if (!"${arch}/results/QC/${id}/${lane}.R1_fastqc.html".exists() && !"${arch}/results/QC/${id}/${lane}.R2_fastqc.html".exists()) 
 	
 	"""
 	fastqc $R1 $R2
