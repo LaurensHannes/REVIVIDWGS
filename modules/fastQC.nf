@@ -17,8 +17,9 @@ process fastQC {
 			tuple val(), val(lane), file("*R1*fastqc.html"), file("*R2*fastqc.html")
 	
 	script:
-
-	if (!"${arch}/results/QC/${id}/${lane}.R1_fastqc.html".exists() && !"${arch}/results/QC/${id}/${lane}.R2_fastqc.html".exists()) 
+	fastqcR1="${arch}/results/QC/${id}/${lane}.R1_fastqc.html"
+	fastqcR2="${arch}/results/QC/${id}/${lane}.R2_fastqc.html"
+	if (!fastqcR1.exists() && !fastqcR2.exists()) 
 	
 	"""
 	fastqc $R1 $R2
