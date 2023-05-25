@@ -69,7 +69,7 @@ process importexomefastq {
          maxErrors 3
 
 		memory { 8.GB * task.attempt }
-		storeDir "${arch}/FASTQ/$family/$id"
+		storeDir "${arch}/exomes/$family/$id"
 		maxForks 100
 		
         input:

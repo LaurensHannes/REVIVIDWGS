@@ -17,7 +17,15 @@ process CollectWgsMetrics {
         output:
         tuple val(id), file("${id}_wgs_metrics.txt") 
 
+
+        script:
+        outputqc = file("${arch}/QC/${id}/${id}_wgs_metrics.txt")
+        if (!outputqc.exists())
         """
         gatk CollectWgsMetrics -I $merged -R $genome -O ${id}_wgs_metrics.txt
+        """
+        else
+        """
+        touch ${id}_wgs_metrics.txt
         """
 }
