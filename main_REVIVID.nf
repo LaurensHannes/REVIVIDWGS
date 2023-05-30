@@ -450,6 +450,7 @@ workflow callgvariantsexome {
 
 main:
 
+exomeinput_ch = channel.fromPath("params.arch/exomes/**/*am").view()
 
 createindividualbams(mergedbamstemp_ch)
 if ( params.CNV == 'true' ) {
