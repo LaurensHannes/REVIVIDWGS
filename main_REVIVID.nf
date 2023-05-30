@@ -75,6 +75,7 @@ switch (params.flow) {
 
 // bams_ch = channel.fromPath('')
 
+ped_ch = Channel.fromPath(params.indexes)
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 donevcfs_ch = channel.fromPath('./results/vcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
@@ -184,7 +185,7 @@ applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 if( params.cohort ) {
 	genotype.out[0].flatMap{ id, vcf -> vcf }.toList().set{cohortgenotypeoutput}
-	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict,params.broadinterval,params.ped.map{ ped -> file(ped)}.getName.getSimpleName)
+	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict,params.broadinterval,ped_ch.map{ ped -> file(ped)}.getName.getSimpleName)
 	combinechrGVCFs.out[0].set{individualgvcfsoutput_ch}
 }
 else {
