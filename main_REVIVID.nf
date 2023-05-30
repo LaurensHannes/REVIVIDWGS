@@ -85,7 +85,7 @@ donefamilyvcfs_ch = channel.fromPath('./results/familyvcfs/*.vcf.gz').toSortedLi
 garbage_ch = Channel.empty()
 testcollection = Channel.empty()
 
-vcfcollection = Channel.empty()
+vcfcollection = Channel.empty() 
 
 //script
 
