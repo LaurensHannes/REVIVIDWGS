@@ -450,9 +450,10 @@ workflow callgvariantsexome {
 
 main:
 
-exomeinput_ch = channel.fromPath("params.arch/exomes/**/*am").view()
-
-createindividualbams(exomeinput_ch)
+exomeinput_ch = channel.fromPath("params.arch/exomes/**/*am").view().map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp1_ch}
+exomeinput_ch = channel.fromPath("params.arch/exomes/**/*am").view().map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp2_ch}
+mergedbamstemp1_ch.join(mergedbamstemp2_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
+createindividualbams(mergedbamstemp_ch)
 if ( params.CNV == 'true' ) {
 CNVanalysis(bammixed)
 }
