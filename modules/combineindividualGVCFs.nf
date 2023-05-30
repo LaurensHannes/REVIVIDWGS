@@ -54,9 +54,10 @@ process combinechrGVCFs {
 	path indexes
 	path dict
 	path broadinterval
+	val cohort
 
 	output:
-	path("${chr}.g.vcf.gz")
+	path("${cohort}.${chr}.g.vcf.gz")
 	
 script:
 
@@ -79,7 +80,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 sleep 180
-	gatk CombineGVCFs -R $genome -V input.list -O ${chr}.g.vcf.gz -L ${chr}.bed
+	gatk CombineGVCFs -R $genome -V input.list -O ${cohort}.${chr}.g.vcf.gz -L ${chr}.bed
 	rm -r temp
 """
 
