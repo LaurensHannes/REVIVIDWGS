@@ -12,13 +12,15 @@ process applyBQSR {
         path genome
 		path indexes 
         path dict 
+        path broadinterval
 
 
         output:
         tuple val(id), val(chr) ,file("${id}.${chr}.recallibrated.bam"),file("${id}.${chr}.recallibrated.bam.bai") 
 
         """
-        gatk ApplyBQSR -R $genome -I $bam -bqsr-recal-file $table -O ${id}.${chr}.recallibrated.bam
+        egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
+        gatk ApplyBQSR -L ${chr}.bed -R $genome -I $bam -bqsr-recal-file $table -O ${id}.${chr}.recallibrated.bam
 		samtools index -@ ${task.cpus} ${id}.${chr}.recallibrated.bam
 		
 		

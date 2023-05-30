@@ -180,8 +180,8 @@ take: bamperchr
 
 main:
 
-baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex)
-applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict)
+baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex,params.broadinterval)
+applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict,params.broadinterval)
 genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
 if( params.cohort ) {
 	genotype.out[0].flatMap{ id, vcf -> vcf }.toList().set{cohortgenotypeoutput}

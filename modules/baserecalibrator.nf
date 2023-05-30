@@ -16,11 +16,13 @@ process baserecalibrator {
         path dict 
 		path snps
         path snpsindex 
+        path broadinterval
 
         output:
         tuple val(id), val(chr), file(merged), file(bai), file("${id}.${chr}.recal_data.table") 
 
         """
-        gatk BaseRecalibrator -I $merged -R $genome -O ${id}.${chr}.recal_data.table --known-sites $snps --verbosity WARNING
+        egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
+        gatk BaseRecalibrator -L ${chr}.bed -I $merged -R $genome -O ${id}.${chr}.recal_data.table --known-sites $snps --verbosity WARNING
         """
 }
