@@ -45,7 +45,7 @@ process combinechrGVCFs {
 		container "docker://broadinstitute/gatk"
 	storeDir './results/gvcfs'
 	memory { 32.GB * task.attempt }
-	scratch true
+	//scratch true
 	input:
 	
 	path vcf
