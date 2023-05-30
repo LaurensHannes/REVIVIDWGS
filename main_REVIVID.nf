@@ -451,9 +451,9 @@ workflow callgvariantsexome {
 
 main:
 
-channel.fromPath(params.exomemapped).view().map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp1_ch}
-ids.join(mergedbamstemp1_ch).set{mergedbamstemp2_ch}
-channel.fromPath(params.exomeindexes).view().map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp3_ch}
+channel.fromPath(params.exomemapped).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp1_ch}
+ids.join(mergedbamstemp1_ch).flatten().groupTuple().view().set{mergedbamstemp2_ch}
+channel.fromPath(params.exomeindexes).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp3_ch}
 mergedbamstemp1_ch.join(mergedbamstemp2_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
 createindividualbams(mergedbamstemp_ch)
 if ( params.CNV == 'true' ) {
