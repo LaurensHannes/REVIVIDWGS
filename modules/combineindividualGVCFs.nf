@@ -49,7 +49,7 @@ process combinechrGVCFs {
 	input:
 	
 	path vcf
-	val chr
+	each chr
 	path genome 
 	path indexes
 	path dict
