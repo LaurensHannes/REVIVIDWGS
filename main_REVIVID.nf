@@ -454,7 +454,7 @@ main:
 channel.fromPath(params.exomemapped).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp1_ch}
 ids.join(mergedbamstemp1_ch).flatten().collate( 2 ).groupTuple().view().set{mergedbamstemp2_ch}
 channel.fromPath(params.exomeindexes).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp3_ch}
-mergedbamstemp1_ch.join(mergedbamstemp3_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
+mergedbamstemp2_ch.join(mergedbamstemp3_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
 createindividualbams(mergedbamstemp_ch)
 if ( params.CNV == 'true' ) {
 CNVanalysis(bammixed)
