@@ -452,7 +452,7 @@ main:
 
 exomeinput_ch = channel.fromPath("params.arch/exomes/**/*am").view()
 
-createindividualbams(mergedbamstemp_ch)
+createindividualbams(exomeinput_ch)
 if ( params.CNV == 'true' ) {
 CNVanalysis(bammixed)
 }
