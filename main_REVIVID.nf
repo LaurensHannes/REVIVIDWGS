@@ -75,7 +75,7 @@ switch (params.flow) {
 
 // bams_ch = channel.fromPath('')
 
-ped_ch = Channel.fromPath(params.ped).map{ ped -> ped.getSimpleName()}
+ped_ch = Channel.fromPath(params.ped).flatmap{ ped -> ped.getSimpleName()}
 indexes_ch = Channel.fromPath(params.indexes).toList()
 donebams_ch = channel.fromPath('./results/bams/*.bam*').toSortedList().flatten().collate( 2 ).map{bam,bai -> tuple(bam.simpleName,bam,bai)}.flatten().collate( 3 )
 donevcfs_ch = channel.fromPath('./results/vcfs/*.vcf*').toSortedList().flatten().collate( 1 ).map{vcf -> tuple(vcf.simpleName,vcf)}.flatten().collate( 2 )
