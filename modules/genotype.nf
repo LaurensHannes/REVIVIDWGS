@@ -24,7 +24,7 @@ process genotype {
 		
 		
         output:
-        tuple val(id), file("${id}.${chr}.g.vcf.gz")
+        tuple val(id), file("${id}.${chr}.g.vcf.gz", file("${id}.${chr}.g.vcf.gz.idx")
 
 		script:
 		if(chr == "chrY")

@@ -66,19 +66,7 @@ script:
 mkdir temp
 egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
 
-find \$PWD -name "*.${chr}.*.vcf.gz" > initial.list
-initials=\$(cat initial.list)
-
-for ini in \$initials
-do
-	cp \$ini temp/  
-done
-find \$PWD/temp -name "*.${chr}.*.vcf.gz" > input.list
-lines=\$(cat input.list)
-for line in \$lines
-do
-	gatk IndexFeatureFile -I \$line 
-done
+find \$PWD -name "*.${chr}.*.vcf.gz" > input.list
 
 	gatk CombineGVCFs -R $genome -V input.list -O ${cohort}.${chr}.g.vcf.gz -L ${chr}.bed
 	rm -r temp
