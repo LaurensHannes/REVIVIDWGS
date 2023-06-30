@@ -77,9 +77,9 @@ find \$PWD/temp -name "*.${chr}.*.vcf.gz" > input.list
 lines=\$(cat input.list)
 for line in \$lines
 do
-	gatk IndexFeatureFile -I \$line & 
+	gatk IndexFeatureFile -I \$line 
 done
-sleep 180
+
 	gatk CombineGVCFs -R $genome -V input.list -O ${cohort}.${chr}.g.vcf.gz -L ${chr}.bed
 	rm -r temp
 """
