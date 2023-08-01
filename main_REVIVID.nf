@@ -479,7 +479,7 @@ workflow cohortexomecalling {
 
 main:
 callgvariantsexome()
-callvariantsexome.out[0].view()
+callgvariantsexome.out[0].view()
 
 }
 
