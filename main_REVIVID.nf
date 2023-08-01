@@ -471,9 +471,18 @@ deepvariant(createindividualbams.out)
 else if (params.caller == 'gatk' ) {
 createindividualvcfs(createindividualbams.out)
 //createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
-//createfamilyvcfs(vcfmixed)
+createfamilyvcfs(createindividualvcfs)
 }
 }
+
+workflow cohortexomecalling {
+
+main:
+callgvariantsexome()
+callvariantsexome.out[0].view()
+
+}
+
 
 workflow callvariantsfrombams {
 
