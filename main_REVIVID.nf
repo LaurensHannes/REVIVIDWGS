@@ -224,7 +224,8 @@ triovcf = normalizeindelsgatk.out
 }
 
 workflow CNVanalysis {
-take:bam
+
+take: bam
 
 main:
 if ( params.exome ) {

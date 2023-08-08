@@ -48,7 +48,7 @@ process indelible {
 		input:
 
 		tuple val(fam), val(index), val(father), val(mother)
-		bam
+		path bam
 
 		output:
 		
