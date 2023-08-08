@@ -50,7 +50,8 @@ process indelible {
 		tuple val(fam), val(index), val(father), val(mother)
 		path bam
 		path genome
-
+		path indexes 
+		
 		output:
 		
 		tuple val(id), file("${id}.bam.indelible.denovo.tsv")
@@ -58,7 +59,7 @@ process indelible {
 		"""
 		ls > input
 		export index=\$(egrep '${index}' < input | egrep 'am\$')
-		/usr/src/app/indelible/indelible.py complete --config /usr/src/app/indelible/config.hg38.yml --i  \$(echo \$index) --o ./ --r µgenome --priors /usr/src/app/indelible/data/Indelible_db_10k.hg38.bed   --tb ${task.cpus}
+		/usr/src/app/indelible/indelible.py complete --config /usr/src/app/indelible/config.hg38.yml --i  \$(echo \$index) --o ./ --r $genome --priors /usr/src/app/indelible/data/Indelible_db_10k.hg38.bed   --tb ${task.cpus}
 		
 		"""
 		
