@@ -36,7 +36,7 @@ process indelible {
 		errorStrategy 'retry'
          maxRetries 3
 		       container "docker://mercury/indelible:1.1.3"
-			   containerOptions '--pwd /usr/src/app/Indelible'
+			   containerOptions '--pwd /usr/src/app/indelible'
 		memory { 180.GB * task.attempt }
 		cpus 26
 		clusterOptions '-A lp_revivid'
