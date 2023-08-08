@@ -32,7 +32,7 @@ process parliament2 {
 
 process indelible { 
 
-        tag "$id"
+        tag "$fam"
 		errorStrategy 'retry'
          maxRetries 3
 		       container "docker://mercury/indelible:1.1.3"
@@ -42,7 +42,7 @@ process indelible {
 		clusterOptions '-A lp_revivid'
 			 time { 8.hour * task.attempt }
 
-			storeDir "./results/CNV/$id/indelbile"
+			storeDir "./results/CNV/$fam/indelbile"
 
 
 		input:
@@ -52,7 +52,7 @@ process indelible {
 
 		output:
 		
-		tuple val(id), file("${id}.cram.indelible.denovo.tsv")
+		tuple val(id), file("${id}.bam.indelible.denovo.tsv")
 
 		"""
 		indelible.py complete -config config.hg38.yml --i  ${index}.bam --o $PWD --r data/GRCh38_full_analysis_set.fa --d data/Indelible_db_10k.hg38.bed  --m / ${mother}.bam --p  ${father}.bam
