@@ -489,7 +489,7 @@ main:
 
 if (params.individualchrgvcfs) {
 
-createfamilyvcfs(Channel.fromPath(params.individualchrgvcfs).map{file -> tuple(file.simpleName,file)}.groupTuple().flatten().collate( 2 ))
+createfamilyvcfs(Channel.fromPath(params.individualchrgvcfs))
 }
 
 else {
