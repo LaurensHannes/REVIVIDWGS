@@ -229,7 +229,7 @@ take: bam
 
 main:
 if ( params.exome ) {
-indelible(familytrio_ch,bam.map{ id, bam, bai -> tuple(bam,bai)}.flatten().toList())
+indelible(familytrio_ch,bam.map{ id, bam, bai -> tuple(bam,bai)}.flatten().toList(),params.genome,indexes_ch)
 indelible.out[0].set{ CNV_ch }
 }
 else if ( params.exome == 'false' ) {
