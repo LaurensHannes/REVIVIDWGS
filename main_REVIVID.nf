@@ -227,9 +227,9 @@ workflow CNVanalysis {
 take:bam
 
 main:
-if ( params.exome == 'true' ) {
+if ( params.exome ) {
 indelible(familytrio_ch,bam.map{ id, bam, bai -> tuple(bam,bai)}.flatten().toList())
-indelible.out[0].set{CNV_ch}
+indelible.out[0].set{ CNV_ch }
 }
 else if ( params.exome == 'false' ) {
 
