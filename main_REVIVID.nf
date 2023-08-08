@@ -227,13 +227,19 @@ workflow CNVanalysis {
 take:bam
 
 main:
+if ( params.exome == 'false' ) {
 parliament2(bam,params.genome,indexes_ch)
 createfilterbedfileCNV(bam)
 idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ).view()
 mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ))
-
+mergeCNV.out[0].set{CNV_ch}
+}
+else {
+indelible(familytrio_ch,bam.map{ id, bam, bai -> tuple(bam,bai)}.flatten().toList())
+indelible.out[0].set{CNV_ch}
+}
 emit:
-mergeCNV.out[0]
+CNV_ch
 }
 
 workflow consensus {
@@ -448,17 +454,13 @@ createfamilyvcfs(vcfmixed)
 
 workflow callgvariantsexome {
 
-
+take:
+bam
 main:
 
-channel.fromPath(params.exomemapped).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp1_ch}
-ids.join(mergedbamstemp1_ch).flatten().collate( 2 ).groupTuple().view().set{mergedbamstemp2_ch}
-channel.fromPath(params.exomeindexes).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp3_ch}
-mergedbamstemp2_ch.join(mergedbamstemp3_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
-createindividualbams(mergedbamstemp_ch)
-if ( params.CNV == 'true' ) {
-CNVanalysis(bammixed)
-}
+
+createindividualbams(bam)
+
 if (params.caller == 'both' ) {
 deepvariant(createindividualbams.out)
 createindividualvcfs(createindividualbams.out)
@@ -493,8 +495,14 @@ createfamilyvcfs(Channel.fromPath(params.individualchrgvcfs))
 }
 
 else {
-callgvariantsexome()
-
+channel.fromPath(params.exomemapped).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp1_ch}
+ids.join(mergedbamstemp1_ch).flatten().collate( 2 ).groupTuple().view().set{mergedbamstemp2_ch}
+channel.fromPath(params.exomeindexes).map{file -> tuple(file.simpleName,file)}.groupTuple().set{mergedbamstemp3_ch}
+mergedbamstemp2_ch.join(mergedbamstemp3_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
+callgvariantsexome(mergedbamstemp_ch)
+if ( params.CNV == 'true' ) {
+CNVanalysis(mergedbamstemp_ch)
+}
 createfamilyvcfs(callgvariantsexome.out[0])
 
 }

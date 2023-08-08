@@ -55,7 +55,7 @@ process indelible {
 		tuple val(id), file("${id}.cram.indelible.denovo.tsv")
 
 		"""
-		indelible.py complete -config config.hg38.yml --i   --o /path/to/local/storage/device/ --r data/GRCh38_full_analysis_set.fa --d data/Indelible_db_10k.hg38.bed  --m /path/to/local/storage/device/mum.cram --p /path/to/local/storage/device/dad.cram
+		indelible.py complete -config config.hg38.yml --i  ${index}.bam --o $PWD --r data/GRCh38_full_analysis_set.fa --d data/Indelible_db_10k.hg38.bed  --m / ${mother}.bam --p  ${father}.bam
 		
 		"""
 		
