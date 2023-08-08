@@ -38,8 +38,8 @@ process indelible {
 		       container "docker://mercury/indelible:1.1.3"
 			   containerOptions '--pwd /usr/src/app/indelible'
 		memory { 180.GB * task.attempt }
-		cpus 26
-		clusterOptions '-A lp_revivid'
+		cpus 16
+		
 			 time { 8.hour * task.attempt }
 
 			storeDir "./results/CNV/$fam/indelbile"
@@ -55,7 +55,7 @@ process indelible {
 		tuple val(id), file("${id}.bam.indelible.denovo.tsv")
 
 		"""
-		/usr/src/app/indelible/indelible.py complete --config /usr/src/app/indelible/config.hg38.yml --i  ${index}.cram --o $PWD --r /usr/src/app/indelible/data/GRCh38_full_analysis_set.fa --priors /usr/src/app/indelible/data/Indelible_db_10k.hg38.bed  --m  ${mother}.cram --p  ${father}.cram
+		/usr/src/app/indelible/indelible.py complete --config /usr/src/app/indelible/config.hg38.yml --i  ${index}.cram --o $PWD --r /usr/src/app/indelible/data/GRCh38_full_analysis_set.fa --priors /usr/src/app/indelible/data/Indelible_db_10k.hg38.bed  --m  ${mother}.cram --p  ${father}.cram --tb ${task.cpus}
 		
 		"""
 		
