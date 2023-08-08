@@ -227,16 +227,17 @@ workflow CNVanalysis {
 take:bam
 
 main:
-if ( params.exome == 'false' ) {
+if ( params.exome == 'true' ) {
+indelible(familytrio_ch,bam.map{ id, bam, bai -> tuple(bam,bai)}.flatten().toList())
+indelible.out[0].set{CNV_ch}
+}
+else if ( params.exome == 'false' ) {
+
 parliament2(bam,params.genome,indexes_ch)
 createfilterbedfileCNV(bam)
 idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ).view()
 mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])).map{ id, family, vcf ,lowmq -> tuple(family,vcf,lowmq)}.groupTuple().flatten().collate( 7 ))
 mergeCNV.out[0].set{CNV_ch}
-}
-else {
-indelible(familytrio_ch,bam.map{ id, bam, bai -> tuple(bam,bai)}.flatten().toList())
-indelible.out[0].set{CNV_ch}
 }
 emit:
 CNV_ch
