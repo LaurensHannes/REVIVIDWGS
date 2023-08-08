@@ -477,7 +477,7 @@ createindividualvcfs(createindividualbams.out)
 
 }
 emit:
-createfamilyvcfs.out[0]
+createindividualvcfs.out[0]
 
 }
 
