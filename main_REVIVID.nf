@@ -240,7 +240,7 @@ mergeCNV(idfamily_ch.join(parliament2.out[0].join(createfilterbedfileCNV.out[0])
 mergeCNV.out[0].set{CNV_ch}
 }
 emit:
-CNV_ch
+CNVoutput = CNV_ch
 }
 
 workflow consensus {
