@@ -27,7 +27,7 @@ CNV: 'true'
 caller: 'gatk' 
 ### wgs, wes, simS
 flow: 'wes'
-exome: 'false'
+exome: 'true'
 lsbucket: '/staging/leuven/stg_00086/Laurens/exomes/exomesamplestotal.txt'
 exomemapped: '/vsc-hard-mounts/leuven-archive/arc_00086/exomes/**/*am'
 exomeindexes: '/vsc-hard-mounts/leuven-archive/arc_00086/exomes/**/*ai'
