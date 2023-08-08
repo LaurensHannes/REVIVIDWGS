@@ -68,7 +68,7 @@ process variantcohortrecalibration {
 
 process variantcohortchrrecalibration {
 
-	tag "$family"
+	tag "$chr"
 	time { 30.minute * task.attempt }
 	errorStrategy 'retry' 
 	maxRetries 3
