@@ -86,8 +86,8 @@ process variantcohortchrrecalibration {
 	path indexes
 	path snps 
 	path snpsindex 
-	file snpstruth
-	file snpstruthindex
+	path snpstruth
+	path snpstruthindex
 	path indels 
 	path indelsindex 
 	val chr
