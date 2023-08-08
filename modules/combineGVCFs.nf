@@ -1,6 +1,7 @@
 process combineGVCFs {
 
-	tag "$family"
+	
+	
 	cpus 4
 	time { 4.hour * task.attempt }
 		 errorStrategy 'retry' 

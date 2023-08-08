@@ -42,7 +42,7 @@ include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
 include { SelectVariantsX } from './modules/SelectVariantsX.nf'
 include { annovar as annotatedenovo; annovar as annotateAR; annovar as annotateX } from './modules/annotate.nf'
 include { VEP as VEPdenovo; VEP as VEPAR; VEP as VEPX } from './modules/annotate.nf'
-include { parliament2 } from './modules/parliament2.nf'
+include { parliament2 } from './modules/CNV.nf'
 include { peddy } from './modules/peddy.nf'
 include { AnnotSV } from './modules/AnnotSV.nf'
 include { mergeCNV } from './modules/mergeCNV.nf'
@@ -494,6 +494,7 @@ createfamilyvcfs(Channel.fromPath(params.individualchrgvcfs))
 
 else {
 callgvariantsexome()
+
 createfamilyvcfs(callgvariantsexome.out[0])
 
 }
