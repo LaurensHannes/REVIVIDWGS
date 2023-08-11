@@ -54,7 +54,7 @@ process indelible {
 		
 		output:
 		
-		tuple val(id), file("${id}.bam.indelible.denovo.tsv")
+		file("*.tsv")
 
 		"""
 		ls > input
