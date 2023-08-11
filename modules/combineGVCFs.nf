@@ -90,7 +90,9 @@ process combinechrVCFs {
 
 
 	output:
-	tuple val("cohort"), path("cohort.vcf.gz"), path("cohort.vcf.gz.tbi")
+	
+	path("cohort.vcf.gz")
+	path("cohort.vcf.gz.tbi")
 	
 """
 
