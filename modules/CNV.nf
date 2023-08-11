@@ -35,7 +35,7 @@ process indelible {
         tag "$fam"
 		errorStrategy 'retry'
          maxRetries 3
-		       container "docker://mercury/indelible:1.1.3"
+		       container "docker://laurenshannes/indelible:1.1.3"
 			   containerOptions '--pwd /usr/src/app/indelible'
 		memory { 180.GB * task.attempt }
 		cpus 16
