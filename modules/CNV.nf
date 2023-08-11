@@ -59,7 +59,9 @@ process indelible {
 		"""
 		ls > input
 		export index=\$(egrep '${index}' < input | egrep 'am\$')
-		/usr/src/app/indelible/indelible.py complete --config /usr/src/app/indelible/config.hg38.yml --i  \$(echo \$index) --o ./ --r $genome --priors /usr/src/app/indelible/data/Indelible_db_10k.hg38.bed   --tb ${task.cpus}
+		export father=\$(egrep '${father}' < input | egrep 'am\$')
+		export mother=\$(egrep '${mother}' < input | egrep 'am\$')
+		/usr/src/app/indelible/indelible.py complete --config /usr/src/app/indelible/config.hg38.yml --i  \$(echo \$index) --o ./ --r $genome --priors /usr/src/app/indelible/data/Indelible_db_10k.hg38.bed   --tb ${task.cpus} --p \$(echo \$father) --m \$(echo \$mother)
 		
 		"""
 		
