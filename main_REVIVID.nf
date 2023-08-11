@@ -205,8 +205,8 @@ take: vcf
 main: 
 if( params.cohort) {
 genotypechrGVCFs(vcf.flatten().toList(),chromosomes_ch,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
-combinecohortVCFs(genotypechrGVCFs.out[0].toSortedList(),params.genome,indexes_ch,params.genomedict)
-variantcohortrecalibration(combinecohortVCFs.out[0].toSortedList(),combinecohortVCFs.out[1].toSortedList(),params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.snpstruth,params.snpstruthindex,params.indels,params.indelsindex)
+combinecohortGVCFs(genotypechrGVCFs.out[0].toSortedList(),params.genome,indexes_ch,params.genomedict)
+variantcohortrecalibration(combinecohortGVCFs.out[0].toSortedList(),combinecohortGVCFs.out[1].toSortedList(),params.genome,params.genomedict,indexes_ch,params.snps,params.snpsindex,params.snpstruth,params.snpstruthindex,params.indels,params.indelsindex)
 
 
 variantcohortrecalibration.out[0].set{vrecal_ch}
