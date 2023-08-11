@@ -47,13 +47,14 @@ process combinecohortGVCFs {
 			cache 'lenient'
 		publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
 	input:
-	path(vcf)
+	path vcf
 	path genome 
 	path indexes
 	path dict
 	
 	output:
-	tuple val("cohort"), path("cohort.g.vcf.gz"), path("cohort.g.vcf.gz.tbi")
+	path("cohort.g.vcf.gz")
+	path("cohort.g.vcf.gz.tbi")
 	
 """
 find \$PWD -name "*.vcf.gz" > input.list
