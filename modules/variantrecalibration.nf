@@ -41,7 +41,7 @@ process variantcohortrecalibration {
 	cpus 6
 	cache 'lenient'
 	publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
-
+	memory { 32.GB * task.attempt }
 	container "docker://broadinstitute/gatk"
 
 	input:
