@@ -507,7 +507,7 @@ callgvariantsexome(mergedbamstemp_ch)
 CNVanalysis(mergedbamstemp_ch)
 
 createfamilyvcfs(callgvariantsexome.out[0])
-VEP(createfamilyvcfs.out[0],params.VEP)
+VEP(createfamilyvcfs.out[0].map{ fam, caller, vcfgz, vcfgztbi -> tuple(fam,caller,fam,vcfgz,vcfgztbi)},params.VEP)
 }
 
 }
