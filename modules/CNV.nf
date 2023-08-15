@@ -61,7 +61,7 @@ process indelible {
 		export index=\$(egrep '${index}' < input | egrep 'am\$')
 		export father=\$(egrep '${father}' < input | egrep 'am\$')
 		export mother=\$(egrep '${mother}' < input | egrep 'am\$')
-		/lustre1/project/stg_00086/resources/programs/indelible/indelible.py complete --config /luste1/project/stg_00086/resources/programs/indelible/config.hg38.yml --i  \$(echo \$index) --o ./ --r $genome --priors /luste1/project/stg_00086/resources/programs/indelible/data/Indelible_db_10k.hg38.bed   --tb ${task.cpus} --p \$(echo \$father) --m \$(echo \$mother)
+		/lustre1/project/stg_00086/resources/programs/indelible/indelible.py complete --config /lustre1/project/stg_00086/resources/programs/indelible/config.hg38.yml --i  \$(echo \$index) --o ./ --r $genome --priors /lustre1/project/stg_00086/resources/programs/indelible/data/Indelible_db_10k.hg38.bed   --tb ${task.cpus} --p \$(echo \$father) --m \$(echo \$mother)
 		
 		"""
 		
