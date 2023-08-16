@@ -41,7 +41,7 @@ process indelible {
 		cpus 4
 		maxForks 10
 
-			 time { 8.hour * task.attempt }
+			 time { 24.hour * task.attempt }
 
 			storeDir "./results/CNV/$fam/indelbile"
 
