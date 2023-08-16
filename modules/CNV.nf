@@ -38,7 +38,7 @@ process indelible {
 		       container "docker://laurenshannes/indelible:1.1.3"
 			   containerOptions '--pwd /usr/src/app/indelible'
 		memory { 48.GB * task.attempt }
-		cpus 16
+		cpus 4
 		maxForks 10
 
 			 time { 8.hour * task.attempt }
