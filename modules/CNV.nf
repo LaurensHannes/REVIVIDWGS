@@ -36,7 +36,7 @@ process indelible {
 		errorStrategy 'retry'
          maxRetries 3
 		       container "docker://laurenshannes/indelible:1.1.3"
-			   containerOptions '--pwd /usr/src/app/indelible'
+			   containerOptions '-B `pwd`:/usr/src/app/indelible:rw'
 		memory { 48.GB * task.attempt }
 		cpus 4
 		maxForks 10
