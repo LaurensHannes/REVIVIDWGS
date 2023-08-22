@@ -7,7 +7,7 @@ process annovar {
 		errorStrategy 'ignore'
          maxRetries 9
 		memory { 32.GB * task.attempt }
-		
+
         input:
         tuple val(family), val(analysis), val(mode), file(vcfgz),file(vcfgztbi)
 		val(programpath)
@@ -31,7 +31,7 @@ process VEP {
 		time { 8.hour * task.attempt }
 		errorStrategy 'ignore'
          maxRetries 9
-		 memory { 32.GB * task.attempt }
+		 memory { 96.GB * task.attempt }
 		 
         input:
         tuple val(family), val(analysis), val(mode), file(vcfgz),file(vcfgztbi)
