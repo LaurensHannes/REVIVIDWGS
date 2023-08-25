@@ -37,11 +37,11 @@ process indelible {
          maxRetries 3
 		       container "docker://laurenshannes/indelible:1.1.3"
 			   containerOptions '-B `pwd`:/usr/src/app/indelible:rw'
-		memory { 128.GB * task.attempt }
+		memory { 64.GB * task.attempt }
 		cpus 4
 		maxForks 10
 
-			 time { 24.hour * task.attempt }
+			 time 72.hour
 
 			storeDir "./results/CNV/$fam/indelbile"
 
