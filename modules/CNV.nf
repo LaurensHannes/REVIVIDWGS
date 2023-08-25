@@ -39,7 +39,7 @@ process indelible {
 			   containerOptions '-B `pwd`:/usr/src/app/indelible:rw'
 		memory { 64.GB * task.attempt }
 		cpus 4
-		maxForks 10
+
 
 			 time 72.hour
 
