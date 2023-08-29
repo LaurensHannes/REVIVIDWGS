@@ -39,9 +39,9 @@ process indelible {
 			   containerOptions '-B `pwd`:/usr/src/app/indelible:rw'
 		memory { 64.GB * task.attempt }
 		cpus 4
+		clusterOptions '--partition=batch_long'
 
-
-			 time 72.hour
+			 time 7.day
 
 			storeDir "./results/CNV/$fam/indelbile"
 

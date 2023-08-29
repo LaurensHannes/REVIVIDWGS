@@ -182,7 +182,7 @@ main:
 
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex,params.broadinterval)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict,params.broadinterval)
-genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask)
+genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask,Channel.value(params.coverage).map{ it / 5 })
 if( params.cohort ) {
 	genotype.out[0].flatMap{ id, vcf, idx -> tuple(vcf, idx) }.toList().set{cohortgenotypeoutput}
 	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict,params.broadinterval,ped_ch)
@@ -193,6 +193,7 @@ genotype.out[0].groupTuple(size: 24).flatten().collate ( 25 ).view().set{collate
 combineindividualGVCFs(collatedgenotypes_ch,params.genome,indexes_ch,params.genomedict)
 combineindividualGVCFs.out[0].set{individualgvcfsoutput_ch}
 }
+deepmosaic(genotype.out[1],params.genome,indexes_ch,params.genomedict,params.coverage,params.programs,params.humandb)
 
 emit:
 individualvcf = individualgvcfsoutput_ch
