@@ -39,7 +39,7 @@ process indelible {
 			   containerOptions '-B `pwd`:/usr/src/app/indelible:rw'
 		memory { 64.GB * task.attempt }
 		cpus 4
-		clusterOptions '--partition=batch_long'
+		clusterOptions '--cluster=wice -A lp_revivid --partition=batch_long'
 
 			 time 7.day
 
