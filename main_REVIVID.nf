@@ -183,7 +183,7 @@ main:
 
 baserecalibrator(bamperchr,params.genome, indexes_ch, params.genomedict, params.snps, params.snpsindex,params.broadinterval)
 applyBQSR(baserecalibrator.out,params.genome,indexes_ch,params.genomedict,params.broadinterval)
-genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask,Channel.value(params.coverage).map{ toInteger(it) / 5 })
+genotype(applyBQSR.out,params.genome,indexes_ch,params.broadinterval,params.genomedict,params.mask,Channel.value(toInteger(params.coverage)).map{ 0it / 5 })
 if( params.cohort ) {
 	genotype.out[0].flatMap{ id, vcf, idx -> tuple(vcf, idx) }.toList().set{cohortgenotypeoutput}
 	combinechrGVCFs(cohortgenotypeoutput,chromosomes_ch,params.genome,indexes_ch,params.genomedict,params.broadinterval,ped_ch)
