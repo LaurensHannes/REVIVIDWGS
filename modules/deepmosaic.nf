@@ -1,6 +1,6 @@
 process deepmosaic {
 	tag "$id"
-	cpus 36
+	cpus 1
 	time { 4.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
