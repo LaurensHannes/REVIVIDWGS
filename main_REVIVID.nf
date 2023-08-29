@@ -50,6 +50,7 @@ include { vcftoolshardfilter } from './modules/vcftoolshardfilter.nf'
 include { splitbamlanes } from './modules/splitbamlanes.nf'
 include { splitbamindividuals } from './modules/splitbamindividuals.nf'
 include { createfilterbedfileCNV } from './modules/createfilterbedfileCNV.nf'
+include { deepmosaic } from './modules/deepmosaic.nf'
 
 // script parameters
 
