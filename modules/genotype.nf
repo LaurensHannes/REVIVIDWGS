@@ -39,6 +39,6 @@ process genotype {
 		"""
 		egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
         gatk HaplotypeCaller --verbosity INFO -ERC GVCF -L ${chr}.bed -R $genome -I $bam -O ${id}.${chr}.g.vcf.gz --sequence-dictionary ${dict} --pcr-indel-model NONE -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation --native-pair-hmm-threads ${task.cpus}
-        gatk HaplotypeCaller --verbosity INFO -ERC GVCF -ploidy $ploidy -L ${chr}.bed -R $genome -I $bam -O ${id}.${chr}.deepmosaic.vcf --sequence-dictionary ${dict} --pcr-indel-model NONE -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation --native-pair-hmm-threads ${task.cpus}
+        gatk HaplotypeCaller --verbosity INFO -ploidy $ploidy -L ${chr}.bed -R $genome -I $bam -O ${id}.${chr}.deepmosaic.vcf --sequence-dictionary ${dict} --pcr-indel-model NONE -G StandardAnnotation -G AS_StandardAnnotation -G StandardHCAnnotation --native-pair-hmm-threads ${task.cpus}
 		"""
 }
