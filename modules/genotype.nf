@@ -25,7 +25,7 @@ process genotype {
 		
         output:
         tuple val(id), file("${id}.${chr}.g.vcf.gz"), file("${id}.${chr}.g.vcf.gz.tbi")
-		tuple val(id), val(chr), file("${id}.${chr}.deepmosaic.vcf"), file(bam)
+		tuple val(id), val(chr), file("${id}.${chr}.deepmosaic.vcf"), file(bam), file(bai)
 
 		script:
 		if(chr == "chrY")
