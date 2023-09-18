@@ -4,7 +4,7 @@ process deepmosaic {
 	time { 4.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
-		container "docker://laurenshannes/customdeepmosaic:latest"
+		container "docker://laurenshannes/deepmosaic:latest"
 	publishDir "./results/deepmosaic/$id", mode: 'copy', overwrite: true
 		cache 'lenient'
 	memory { 32.GB * task.attempt }
