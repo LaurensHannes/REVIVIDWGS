@@ -10,7 +10,7 @@ process deepmosaic {
 	memory { 32.GB * task.attempt }
 	
 	input:
-	tuple val(id), val(chr),path(vcf),path(bam)
+	tuple val(id), val(chr),path(vcf),path(bam),path(bai)
 	path genome 
 	path indexes
 	path dict
