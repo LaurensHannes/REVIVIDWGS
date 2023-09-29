@@ -26,7 +26,7 @@ process deepmosaic {
 echo -e "#sample_name\tbam\tvcf\tdepth\tsex" >> input.txt
 echo -e "${id}\t${bam}\t${vcf}\t${coverage}\tM" >> input.txt
 
-/DeepMosaic/deepmosaic/deepmosaic-draw -i input.txt -o ./ -a ${programpath}/annovar/ -b hg38 -db gnomad30 -t ${task.cpus}
+/DeepMosaic/deepmosaic/deepmosaic-draw -i input.txt -o ./ -a ${programpath}/annovar/ -b hg38 -db gnomad30 
 /DeepMosaic/deepmosaic/deepmosaic-predict -i features.txt  -o ${id}.${chr}.deepmosaic.txt -m efficientnet-b4_epoch_6.pt -b 10 -gb hg38
 """
 
