@@ -8,7 +8,7 @@ process deepmosaic {
 	publishDir "./results/deepmosaic/$id", mode: 'copy', overwrite: true
 		cache 'lenient'
 	memory { 32.GB * task.attempt }
-	
+	maxForks 50
 	input:
 	tuple val(id), val(chr),path(vcf),path(bam),path(bai)
 	path genome 
