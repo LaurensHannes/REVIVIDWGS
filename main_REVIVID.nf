@@ -176,7 +176,6 @@ deepvariantvcf = normalizeindelsdeepvariant.out[0]
 
 workflow createindividualvcfs {
 take: bamperchr
-roomba i3
 
 
 main:
