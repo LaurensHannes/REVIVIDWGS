@@ -56,16 +56,20 @@ process variantcohortrecalibration {
 	path snpstruthindex
 	path indels 
 	path indelsindex 
+	file ped 
 
 
 	output:
-	tuple val("cohort"), file("cohort.filtered.vcf.gz"), file("cohort.filtered.vcf.gz.tbi")
+	tuple val("${fam}"), file("${fam}.filtered.vcf.gz"), file("${fam}.filtered.vcf.gz.tbi")
+
+	script:
+	fam = ped.baseName
 
 	"""
 	gatk VariantRecalibrator --max-gaussians 4 -V $vcf -R $genome -tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.6 -tranche 99.5 -tranche 99.4 -tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0 --resource:hapmap,known=false,training=true,truth=true,prior=15.0 $snpstruth --resource:1000G,known=false,training=true,truth=false,prior=10.0 $snps -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode SNP -O output_snps.recal --tranches-file output_snp.tranches 
 	gatk VariantRecalibrator --max-gaussians 4 -V $vcf -R $genome -tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.5 -tranche 99.0 -tranche 97.0 -tranche 96.0 -tranche 95.0 -tranche 94.0 -tranche 93.5 -tranche 93.0 -tranche 92.0 -tranche 91.0 -tranche 90.0 --resource:mills,known=false,training=true,truth=true,prior=12 $indels -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -mode INDEL -O output_indels.recal --tranches-file output_indel.tranches 
 	gatk ApplyVQSR  -V $vcf -R $genome -O snp.filtered.vcf.gz --truth-sensitivity-filter-level 99.7 --tranches-file output_snp.tranches --recal-file output_snps.recal -mode SNP
-	gatk ApplyVQSR  -V snp.filtered.vcf.gz -R $genome -O cohort.filtered.vcf.gz --truth-sensitivity-filter-level 99.7 --tranches-file output_indel.tranches --recal-file output_indels.recal -mode INDEL
+	gatk ApplyVQSR  -V snp.filtered.vcf.gz -R $genome -O ${fam}.filtered.vcf.gz --truth-sensitivity-filter-level 99.7 --tranches-file output_indel.tranches --recal-file output_indels.recal -mode INDEL
 	"""
 }
 

@@ -88,13 +88,17 @@ process combinechrVCFs {
 	path genome 
 	path indexes
 	path dict
-
+	file ped 
 
 	output:
 	
-	path("cohort.vcf.gz")
-	path("cohort.vcf.gz.tbi")
+	path("${fam}.vcf.gz")
+	path("${fam}.vcf.gz.tbi")
 	
+	script:
+
+	fam = ped.baseName
+
 """
 
 find \$PWD -name "*.vcf.gz" > input.list
@@ -106,7 +110,7 @@ do
 	gatk IndexFeatureFile -I \$line & 
 done
 wait
-	gatk MergeVcfs -R $genome  -O cohort.vcf.gz -I input.list -D $dict
+	gatk MergeVcfs -R $genome  -O ${fam}.vcf.gz -I input.list -D $dict
 """
 
 }
