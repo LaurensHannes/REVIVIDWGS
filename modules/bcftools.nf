@@ -89,4 +89,22 @@ process normalizeindels {
 	
 }
 
+process subsetvcf {
+
+	cpus 1
+	time { 15.minute * task.attempt }
+		 errorStrategy 'retry' 
+		maxRetries 3
+		publishDir "./results/familyvcfs", mode: 'copy', overwrite: true
+
+	input:
+	tuple val(family), val(caller), file(vcfgz),file(vcfgztbi)
+
+	output: 
+	tuple val(family), val(caller), file("${family}.${caller}.subset.vcf.gz"), file("${family}.${caller}.subset.vcf.gz.tbi")
 	
+	"""
+	bcftools view -O z -s $id,$father,$mother $vcfgz > ${family}.${caller}.subset.vcf.gz 
+	tabix ${family}.${caller}.subset.vcf.gz
+	"""
+}

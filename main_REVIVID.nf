@@ -32,7 +32,7 @@ include { genotype } from './modules/genotype.nf'
 include { leftalignandtrim as  leftalignandtrimgatk;  leftalignandtrim as  leftalignandtrimdeepvariant} from './modules/leftalignandtrim.nf'
 include { variantrecalibration;variantcohortrecalibration;variantchrrecalibration;variantcohortchrrecalibration } from './modules/variantrecalibration.nf'
 include { compressandindex } from './modules/compressandindex.nf'
-include { concatvcf; mergevcf;intersectvcf; normalizeindels as normalizeindelsdeepvariant;normalizeindels as normalizeindelsgatk } from './modules/bcftools.nf'
+include { concatvcf; mergevcf;intersectvcf; normalizeindels as normalizeindelsdeepvariant;normalizeindels as normalizeindelsgatk; subsetvcf as  subsetvcf } from './modules/bcftools.nf'
 include { combineindividualGVCFs;combinechrGVCFs } from './modules/combineindividualGVCFs.nf'
 include { combineGVCFs;combinecohortGVCFs;combinechrVCFs } from './modules/combineGVCFs.nf'
 include { genotypeGVCFs;genotypechrGVCFs } from './modules/genotypeGVCFs.nf'
@@ -176,7 +176,7 @@ deepvariantvcf = normalizeindelsdeepvariant.out[0]
 
 workflow createindividualvcfs {
 take: bamperchr
-
+roomba i3
 
 
 main:
@@ -510,6 +510,8 @@ CNVanalysis(mergedbamstemp_ch)
 
 createfamilyvcfs(callgvariantsexome.out[0])
 VEP(createfamilyvcfs.out[0].map{ fam, caller, vcfgz, vcfgztbi -> tuple(fam,caller,fam,vcfgz,vcfgztbi)},params.VEP)
+ subsetvcf(createfamilyvcfs.out[0],familytrio_ch)
+ VEP(subsetvcf.out[0].map{ fam, caller, vcfgz, vcfgztbi -> tuple(fam,caller,fam,vcfgz,vcfgztbi)},params.VEP)
 }
 
 }
