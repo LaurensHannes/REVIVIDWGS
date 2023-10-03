@@ -99,7 +99,8 @@ process subsetvcf {
 
 	input:
 	tuple val(family), val(caller), file(vcfgz),file(vcfgztbi)
-
+	tuple val(id), val(father), val(mother)
+	
 	output: 
 	tuple val(family), val(caller), file("${family}.${caller}.subset.vcf.gz"), file("${family}.${caller}.subset.vcf.gz.tbi")
 	
