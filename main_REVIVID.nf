@@ -41,7 +41,7 @@ include { SelectVariantsdenovo } from './modules/SelectVariantsdenovo.nf'
 include { SelectVariantsAR } from './modules/SelectVariantsAR.nf'
 include { SelectVariantsX } from './modules/SelectVariantsX.nf'
 include { annovar as annotatedenovo; annovar as annotateAR; annovar as annotateX } from './modules/annotate.nf'
-include { VEP as VEPdenovo; VEP as VEPAR; VEP as VEPX; VEP as VEP } from './modules/annotate.nf'
+include { VEP as VEPdenovo; VEP as VEPAR; VEP as VEPX; VEP as VEP; VEP as VEPperfam } from './modules/annotate.nf'
 include { parliament2;indelible } from './modules/CNV.nf'
 include { peddy } from './modules/peddy.nf'
 include { AnnotSV } from './modules/AnnotSV.nf'
@@ -509,8 +509,8 @@ CNVanalysis(mergedbamstemp_ch)
 
 createfamilyvcfs(callgvariantsexome.out[0])
 VEP(createfamilyvcfs.out[0].map{ fam, caller, vcfgz, vcfgztbi -> tuple(fam,caller,fam,vcfgz,vcfgztbi)},params.VEP)
- subsetvcf(createfamilyvcfs.out[0],familytrio_ch)
- VEP(subsetvcf.out[0].map{ fam, caller, vcfgz, vcfgztbi -> tuple(fam,caller,fam,vcfgz,vcfgztbi)},params.VEP)
+subsetvcf(createfamilyvcfs.out[0],familytrio_ch)
+VEPperfam(subsetvcf.out[0].map{ fam, caller, vcfgz, vcfgztbi -> tuple(fam,caller,fam,vcfgz,vcfgztbi)},params.VEP)
 }
 
 }
