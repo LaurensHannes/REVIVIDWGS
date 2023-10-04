@@ -102,10 +102,10 @@ process subsetvcf {
 	tuple val(fam), val(id), val(father), val(mother)
 	
 	output: 
-	tuple val(fam), val(caller), file("${fam}.${caller}.subset.vcf.gz"), file("${fam}.${caller}.subset.vcf.gz.tbi")
+	tuple val(fam), val(caller), file("${fam}.${caller}.${id}.subset.vcf.gz"), file("${fam}.${caller}.${id}.subset.vcf.gz.tbi")
 	
 	"""
 	bcftools view -a -O z -s $id,$father,$mother $vcfgz > ${fam}.${caller}.subset.vcf.gz 
-	tabix ${fam}.${caller}.subset.vcf.gz
+	tabix ${fam}.${caller}.${id}.subset.vcf.gz
 	"""
 }
