@@ -73,7 +73,7 @@ wait
 
 process combinechrVCFs {
 
-	tag "cohort"
+	tag "${fam}"
 	cpus { 4 * task.attempt }
 	time { 6.hour * task.attempt }
 		 errorStrategy 'retry' 
