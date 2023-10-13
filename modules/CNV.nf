@@ -40,7 +40,7 @@ process indelible {
 		memory { 64.GB * task.attempt }
 		cpus 4
 		clusterOptions '--cluster=wice -A lp_revivid --partition=batch_long'
-
+		maxForks 10
 			 time 7.day
 
 			storeDir "./results/CNV/$fam/indelbile"
