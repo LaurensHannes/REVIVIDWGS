@@ -193,7 +193,7 @@ genotype.out[0].groupTuple(size: 24).flatten().collate ( 25 ).view().set{collate
 combineindividualGVCFs(collatedgenotypes_ch,params.genome,indexes_ch,params.genomedict)
 combineindividualGVCFs.out[0].set{individualgvcfsoutput_ch}
 }
-deepmosaic(genotype.out[1],params.genome,indexes_ch,params.genomedict,params.coverage,params.programs,params.humandb)
+//deepmosaic(genotype.out[1],params.genome,indexes_ch,params.genomedict,params.coverage,params.programs,params.humandb)
 
 emit:
 individualvcf = individualgvcfsoutput_ch
@@ -505,7 +505,7 @@ channel.fromPath(params.exomeindexes).map{file -> tuple(file.simpleName,file)}.g
 mergedbamstemp2_ch.join(mergedbamstemp3_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
 callgvariantsexome(mergedbamstemp_ch)
 
-CNVanalysis(mergedbamstemp_ch)
+//CNVanalysis(mergedbamstemp_ch)
 
 createfamilyvcfs(callgvariantsexome.out[0])
 VEP(createfamilyvcfs.out[0].map{ fam, caller, vcfgz, vcfgztbi -> tuple(fam,caller,fam,vcfgz,vcfgztbi)},params.VEP)
