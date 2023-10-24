@@ -50,8 +50,8 @@ process genotypechrGVCFs {
 
 
 	output:
-	path("${ped}.${chr}.vcf.gz")
-	path("${ped}.${chr}.vcf.gz.tbi")
+	path("${fam}.${chr}.vcf.gz")
+	path("${fam}.${chr}.vcf.gz.tbi")
 	
 	script:
 	fam = ped.baseName
@@ -59,7 +59,7 @@ process genotypechrGVCFs {
 """
 gatk IndexFeatureFile -I *${chr}.g.vcf.gz
 egrep -i -w "^${chr}" ${broadinterval} > ${chr}.bed
-	gatk GenotypeGVCFs -R $genome -V *${chr}.g.vcf.gz -O ${ped}.${chr}.vcf.gz --sequence-dictionary $dict -L ${chr}.bed
+	gatk GenotypeGVCFs -R $genome -V *${chr}.g.vcf.gz -O ${fam}.${chr}.vcf.gz --sequence-dictionary $dict -L ${chr}.bed
 """
 
 }
