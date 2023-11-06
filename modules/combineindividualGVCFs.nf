@@ -38,13 +38,14 @@ sleep 300
 process combinechrGVCFs {
 
 	tag "$chr"
-	cpus 2
+	cpus 1
+	executor 'local'
 	time { 16.hour * task.attempt }
 		 errorStrategy 'retry' 
 		maxRetries 3
 		container "docker://broadinstitute/gatk"
 	storeDir './results/gvcfs'
-	memory { 32.GB * task.attempt }
+	memory { 16.GB * task.attempt }
 	//scratch true
 	input:
 	
