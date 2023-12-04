@@ -432,7 +432,7 @@ CollectWgsMetrics(mergedbamstemp_ch,params.genome,params.arch)
 generateCRAM(mergedbamstemp_ch,params.genome,indexes_ch,params.arch)
 
 createindividualbams(mergedbamstemp_ch)
-if ( params.CNV == 'true' ) {
+if ( params.CNV ) {
 CNVanalysis(bammixed)
 }
 if (params.caller == 'both' ) {
