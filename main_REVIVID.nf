@@ -435,6 +435,9 @@ createindividualbams(mergedbamstemp_ch)
 if ( params.CNV ) {
 CNVanalysis(bammixed)
 }
+else {
+println("No CNV analysis is performed, params.CNV: ${params.CNV}")
+}
 if (params.caller == 'both' ) {
 deepvariant(createindividualbams.out)
 createindividualvcfs(createindividualbams.out)
