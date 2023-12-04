@@ -73,6 +73,8 @@ switch (params.flow) {
 
 
 
+// force booleans 
+println("CNV: ${params.CNV}")
 
 // bams_ch = channel.fromPath('')
 
