@@ -513,10 +513,10 @@ SelectVariantsX(createfamilyvcfs.out.map{vcf,vcfindex -> tuple(vcf.getBaseName(4
 SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().view()
 //mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
-annotateAR(SelectVariantsA.out[0],params.programs,params.humandb,params.annovardbs)
+annotateAR(SelectVariantsAR.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
 VEPdenovo(SelectVariantsdenovo.out[0],params.VEP)
-VEPAR(SelectVariantsA.out[0],params.VEP)
+VEPAR(SelectVariantsAR.out[0],params.VEP)
 VEPX(SelectVariantsX.out[0],params.VEP)
 }
 
