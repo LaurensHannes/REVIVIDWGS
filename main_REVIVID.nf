@@ -460,6 +460,66 @@ createfamilyvcfs(vcfmixed)
 }
 }
 
+workflow createbamsandcallvariantsandannotate {
+
+
+main:
+
+
+importfastq(idfamily_ch, params.home,params.arch,params.download,params.bucket,params.exome,params.lsbucket)
+importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").view().flatten().collate( 3 ).map{lane,R1,R2 -> tuple(R1.simpleName,lane,R1,R2)}.set{gzipped_ch}
+//importfastq.out.flatten().filter(~/.*R\d+.*.fastq.gz/).map{file -> tuple(file.getBaseName(3), file)}.groupTuple().dump(tag:"test").flatten().collate( 3 ).splitFastq(by: 10_000_000, pe: true, file:true).map{lane,R1,R2 -> tuple(R1.simpleName,R1.getBaseName(1),R1,R2)}.view().set{gzipped_ch}
+
+fastQC(gzipped_ch,params.arch)
+alignment(gzipped_ch, params.genome,indexes_ch, params.home,params.arch)
+stmergebams(alignment.out[0].map{id,lane,bam,bai -> tuple(id,bam)}.groupTuple(),params.home,params.arch)
+
+stmergebams.out[0].map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp1_ch}
+stmergebams.out[1].map{file -> tuple(file.simpleName,file)}.groupTuple().view().set{mergedbamstemp2_ch}
+mergedbamstemp1_ch.join(mergedbamstemp2_ch).flatten().collate( 3 ).view().set{mergedbamstemp_ch}
+CollectWgsMetrics(mergedbamstemp_ch,params.genome,params.arch)
+generateCRAM(mergedbamstemp_ch,params.genome,indexes_ch,params.arch)
+
+createindividualbams(mergedbamstemp_ch)
+if ( params.CNV ) {
+CNVanalysis(bammixed)
+}
+else {
+println("No CNV analysis is performed, params.CNV: ${params.CNV}")
+}
+if (params.caller == 'both' ) {
+deepvariant(createindividualbams.out)
+createindividualvcfs(createindividualbams.out)
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+createfamilyvcfs(vcfmixed)
+}
+else if (params.caller == 'deepvariant' ) {
+deepvariant(createindividualbams.out)
+}
+else if (params.caller == 'gatk' ) {
+createindividualvcfs(createindividualbams.out)
+
+if (params.cohort) {
+	createindividualvcfs.out.set{vcfmixed}
+}
+		else {
+createindividualvcfs.out.map{id,vcf -> tuple(familymap[id], vcf)}.groupTuple().flatten().collate( 4 ).set{vcfmixed}
+		}
+createfamilyvcfs(vcfmixed)
+}
+SelectVariantsdenovo(createfamilyvcfs.out,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsAR(createfamilyvcfs.out,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsX(vcreatefamilyvcfs.out,params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
+SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().view()
+mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
+annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
+annotateAR(mergevcf.out[0],params.programs,params.humandb,params.annovardbs)
+annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
+VEPdenovo(SelectVariantsdenovo.out[0],params.VEP)
+VEPAR(mergevcf.out[0],params.VEP)
+VEPX(SelectVariantsX.out[0],params.VEP)
+}
+
 workflow callgvariantsexome {
 
 take:
