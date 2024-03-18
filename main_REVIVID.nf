@@ -511,7 +511,7 @@ SelectVariantsdenovo(createfamilyvcfs.out.map{vcf,vcfindex -> tuple(vcf.getBaseN
 SelectVariantsAR(createfamilyvcfs.out.map{vcf,vcfindex -> tuple(vcf.getBaseName(4),params.caller,vcf)},params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsX(createfamilyvcfs.out.map{vcf,vcfindex -> tuple(vcf.getBaseName(4),params.caller,vcf)},params.genome,params.genomedict,indexes_ch,params.ped,params.mask)
 SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().view()
-#mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
+//mergevcf(SelectVariantsAR.out[0].map{fam,analysis,mode,vcfgz,tbi -> tuple(fam,analysis,vcfgz,tbi)}.groupTuple(by:1).flatten().unique().collate( 8 ))
 annotatedenovo(SelectVariantsdenovo.out[0],params.programs,params.humandb,params.annovardbs)
 annotateAR(SelectVariantsA.out[0],params.programs,params.humandb,params.annovardbs)
 annotateX(SelectVariantsX.out[0],params.programs,params.humandb,params.annovardbs)
